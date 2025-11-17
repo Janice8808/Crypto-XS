@@ -1,19 +1,21 @@
-const express = require("express");
-const path = require("path");
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-const distPath = path.join(__dirname, "dist");
+// 指向 dist
+app.use(express.static(path.join(__dirname, "dist")));
 
-// 静态资源托管
-app.use(express.static(distPath));
-
-// 所有路径都返回 index.html（SPA 解决 404）
-app.get("*", (_, res) => {
-  res.sendFile(path.join(distPath, "index.html"));
+// SPA 所有路由都返回 index.html
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
-// Render 自动提供 PORT 环境变量
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log("Server running on port", PORT);
+  console.log(`Server running on port ${PORT}`);
 });
