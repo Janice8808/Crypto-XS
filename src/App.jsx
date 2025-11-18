@@ -1,11 +1,13 @@
 // App.jsx
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import "./i18n";
 
+// 公共组件
 import Layout from "./Layout";
 import AuthGate from "./AuthGate";
 
+// 页面
 import Home from "./pages/Home";
 import Market from "./pages/Market";
 import CoinDetail from "./pages/CoinDetail";
@@ -29,89 +31,101 @@ import Introduction from "./pages/Introduction";
 
 import Pledge from "./pages/Pledge";
 import DeFiRecord from "./pages/DeFiRecord";
+
 import LoginWallet from "./pages/LoginWallet";
 import AdminPanel from "./pages/AdminPanel";
 
-const App = () => {
+function App() {
   return (
     <Router>
-      {/* 登录页不需要 AuthGate */}
       <Routes>
-        <Route path="/loginwallet" element={<LoginWallet />} />
-      </Routes>
 
-      {/* 其余全部需要登录 */}
-      <AuthGate>
-        <Routes>
-          <Route
-            path="/"
-            element={
+        {/* 不需要登录的路由 */}
+        <Route path="/loginwallet" element={<LoginWallet />} />
+
+        {/* 需要登录的路由（带 Layout） */}
+        <Route
+          path="/"
+          element={
+            <AuthGate>
               <Layout>
                 <Home />
               </Layout>
-            }
-          />
+            </AuthGate>
+          }
+        />
 
-          <Route
-            path="/market"
-            element={
+        <Route
+          path="/market"
+          element={
+            <AuthGate>
               <Layout>
                 <Market />
               </Layout>
-            }
-          />
+            </AuthGate>
+          }
+        />
 
-          <Route
-            path="/coin/:symbol"
-            element={
+        <Route
+          path="/coin/:symbol"
+          element={
+            <AuthGate>
               <Layout>
                 <CoinDetail />
               </Layout>
-            }
-          />
+            </AuthGate>
+          }
+        />
 
-          <Route
-            path="/trade"
-            element={
+        <Route
+          path="/trade"
+          element={
+            <AuthGate>
               <Layout>
                 <Trade />
               </Layout>
-            }
-          />
+            </AuthGate>
+          }
+        />
 
-          <Route
-            path="/wallet"
-            element={
+        <Route
+          path="/wallet"
+          element={
+            <AuthGate>
               <Layout>
                 <Wallet />
               </Layout>
-            }
-          />
+            </AuthGate>
+          }
+        />
 
-          {/* 不带 Layout */}
-          <Route path="/asset/:symbol" element={<AssetDetail />} />
-          <Route path="/wallet/:symbol/deposit" element={<Deposit />} />
-          <Route path="/wallet/:symbol/withdraw" element={<Withdraw />} />
-          <Route path="/deposit1" element={<Deposit1 />} />
-          <Route path="/withdraw1" element={<Withdraw1 />} />
-          <Route path="/buycrypto1" element={<BuyCrypto1 />} />
+        {/* 不带 Layout 的页面 */}
+        <Route path="/asset/:symbol" element={<AuthGate><AssetDetail /></AuthGate>} />
+        <Route path="/wallet/:symbol/deposit" element={<AuthGate><Deposit /></AuthGate>} />
+        <Route path="/wallet/:symbol/withdraw" element={<AuthGate><Withdraw /></AuthGate>} />
 
-          <Route path="/admin" element={<AdminPanel />} />
-          <Route path="/user" element={<UserCenter />} />
-          <Route path="/user/mail" element={<Mail />} />
-          <Route path="/user/bank" element={<BankCard />} />
-          <Route path="/user/language" element={<Language />} />
-          <Route path="/user/withdrawal-password" element={<WithdrawalPassword />} />
-          <Route path="/intro" element={<Introduction />} />
+        <Route path="/deposit1" element={<AuthGate><Deposit1 /></AuthGate>} />
+        <Route path="/withdraw1" element={<AuthGate><Withdraw1 /></AuthGate>} />
+        <Route path="/buycrypto1" element={<AuthGate><BuyCrypto1 /></AuthGate>} />
+        <Route path="/admin" element={<AuthGate><AdminPanel /></AuthGate>} />
+        <Route path="/user" element={<AuthGate><UserCenter /></AuthGate>} />
+        <Route path="/user/mail" element={<AuthGate><Mail /></AuthGate>} />
+        <Route path="/user/bank" element={<AuthGate><BankCard /></AuthGate>} />
+        <Route path="/user/language" element={<AuthGate><Language /></AuthGate>} />
+        <Route path="/user/withdrawal-password" element={<AuthGate><WithdrawalPassword /></AuthGate>} />
+        <Route path="/intro" element={<AuthGate><Introduction /></AuthGate>} />
 
-          <Route path="/defi" element={<Pledge />} />
-          <Route path="/defi-record" element={<DeFiRecord />} />
+        <Route path="/defi" element={<AuthGate><Pledge /></AuthGate>} />
+        <Route path="/defi-record" element={<AuthGate><DeFiRecord /></AuthGate>} />
 
-          <Route path="/user/msb" element={<MSBCertification />} />
-        </Routes>
-      </AuthGate>
+        <Route path="/user/msb" element={<AuthGate><MSBCertification /></AuthGate>} />
+
+        {/* 没匹配的全部重定向到首页 */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+
+      </Routes>
     </Router>
   );
-};
+}
 
 export default App;
