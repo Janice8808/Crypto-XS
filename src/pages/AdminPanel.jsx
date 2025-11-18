@@ -104,13 +104,16 @@ export default function AdminPanel() {
     if (!adminToken) return; // 未登录后台，不连 WS
 
     // 根据当前环境拼接 ws 地址
-    const protocol =
-      window.location.protocol === "https:" ? "wss:" : "ws:";
-    const host = window.location.hostname;
-    const port = 5000; // 你的后端端口
+ // 直接连接 Render 后端 WebSocket
+const WS_URL = "wss://crypto-ht.onrender.com";
 
-    const wsUrl = `${protocol}//${host}:${port}`;
-    const ws = new WebSocket(wsUrl);
+const ws = new WebSocket(WS_URL);
+console.log("📡 Admin WS connecting:", WS_URL);
+
+ws.onopen = () => {
+  console.log("✅ Admin WebSocket connected");
+};
+
 
     console.log("📡 Admin WS connecting:", wsUrl);
 

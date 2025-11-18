@@ -3,38 +3,52 @@ import React, { useState, useEffect } from 'react';
 function RealTimeTicker() {
   const [prices, setPrices] = useState({}); // 初始化币种价格状态
 
-  useEffect(() => {
-    // 连接本地 WebSocket（确保后端 app.js 已启动并代理币安）
-    const ws = new WebSocket('ws://localhost:5000');
+useEffect(() => {
+  // 自动区分 本地 / 生产环境 的 WebSocket 地址
+  const WS_URL =
+    import.meta.env.PROD
+      ? "wss://crypto-ht.onrender.com"
+      : "ws://localhost:5000";
 
-    ws.onopen = () => console.log('Frontend connected to local WS');
+  const ws = new WebSocket(WS_URL);
 
-    ws.onmessage = (event) => {
-      try {
-        // 后端发送的数据格式示例: [{s: 'BTCUSDT', c: '12345.67'}, {s: 'ETHUSDT', c: '3456.78'}]
-        const data = JSON.parse(event.data);
+  ws.onopen = () => {
+    console.log("✅ Frontend WS connected:", WS_URL);
+  };
 
-        setPrices(prev => {
-          const updated = { ...prev };
-          data.forEach(item => {
-            // 提取币种简写 BTC/ETH/...
-            const symbol = item.s.replace('USDT', '');
-            updated[symbol] = parseFloat(item.c).toFixed(2);
-          });
-          return updated;
+  ws.onmessage = (event) => {
+    try {
+      const data = JSON.parse(event.data);
+
+      // 忽略后台 JSON
+      if (!Array.isArray(data)) return;
+
+      setPrices((prev) => {
+        const updated = { ...prev };
+
+        data.forEach((item) => {
+          const symbol = item.s.replace("USDT", "");
+          updated[symbol] = parseFloat(item.c).toFixed(2);
         });
-      } catch (err) {
-        console.error('解析 WebSocket 消息失败:', err);
-      }
-    };
 
-    ws.onerror = (err) => console.error('WebSocket 错误:', err);
+        return updated;
+      });
+    } catch (err) {
+      console.error("解析 WebSocket 消息失败:", err);
+    }
+  };
 
-    ws.onclose = () => console.log('Frontend disconnected from local WS');
+  ws.onerror = (err) => {
+    console.error("❌ WebSocket 错误:", err);
+  };
 
-    // 组件卸载时关闭 WebSocket
-    return () => ws.close();
-  }, []);
+  ws.onclose = () => {
+    console.log("⚠️ WebSocket 已断开:", WS_URL);
+  };
+
+  return () => ws.close();
+}, []);
+
 
   // 转换成渲染数组
   const coins = Object.entries(prices).map(([symbol, price]) => ({ symbol, price }));
