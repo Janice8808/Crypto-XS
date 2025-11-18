@@ -35,11 +35,11 @@ useEffect(() => {
     setCoins(list);
     localStorage.setItem("coins", JSON.stringify(list));
   } else {
-    fetch("https://crypto-ht.onrender.com/api/coins")
+    fetch("https://crypto-ht.onrender.com/api/market/coins")   // ✅ 修正这里
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          let list = ensureUsdt(data); // 🔥 同样这里
+          let list = ensureUsdt(data);
           setCoins(list);
           localStorage.setItem("coins", JSON.stringify(list));
         } else {
@@ -53,7 +53,6 @@ useEffect(() => {
       });
   }
 }, []);
-
 
   // ✅ 获取用户余额
   useEffect(() => {

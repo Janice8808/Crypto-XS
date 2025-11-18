@@ -59,7 +59,7 @@ export const useCoins = () => {
         data = JSON.parse(cache);
       } else {
         // 走自己后端，不再直接访问 Binance
-        data = await apiFetch("/api/coins");
+        data = await apiFetch("/market/coins");
         localStorage.setItem("marketCoins", JSON.stringify(data));
         localStorage.setItem("marketCoinsTime", String(Date.now()));
       }
