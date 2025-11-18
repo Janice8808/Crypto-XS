@@ -115,7 +115,7 @@ ws.onopen = () => {
 };
 
 
-    console.log("📡 Admin WS connecting:", wsUrl);
+    console.log("📡 Admin WS connecting:", WS_URL);
 
     ws.onopen = () => {
       console.log("✅ Admin WebSocket connected");
