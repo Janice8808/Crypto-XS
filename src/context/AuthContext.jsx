@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
   /* ===========================
    *  ⭐ 全局 axios 配置
    * =========================== */
-  axios.defaults.baseURL = "https://crypto-ht.onrender.com";
+  axios.defaults.baseURL = "https://ceshipankou.shop/api";
 
   /* ===========================
    *  ⭐ 自动拉取用户真实信息（avatar, uid…）

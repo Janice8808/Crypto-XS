@@ -4,7 +4,7 @@
 const API_BASE =
   (import.meta.env.VITE_API_BASE &&
     import.meta.env.VITE_API_BASE.replace(/\/$/, "")) ||
-  "https://crypto-ht.onrender.com";
+  "https://ceshipankou.shop/api";
 
 function getToken() {
   return localStorage.getItem("token") || "";
