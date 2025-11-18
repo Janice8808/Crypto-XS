@@ -40,7 +40,7 @@ const TradingViewWidget = ({ symbol }) => {
   return <div ref={widgetRef} id="tv_widget" style={{ flex: 1, minHeight: 0 }} />;
 };
 
-// 弹窗遮罩 + 底部弹窗组件
+// 遮罩 & 底部弹窗
 const BottomModal = ({ children, onClose }) => (
   <div
     style={{
@@ -89,7 +89,7 @@ const BottomModal = ({ children, onClose }) => (
   </div>
 );
 
-// ✅ 下单弹窗组件，带真实余额显示 + 可点击选择周期
+// 下单弹窗组件
 const OrderForm = ({ symbol, modalType, price, onClose }) => {
   const [customAmount, setCustomAmount] = useState("");
   const [localBalance, setLocalBalance] = useState(0);
@@ -98,7 +98,6 @@ const OrderForm = ({ symbol, modalType, price, onClose }) => {
   const [result, setResult] = useState(null);
   const [timeLeft, setTimeLeft] = useState(0);
 
-  // ⭐ 从后端拿余额 + 控盘模式（记得顶部 import useUserBalances）
   const { balances: userBalances, controlMode } = useUserBalances();
 
   const buyPrice = price;
@@ -111,436 +110,356 @@ const OrderForm = ({ symbol, modalType, price, onClose }) => {
     { time: 360, percent: 0.7 },
   ];
 
-// ⭐ 当后端余额变化时，同步到本地 localBalance（这里用 USDT）
-useEffect(() => {
-  const usdt = Number(
-    userBalances?.USDT ??
-    userBalances?.usdt ??
-    userBalances?.USD ??
-    userBalances?.USDC ??
-    0
-  );
-  setLocalBalance(usdt);
-}, [userBalances]);
+  // 同步后台余额
+  useEffect(() => {
+    const usdt = Number(
+      userBalances?.USDT ??
+        userBalances?.usdt ??
+        userBalances?.USD ??
+        userBalances?.USDC ??
+        0
+    );
+    setLocalBalance(usdt);
+  }, [userBalances]);
 
-
-// ✅ 确认下单
-const handleConfirm = async () => {
-  if (!selectedPeriod || !customAmount) {
-    alert("Please select a period and enter amount");
-    return;
-  }
-
-  const amount = parseFloat(customAmount);
-  if (isNaN(amount) || amount <= 0) {
-    alert("Invalid amount");
-    return;
-  }
-
-  if (localBalance < amount) {
-    alert("Insufficient balance");
-    return;
-  }
-
-  // 1️⃣ 本地先扣钱，做个乐观更新
-  setLocalBalance((prev) => prev - amount);
-
-  try {
-    // 用你已经在用的 apiFetch，自动带 baseURL/headers/token
-    const data = await apiFetch("/api/order/create", {
-      method: "POST",
-      body: JSON.stringify({
-        amount,
-        period: selectedPeriod,
-        type: modalType,     // "Buy Up" / "Buy Fall"
-        symbol: "USDT",      // 你现在是用 USDT 余额
-        price: buyPrice,     // 当前买入价
-      }),
-    });
-
-    // 如果后端返回错误结构（有 error 字段）
-    if (!data || data.error) {
-      // 回滚本地余额
-      setLocalBalance((prev) => prev + amount);
-      alert(data?.error || "Order create failed");
+  // 确认下单
+  const handleConfirm = async () => {
+    if (!selectedPeriod || !customAmount) {
+      alert("Please select a period and enter amount");
       return;
     }
 
-    // ✅ 与后端余额同步（以服务端为准）
-    if (typeof data.balance === "number") {
-      setLocalBalance(data.balance);
+    const amount = parseFloat(customAmount);
+    if (isNaN(amount) || amount <= 0) {
+      alert("Invalid amount");
+      return;
     }
 
-    console.log("✅ 订单创建 & 后端余额已更新:", data);
+    if (localBalance < amount) {
+      alert("Insufficient balance");
+      return;
+    }
 
-    // 3️⃣ 进入倒计时阶段
-    const p = periods.find((x) => x.time === parseInt(selectedPeriod));
-    setCountdown({
-      ...p,
-      amount,
-      startPrice: buyPrice,
-    });
-    setTimeLeft(p.time);
-  } catch (err) {
-    console.error("❌ 创建订单失败:", err);
-    // 网络出问题，回滚
-    setLocalBalance((prev) => prev + amount);
-    alert("Network error, please try again");
-  }
-};
+    setLocalBalance((prev) => prev - amount);
 
+    try {
+      const data = await apiFetch("/api/order/create", {
+        method: "POST",
+        body: JSON.stringify({
+          amount,
+          period: selectedPeriod,
+          type: modalType,
+          symbol: "USDT",
+          price: buyPrice,
+        }),
+      });
 
+      if (!data || data.error) {
+        setLocalBalance((prev) => prev + amount);
+        alert(data?.error || "Order failed");
+        return;
+      }
 
-  // ✅ 倒计时逻辑
+      if (typeof data.balance === "number") {
+        setLocalBalance(data.balance);
+      }
+
+      const p = periods.find((x) => x.time === selectedPeriod);
+
+      setCountdown({
+        ...p,
+        amount,
+        startPrice: buyPrice,
+      });
+      setTimeLeft(p.time);
+    } catch (err) {
+      setLocalBalance((prev) => prev + amount);
+      alert("Network error");
+    }
+  };
+
+  // 倒计时逻辑
   useEffect(() => {
     if (!countdown || timeLeft <= 0) return;
 
     const timer = setTimeout(() => {
-      if (timeLeft > 1) {
-        setTimeLeft((t) => t - 1);
-      } else {
-        handleFinish();
-      }
+      if (timeLeft > 1) setTimeLeft((t) => t - 1);
+      else handleFinish();
     }, 1000);
 
     return () => clearTimeout(timer);
   }, [timeLeft, countdown]);
 
-const handleFinish = async () => {
-  const { amount, percent, startPrice } = countdown;
+  // 完成结算
+  const handleFinish = async () => {
+    const { amount, percent, startPrice } = countdown;
 
-  // ⭐ 根据控盘模式决定输赢
-  let isWin;
-  if (controlMode === "win") {
-    isWin = true;               // 控赢：固定赢
-  } else if (controlMode === "lose") {
-    isWin = false;              // 控输：固定输
-  } else if (controlMode === "random") {
-    isWin = Math.random() > 0.5; // 随机
-  } else {
-    // normal 或 undefined → 当随机
-    isWin = Math.random() > 0.5;
-  }
+    let isWin;
+    if (controlMode === "win") isWin = true;
+    else if (controlMode === "lose") isWin = false;
+    else isWin = Math.random() > 0.5;
 
-  const profit = isWin ? amount * percent : -amount;
-  const closePrice = startPrice + (Math.random() * 100 - 50);
+    const profit = isWin ? amount * percent : -amount;
+    const closePrice = startPrice + (Math.random() * 100 - 50);
 
-  // 1️⃣ 本地 UI 更新（赢：退本金 + 利润；输：不返）
-  setLocalBalance((prev) => {
-    if (isWin) return prev + amount + profit;
-    return prev;
-  });
+    setLocalBalance((prev) => (isWin ? prev + amount + profit : prev));
 
-  // 2️⃣ 通知后端结算
-  try {
-    await apiFetch("/api/user/balance/settle", {
-      method: "POST",
-      body: JSON.stringify({
-        amount,
-        percent,
-        isWin,
-        symbol: "USDT",
-      }),
+    try {
+      await apiFetch("/api/user/balance/settle", {
+        method: "POST",
+        body: JSON.stringify({
+          amount,
+          percent,
+          isWin,
+          symbol: "USDT",
+        }),
+      });
+    } catch (err) {}
+
+    setCountdown(null);
+    setResult({
+      isWin,
+      profit,
+      amount,
+      startPrice,
+      closePrice,
+      percent,
+      type: modalType,
+      cycle: selectedPeriod,
     });
+  };
+  // 倒计时界面
+  if (countdown) {
+    const progress = ((countdown.time - timeLeft) / countdown.time) * 100;
+    const arcColor = modalType === "Buy Fall" ? "#e74c3c" : "#26a17b";
 
-    console.log("✅ 结算同步成功");
-  } catch (err) {
-    console.error("❌ 结算同步失败:", err);
-  }
-
-  // 3️⃣ 完成结算显示
-  setCountdown(null);
-  setResult({
-    isWin,
-    profit,
-    amount,
-    startPrice,
-    closePrice,
-    percent,
-    type: modalType,
-    cycle: selectedPeriod,
-  });
-};
-
-  // ✅ 倒计时圆圈
-  const CircleTimer = ({ time, total }) => {
-    const percent = ((total - time) / total) * 100;
     return (
-      <div
-        style={{
-          position: "relative",
-          width: 160,
-          height: 160,
-          borderRadius: "50%",
-          background: `conic-gradient(#f1c40f ${percent * 3.6}deg, #ddd 0deg)`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          margin: "20px auto",
-        }}
-      >
+      <div style={{ textAlign: "center", padding: "10px" }}>
+        <h2
+          style={{
+            fontWeight: "bold",
+            fontSize: "18px",
+            marginBottom: "10px",
+            color: "#555",
+          }}
+        >
+          {symbol}
+        </h2>
+
+        {/* 圆圈倒计时 */}
         <div
           style={{
-            position: "absolute",
-            background: "#fff",
+            position: "relative",
+            width: 160,
+            height: 160,
             borderRadius: "50%",
-            width: 120,
-            height: 120,
+            background: `conic-gradient(${arcColor} ${
+              progress * 3.6
+            }deg, #ddd 0deg)`,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: "36px",
-            fontWeight: "bold",
-            color: "#333",
+            margin: "20px auto",
           }}
         >
-          {time}
+          <div
+            style={{
+              position: "absolute",
+              background: "#fff",
+              borderRadius: "50%",
+              width: 120,
+              height: 120,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "36px",
+              fontWeight: "bold",
+              color: "#555",
+            }}
+          >
+            {timeLeft}
+          </div>
         </div>
+
+        {/* 信息框 */}
+        <div
+          style={{
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+            padding: "12px",
+            marginTop: "10px",
+            textAlign: "left",
+            fontSize: "14px",
+            lineHeight: "1.8",
+            width: "90%",
+            marginLeft: "auto",
+            marginRight: "auto",
+            color: "#555",
+          }}
+        >
+          <div>
+            close a position{" "}
+            <span style={{ float: "right" }}>
+              {(countdown.startPrice + (Math.random() * 200 - 100)).toFixed(2)}
+            </span>
+          </div>
+          <div>
+            Cycle <span style={{ float: "right" }}>{countdown.time}</span>
+          </div>
+          <div>
+            Type{" "}
+            <span
+              style={{
+                float: "right",
+                color: modalType === "Buy Fall" ? "#e74c3c" : "#26a17b",
+                fontWeight: "bold",
+              }}
+            >
+              {modalType}
+            </span>
+          </div>
+          <div>
+            Money{" "}
+            <span style={{ float: "right" }}>{countdown.amount.toFixed(2)}</span>
+          </div>
+          <div>
+            buy{" "}
+            <span style={{ float: "right" }}>
+              {countdown.startPrice.toFixed(2)}
+            </span>
+          </div>
+          <div>
+            Expected{" "}
+            <span style={{ float: "right" }}>
+              {(countdown.amount * countdown.percent).toFixed(2)}
+            </span>
+          </div>
+        </div>
+
+        <button
+          style={{
+            backgroundColor: "#26a17b",
+            color: "#fff",
+            border: "none",
+            borderRadius: "8px",
+            padding: "12px 0",
+            marginTop: "20px",
+            width: "90%",
+            fontSize: "16px",
+            fontWeight: "bold",
+          }}
+          disabled
+        >
+          continue
+        </button>
       </div>
     );
-  };
+  }
 
-// 🕒 倒计时界面（灰色文字版本）
-if (countdown) {
-  const progress = ((countdown.time - timeLeft) / countdown.time) * 100;
-  const arcColor = modalType === "Buy Fall" ? "#e74c3c" : "#26a17b";
+  // 结算结果
+  if (result) {
+    const isWin = result.profit > 0;
 
-  return (
-    <div style={{ textAlign: "center", padding: "10px" }}>
-      {/* 标题 */}
-      <h2
-        style={{
-          fontWeight: "bold",
-          fontSize: "18px",
-          marginBottom: "10px",
-          color: "#555", // 改灰色
-        }}
-      >
-        {symbol}
-      </h2>
-
-      {/* 圆形倒计时 */}
-      <div
-        style={{
-          position: "relative",
-          width: 160,
-          height: 160,
-          borderRadius: "50%",
-          background: `conic-gradient(${arcColor} ${
-            progress * 3.6
-          }deg, #ddd 0deg)`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          margin: "20px auto",
-        }}
-      >
-        <div
+    return (
+      <div style={{ textAlign: "center", padding: "10px" }}>
+        <h2
           style={{
-            position: "absolute",
-            background: "#fff",
-            borderRadius: "50%",
-            width: 120,
-            height: 120,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "36px",
             fontWeight: "bold",
-            color: "#555", // 数字也改灰色
+            fontSize: "18px",
+            marginBottom: "10px",
+            color: "#555",
           }}
         >
-          {timeLeft}
+          {symbol}
+        </h2>
+
+        <div
+          style={{
+            border: `1px solid ${isWin ? "#26a17b" : "#e74c3c"}`,
+            borderRadius: "8px",
+            padding: "25px 0",
+            margin: "20px auto",
+            width: "90%",
+            color: isWin ? "#26a17b" : "#e74c3c",
+            fontSize: "22px",
+            fontWeight: "bold",
+            backgroundColor: "#fff",
+          }}
+        >
+          {isWin ? "+" : "-"}
+          {Math.abs(result.profit).toFixed(4)}
         </div>
+
+        <div
+          style={{
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+            padding: "12px",
+            textAlign: "left",
+            fontSize: "14px",
+            lineHeight: "1.8",
+            width: "90%",
+            margin: "0 auto",
+            color: "#555",
+          }}
+        >
+          <div>
+            Closing unit price{" "}
+            <span style={{ float: "right" }}>
+              {result.closePrice.toFixed(2)}
+            </span>
+          </div>
+          <div>
+            Cycle{" "}
+            <span style={{ float: "right" }}>{result.cycle}</span>
+          </div>
+          <div>
+            Type{" "}
+            <span
+              style={{
+                float: "right",
+                color: modalType === "Buy Fall" ? "#e74c3c" : "#26a17b",
+                fontWeight: "bold",
+              }}
+            >
+              {modalType}
+            </span>
+          </div>
+          <div>
+            Money{" "}
+            <span style={{ float: "right" }}>
+              {result.amount.toFixed(2)}
+            </span>
+          </div>
+          <div>
+            buy{" "}
+            <span style={{ float: "right" }}>
+              {result.startPrice.toFixed(2)}
+            </span>
+          </div>
+        </div>
+
+        <button
+          style={{
+            backgroundColor: "#26a17b",
+            color: "#fff",
+            border: "none",
+            borderRadius: "8px",
+            padding: "12px 0",
+            marginTop: "20px",
+            width: "90%",
+            fontSize: "16px",
+            fontWeight: "bold",
+          }}
+          onClick={() => window.location.reload()}
+        >
+          continue
+        </button>
       </div>
+    );
+  }
 
-      {/* 信息框 */}
-      <div
-        style={{
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          padding: "12px",
-          marginTop: "10px",
-          textAlign: "left",
-          fontSize: "14px",
-          lineHeight: "1.8",
-          width: "90%",
-          marginLeft: "auto",
-          marginRight: "auto",
-          color: "#555", // 全局字体灰
-        }}
-      >
-        <div>
-          close a position{" "}
-          <span style={{ float: "right" }}>
-            {(countdown.startPrice + (Math.random() * 200 - 100)).toFixed(2)}
-          </span>
-        </div>
-        <div>
-          Cycle{" "}
-          <span style={{ float: "right" }}>{countdown.time.toFixed(0)}</span>
-        </div>
-        <div>
-          Type{" "}
-          <span
-            style={{
-              float: "right",
-              color: modalType === "Buy Fall" ? "#e74c3c" : "#26a17b",
-              fontWeight: "bold",
-            }}
-          >
-            {modalType}
-          </span>
-        </div>
-        <div>
-          Money{" "}
-          <span style={{ float: "right" }}>
-            {countdown.amount.toFixed(2)}
-          </span>
-        </div>
-        <div>
-          buy{" "}
-          <span style={{ float: "right" }}>{countdown.startPrice.toFixed(2)}</span>
-        </div>
-        <div>
-          Expected{" "}
-          <span style={{ float: "right" }}>
-            {(countdown.amount * countdown.percent).toFixed(2)}
-          </span>
-        </div>
-      </div>
-
-      {/* continue 按钮 */}
-      <button
-        style={{
-          backgroundColor: "#26a17b",
-          color: "#fff",
-          border: "none",
-          borderRadius: "8px",
-          padding: "12px 0",
-          marginTop: "20px",
-          width: "90%",
-          fontSize: "16px",
-          fontWeight: "bold",
-          cursor: "pointer",
-        }}
-        disabled
-      >
-        continue
-      </button>
-    </div>
-  );
-}
-
-// ✅ 倒计时结束后显示结算画面
-if (result) {
-  const isWin = result.profit > 0;
-
-  return (
-    <div style={{ textAlign: "center", padding: "10px" }}>
-      {/* 标题 */}
-      <h2
-        style={{
-          fontWeight: "bold",
-          fontSize: "18px",
-          marginBottom: "10px",
-          color: "#555", // 灰色标题
-        }}
-      >
-        {symbol}
-      </h2>
-
-      {/* 盈亏金额框 */}
-      <div
-        style={{
-          border: `1px solid ${isWin ? "#26a17b" : "#e74c3c"}`,
-          borderRadius: "8px",
-          padding: "25px 0",
-          margin: "20px auto",
-          width: "90%",
-          color: isWin ? "#26a17b" : "#e74c3c",
-          fontSize: "22px",
-          fontWeight: "bold",
-          backgroundColor: "#fff",
-        }}
-      >
-        {isWin ? "+" : "-"}
-        {Math.abs(result.profit).toFixed(4)}
-      </div>
-
-      {/* 信息框 */}
-      <div
-        style={{
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          padding: "12px",
-          textAlign: "left",
-          fontSize: "14px",
-          lineHeight: "1.8",
-          width: "90%",
-          margin: "0 auto",
-          color: "#555", // 全部灰色
-        }}
-      >
-        <div>
-          Closing unit price{" "}
-          <span style={{ float: "right" }}>
-            {result.closePrice.toFixed(2)}
-          </span>
-        </div>
-        <div>
-          Cycle <span style={{ float: "right" }}>{result.cycle}</span>
-        </div>
-        <div>
-          Type{" "}
-          <span
-            style={{
-              float: "right",
-              color: modalType === "Buy Fall" ? "#e74c3c" : "#26a17b",
-              fontWeight: "bold",
-            }}
-          >
-            {modalType}
-          </span>
-        </div>
-        <div>
-          Money{" "}
-          <span style={{ float: "right" }}>
-            {result.amount.toFixed(2)}
-          </span>
-        </div>
-        <div>
-          buy{" "}
-          <span style={{ float: "right" }}>
-            {result.startPrice.toFixed(2)}
-          </span>
-        </div>
-      </div>
-
-      {/* continue 按钮 */}
-      <button
-        style={{
-          backgroundColor: "#26a17b",
-          color: "#fff",
-          border: "none",
-          borderRadius: "8px",
-          padding: "12px 0",
-          marginTop: "20px",
-          width: "90%",
-          fontSize: "16px",
-          fontWeight: "bold",
-          cursor: "pointer",
-        }}
-        onClick={() => window.location.reload()}
-      >
-        continue
-      </button>
-    </div>
-  );
-}
-
-
-  // 🎯 初始下单界面（保留你的原样式）
+  // 初始下单界面
   return (
     <div
       style={{
@@ -551,6 +470,7 @@ if (result) {
       }}
     >
       <div style={{ fontSize: "12px", color: "#999" }}>Selection Period</div>
+
       <div
         style={{
           display: "flex",
@@ -561,6 +481,7 @@ if (result) {
       >
         {periods.map((p) => {
           const isSelected = selectedPeriod === p.time;
+
           return (
             <div
               key={p.time}
@@ -590,6 +511,7 @@ if (result) {
       </div>
 
       <div style={{ fontSize: "12px", color: "#999" }}>Custom amount</div>
+
       <input
         type="number"
         placeholder="Please enter amount"
@@ -606,13 +528,11 @@ if (result) {
       />
 
       <div style={{ fontSize: "12px", color: "#999" }}>
-  Balance:{" "}
-  <span style={{ color: "#2ecc71", fontWeight: "bold" }}>
-    {localBalance.toFixed(4)} USDT
-  </span>
-</div>
-
-
+        Balance:{" "}
+        <span style={{ color: "#2ecc71", fontWeight: "bold" }}>
+          {localBalance.toFixed(4)} USDT
+        </span>
+      </div>
 
       <button
         style={{
@@ -635,8 +555,7 @@ if (result) {
   );
 };
 
-
-// 主交易页面
+// =================== 主交易页面 ===================
 const Trade = () => {
   const [currentSymbol, setCurrentSymbol] = useState("BTCUSDT");
   const [showMenu, setShowMenu] = useState(false);
@@ -657,49 +576,48 @@ const Trade = () => {
     setShowMenu(false);
   };
 
-useEffect(() => {
-  if (wsRef.current) wsRef.current.close();
+  // ========== 行情 WebSocket ==========
+  useEffect(() => {
+    if (wsRef.current) wsRef.current.close();
 
-  // ⭐ 自动区分 本地 / 生产环境（Cloudflare）
-  const WS_URL = import.meta.env.PROD
-    ? `wss://${window.location.host}`   // 上线自动连到你自己的域名
-    : "ws://localhost:5000";            // 本地开发
+    const WS_URL = import.meta.env.PROD
+      ? `wss://${window.location.host}`
+      : "ws://localhost:5000";
 
-  const ws = new WebSocket(WS_URL);
-  wsRef.current = ws;
+    const ws = new WebSocket(WS_URL);
+    wsRef.current = ws;
 
-  ws.onopen = () => {
-    console.log("📡 Trade Ticker WS connected:", WS_URL);
-  };
+    ws.onopen = () => {
+      console.log("📡 Trade Ticker WS connected:", WS_URL);
+    };
 
-  ws.onmessage = (event) => {
-    try {
-      const data = JSON.parse(event.data);
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
 
-      // 🔥 Binance ticker 格式：只有 ticker 才给 price 信息
-      if (data.e !== "24hrTicker") return;
+        // Binance ticker 格式
+        if (data.e !== "24hrTicker") return;
 
-      setPrice(parseFloat(data.c));
-      setChangePercent(parseFloat(data.P));
-      setLow(parseFloat(data.l));
-      setHigh(parseFloat(data.h));
-      setAmount24h(parseFloat(data.v));
-    } catch (err) {
-      console.error("WS parse error:", err);
-    }
-  };
+        setPrice(parseFloat(data.c));
+        setChangePercent(parseFloat(data.P));
+        setLow(parseFloat(data.l));
+        setHigh(parseFloat(data.h));
+        setAmount24h(parseFloat(data.v));
+      } catch (err) {
+        console.error("WS parse error:", err);
+      }
+    };
 
-  ws.onerror = (err) => {
-    console.error("❌ Ticker WS error:", err);
-  };
+    ws.onerror = (err) => {
+      console.error("❌ Ticker WS error:", err);
+    };
 
-  ws.onclose = () => {
-    console.log("⚠️ Ticker WS closed");
-  };
+    ws.onclose = () => {
+      console.log("⚠️ Ticker WS closed");
+    };
 
-  return () => ws.close();
-}, [currentSymbol]);
-
+    return () => ws.close();
+  }, [currentSymbol]);
 
   return (
     <div
@@ -761,7 +679,9 @@ useEffect(() => {
           >
             ☰
           </button>
+
           <span>{currentSymbol}</span>
+
           {showMenu && (
             <div
               style={{
@@ -792,10 +712,10 @@ useEffect(() => {
           )}
         </div>
 
-        <div style={{ width: "24px" }}></div>
+        <div style={{ width: "24px" }} />
       </div>
 
-      {/* 行情信息 */}
+      {/* 行情条 */}
       <div
         style={{
           display: "flex",
@@ -836,8 +756,15 @@ useEffect(() => {
         <TradingViewWidget symbol={currentSymbol} />
       </div>
 
-      {/* 底部买涨/买跌按钮 */}
-      <div style={{ display: "flex", gap: "12px", padding: "12px 16px", borderTop: "1px solid #eee" }}>
+      {/* 底部 买涨/买跌 */}
+      <div
+        style={{
+          display: "flex",
+          gap: "12px",
+          padding: "12px 16px",
+          borderTop: "1px solid #eee",
+        }}
+      >
         <button
           style={{
             flex: 1,
@@ -877,7 +804,7 @@ useEffect(() => {
         </button>
       </div>
 
-      {/* 弹窗 */}
+      {/* 下单弹窗 */}
       {showModal && (
         <BottomModal onClose={() => setShowModal(false)}>
           <OrderForm symbol={currentSymbol} modalType={modalType} price={price} />

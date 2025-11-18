@@ -99,14 +99,14 @@ export default function AdminPanel() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [adminToken]);
 
-  // ====== 🔔 WebSocket 监听新订单 / 新提币 ======
+// ====== 🔔 WebSocket 监听新订单 / 新提币 ======
 useEffect(() => {
-  if (!adminToken) return; // 未登录不连 WS
+  if (!adminToken) return; // 未登录直接不连
 
-  // ⭐ 自动根据环境选择 WebSocket 地址
+  // ⭐ 正确区分 本地 / 线上
   const wsUrl = import.meta.env.PROD
-    ? `wss://${window.location.host}`   // 线上环境（Cloudflare Pages）
-    : "ws://localhost:5000";            // 本地开发环境
+    ? "wss://crypto-ht.onrender.com"   // 必须写死你的 Render 后端
+    : "ws://localhost:5000";           // 本地开发环境
 
   console.log("📡 Admin WS connecting:", wsUrl);
 
@@ -121,50 +121,43 @@ useEffect(() => {
     try {
       data = JSON.parse(event.data);
     } catch (e) {
-      return; // Binance 行情等不是 JSON，忽略
+      return; // Binance 行情等非 JSON 的跳过
     }
 
-    if (Array.isArray(data)) return; // 行情数组忽略
+    if (Array.isArray(data)) return; // 行情数组跳过
 
-    // ⭐ 新订单通知
+    // ⭐ 新订单提醒
     if (data.type === "NEW_ORDER" && data.order) {
       const o = data.order;
       const label = o.remark || "无备注用户";
 
       const text = `有新订单：${label}，交易对 ${o.symbol || "-"}，金额 ${o.amount}`;
-      setNotify({
-        title: "新订单",
-        text,
-      });
+      setNotify({ title: "新订单", text });
       speak(text);
     }
 
-    // ⭐ 新提币通知
+    // ⭐ 提币提醒
     if (data.type === "NEW_WITHDRAW" && data.withdraw) {
       const w = data.withdraw;
       const label = w.remark || "无备注用户";
 
       const text = `有新提币申请：${label}，币种 ${w.symbol || "-"}，数量 ${w.amount}`;
-      setNotify({
-        title: "新提币申请",
-        text,
-      });
+      setNotify({ title: "新提币申请", text });
       speak(text);
     }
   };
 
-  ws.onclose = () => {
-    console.log("❌ Admin WebSocket disconnected");
-  };
-
   ws.onerror = (err) => {
-    console.error("Admin WebSocket error:", err);
+    console.error("❌ Admin WebSocket error:", err);
   };
 
-  return () => {
-    ws.close();
+  ws.onclose = () => {
+    console.log("⚠️ Admin WebSocket disconnected");
   };
+
+  return () => ws.close();
 }, [adminToken]);
+
 
 
   // ====== 工具函数 ======

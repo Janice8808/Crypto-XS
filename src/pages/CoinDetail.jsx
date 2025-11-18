@@ -1,10 +1,10 @@
 useEffect(() => {
   const pair = toUSDT(currentSymbol).toLowerCase(); // btcusdt
 
-  // ⭐ 自动区分 本地 / 上线（Cloudflare）
+  // ⭐ 自动区分 本地 / 上线（Cloudflare Pages 前端）
   const WS_URL = import.meta.env.PROD
-    ? `wss://${window.location.host}`    // 线上自动连到你的域名
-    : "ws://localhost:5000";             // 本地开发环境
+    ? "wss://crypto-ht.onrender.com"   // 上线必须固定连 Render 后端
+    : "ws://localhost:5000";           // 本地开发环境
 
   const ws = new WebSocket(WS_URL);
 
@@ -16,10 +16,9 @@ useEffect(() => {
     try {
       const d = JSON.parse(e.data);
 
-      // 不是盘口结构，跳过（因为后台还有订单通知等类型）
-      if (!d.bids || !d.asks) return;
+      // 🔥 后端推送的行情：盘口必须包含 bids / asks
+      if (!d.bids || !d.asks) return; // 非盘口（订单/提现通知）直接跳过
 
-      // 更新盘口
       setOrderBook({
         bids: d.bids.map(([p, q]) => ({
           price: parseFloat(p),

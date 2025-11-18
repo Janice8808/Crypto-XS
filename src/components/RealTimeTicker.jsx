@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 function RealTimeTicker() {
-  const [prices, setPrices] = useState({}); // 初始化币种价格状态
+  const [prices, setPrices] = useState({});
 
   useEffect(() => {
-    // ⭐ 自动区分 本地/生产环境，无需写死域名
+    // ⭐ 自动区分 本地 / 生产环境 的 WebSocket 地址
     const wsUrl = import.meta.env.PROD
-      ? `wss://${window.location.host}`   // 线上（Cloudflare Pages）
-      : "ws://localhost:5000";            // 本地开发环境
+      ? "wss://crypto-ht.onrender.com"   // Cloudflare Pages → 连接 Render 后端
+      : "ws://localhost:5000";           // 本地开发
 
     const ws = new WebSocket(wsUrl);
 
@@ -19,7 +19,7 @@ function RealTimeTicker() {
       try {
         const data = JSON.parse(event.data);
 
-        // 忽略后台 JSON（订单/提币通知）
+        // 不是 ticker 数组 → 忽略（比如后台管理员通知）
         if (!Array.isArray(data)) return;
 
         setPrices((prev) => {
@@ -48,20 +48,23 @@ function RealTimeTicker() {
     return () => ws.close();
   }, []);
 
-  // 转换成渲染数组
-  const coins = Object.entries(prices).map(([symbol, price]) => ({ symbol, price }));
+  // 转换成数组渲染
+  const coins = Object.entries(prices).map(([symbol, price]) => ({
+    symbol,
+    price,
+  }));
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
       {coins.length > 0 ? (
-        coins.map(coin => (
+        coins.map((coin) => (
           <div
             key={coin.symbol}
             className="p-4 bg-gray-100 rounded-lg shadow text-center text-gray-800 hover:bg-gray-200 transition"
           >
             <div className="font-bold text-lg">{coin.symbol}</div>
             <div className="text-blue-600 text-xl">
-              {coin.price !== null ? `$${coin.price}` : '加载中...'}
+              {coin.price ? `$${coin.price}` : "加载中..."}
             </div>
           </div>
         ))
