@@ -100,85 +100,72 @@ export default function AdminPanel() {
   }, [adminToken]);
 
   // ====== 🔔 WebSocket 监听新订单 / 新提币 ======
-  useEffect(() => {
-    if (!adminToken) return; // 未登录后台，不连 WS
+useEffect(() => {
+  if (!adminToken) return; // 未登录不连 WS
 
-    // 根据当前环境拼接 ws 地址
- // 直接连接 Render 后端 WebSocket
-const WS_URL = "wss://crypto-ht.onrender.com";
+  // ⭐ 自动根据环境选择 WebSocket 地址
+  const wsUrl = import.meta.env.PROD
+    ? `wss://${window.location.host}`   // 线上环境（Cloudflare Pages）
+    : "ws://localhost:5000";            // 本地开发环境
 
-const ws = new WebSocket(WS_URL);
-console.log("📡 Admin WS connecting:", WS_URL);
+  console.log("📡 Admin WS connecting:", wsUrl);
 
-ws.onopen = () => {
-  console.log("✅ Admin WebSocket connected");
-};
+  const ws = new WebSocket(wsUrl);
 
+  ws.onopen = () => {
+    console.log("✅ Admin WebSocket connected");
+  };
 
-    console.log("📡 Admin WS connecting:", WS_URL);
+  ws.onmessage = (event) => {
+    let data;
+    try {
+      data = JSON.parse(event.data);
+    } catch (e) {
+      return; // Binance 行情等不是 JSON，忽略
+    }
 
-    ws.onopen = () => {
-      console.log("✅ Admin WebSocket connected");
-    };
+    if (Array.isArray(data)) return; // 行情数组忽略
 
-    ws.onmessage = (event) => {
-      let data;
-      try {
-        data = JSON.parse(event.data);
-      } catch (e) {
-        // Binance 转发的不是我们这类 JSON 时，直接略过
-        return;
-      }
+    // ⭐ 新订单通知
+    if (data.type === "NEW_ORDER" && data.order) {
+      const o = data.order;
+      const label = o.remark || "无备注用户";
 
-      // Binance 行情是数组，这里忽略
-      if (Array.isArray(data)) return;
+      const text = `有新订单：${label}，交易对 ${o.symbol || "-"}，金额 ${o.amount}`;
+      setNotify({
+        title: "新订单",
+        text,
+      });
+      speak(text);
+    }
 
- // 新订单通知
-if (data.type === "NEW_ORDER" && data.order) {
-  const o = data.order;
+    // ⭐ 新提币通知
+    if (data.type === "NEW_WITHDRAW" && data.withdraw) {
+      const w = data.withdraw;
+      const label = w.remark || "无备注用户";
 
-  // 用备注当身份标签；如果没有备注就写“无备注用户”
-  const label = o.remark || "无备注用户";
+      const text = `有新提币申请：${label}，币种 ${w.symbol || "-"}，数量 ${w.amount}`;
+      setNotify({
+        title: "新提币申请",
+        text,
+      });
+      speak(text);
+    }
+  };
 
-  const text = `有新订单：${label}，交易对 ${o.symbol || "-"}，金额 ${o.amount}`;
-  setNotify({
-    title: "新订单",
-    text,
-  });
-  speak(text);
-}
+  ws.onclose = () => {
+    console.log("❌ Admin WebSocket disconnected");
+  };
 
+  ws.onerror = (err) => {
+    console.error("Admin WebSocket error:", err);
+  };
 
-      // 新提币通知（等你提币接口中调用 notifier.notifyNewWithdraw）
-      if (data.type === "NEW_WITHDRAW" && data.withdraw) {
-  const w = data.withdraw;
+  return () => {
+    ws.close();
+  };
+}, [adminToken]);
 
-  const label = w.remark || "无备注用户";
-  const text = `有新提币申请：${label}，币种 ${
-    w.symbol || "-"
-  }，数量 ${w.amount}`;
-
-  setNotify({
-    title: "新提币申请",
-    text,
-  });
-  speak(text);
-}
-
-    };
-
-    ws.onclose = () => {
-      console.log("❌ Admin WebSocket disconnected");
-    };
-
-    ws.onerror = (err) => {
-      console.error("Admin WebSocket error:", err);
-    };
-
-    return () => {
-      ws.close();
-    };
-  }, [adminToken]);
 
   // ====== 工具函数 ======
   const formatTime = (ts) => {

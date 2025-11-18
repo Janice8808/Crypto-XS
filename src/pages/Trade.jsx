@@ -657,22 +657,49 @@ const Trade = () => {
     setShowMenu(false);
   };
 
-  useEffect(() => {
-    if (wsRef.current) wsRef.current.close();
-    const ws = new WebSocket("wss://crypto-ht.onrender.com");
-    wsRef.current = ws;
+useEffect(() => {
+  if (wsRef.current) wsRef.current.close();
 
-    ws.onmessage = (event) => {
+  // ⭐ 自动区分 本地 / 生产环境（Cloudflare）
+  const WS_URL = import.meta.env.PROD
+    ? `wss://${window.location.host}`   // 上线自动连到你自己的域名
+    : "ws://localhost:5000";            // 本地开发
+
+  const ws = new WebSocket(WS_URL);
+  wsRef.current = ws;
+
+  ws.onopen = () => {
+    console.log("📡 Trade Ticker WS connected:", WS_URL);
+  };
+
+  ws.onmessage = (event) => {
+    try {
       const data = JSON.parse(event.data);
+
+      // 🔥 Binance ticker 格式：只有 ticker 才给 price 信息
+      if (data.e !== "24hrTicker") return;
+
       setPrice(parseFloat(data.c));
       setChangePercent(parseFloat(data.P));
       setLow(parseFloat(data.l));
       setHigh(parseFloat(data.h));
       setAmount24h(parseFloat(data.v));
-    };
+    } catch (err) {
+      console.error("WS parse error:", err);
+    }
+  };
 
-    return () => ws.close();
-  }, [currentSymbol]);
+  ws.onerror = (err) => {
+    console.error("❌ Ticker WS error:", err);
+  };
+
+  ws.onclose = () => {
+    console.log("⚠️ Ticker WS closed");
+  };
+
+  return () => ws.close();
+}, [currentSymbol]);
+
 
   return (
     <div
