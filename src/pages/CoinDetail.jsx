@@ -3,8 +3,8 @@ useEffect(() => {
 
   // ⭐ 自动区分 本地 / 上线（Cloudflare Pages 前端）
   const WS_URL = import.meta.env.PROD
-    ? "wss://crypto-ht.onrender.com"   // 上线必须固定连 Render 后端
-    : "ws://localhost:5000";           // 本地开发环境
+  ? "wss://crypto-ht.onrender.com"
+  : "ws://localhost:5000";
 
   const ws = new WebSocket(WS_URL);
 
