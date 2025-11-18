@@ -580,9 +580,9 @@ const Trade = () => {
   useEffect(() => {
     if (wsRef.current) wsRef.current.close();
 
-    const WS_URL = import.meta.env.PROD
-      ? `wss://${window.location.host}`
-      : "ws://localhost:5000";
+const WS_URL = import.meta.env.PROD
+  ? "wss://crypto-ht.onrender.com"
+  : "ws://localhost:5000";
 
     const ws = new WebSocket(WS_URL);
     wsRef.current = ws;
