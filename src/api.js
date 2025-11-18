@@ -1,7 +1,7 @@
 // api.js
 import axios from "axios";
 
-const API_BASE = "http://localhost:5000"; // 后端地址
+const API_BASE = "https://crypto-ht.onrender.com"; // 后端地址
 
 // 本地模拟币种
 export const getLocalCoins = async () => {

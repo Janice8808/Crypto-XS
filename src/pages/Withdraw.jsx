@@ -20,7 +20,7 @@ export default function Withdraw() {
     async function loadBalance() {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:5000/api/user/balance", {
+        const res = await fetch("https://crypto-ht.onrender.com/api/user/balance", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -71,7 +71,7 @@ export default function Withdraw() {
     setSubmitting(true);
     const token = localStorage.getItem("token");
 
-    const res = await fetch("http://localhost:5000/api/user/withdraw", {
+    const res = await fetch("https://crypto-ht.onrender.com/api/user/withdraw", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

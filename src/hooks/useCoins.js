@@ -55,7 +55,7 @@ export const useCoins = () => {
       if (logoCache) {
         logoMap = JSON.parse(logoCache);
       } else {
-        const res = await fetch("http://localhost:5000/api/coins");
+        const res = await fetch("https://crypto-ht.onrender.com/api/coins");
         const text = await res.text();
         let data;
         try {

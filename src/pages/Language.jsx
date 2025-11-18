@@ -20,7 +20,7 @@ export default function Language() {
 
   // 从后端加载当前语言设置
   useEffect(() => {
-    fetch("http://localhost:5000/api/userinfo")
+    fetch("https://crypto-ht.onrender.com/api/userinfo")
       .then((res) => res.json())
       .then((data) => {
         if (data.language) setSelected(data.language);
@@ -32,7 +32,7 @@ export default function Language() {
   const handleSelect = async (lang) => {
     setSelected(lang);
     try {
-      const res = await fetch("http://localhost:5000/api/language", {
+      const res = await fetch("https://crypto-ht.onrender.com/api/language", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ language: lang }),

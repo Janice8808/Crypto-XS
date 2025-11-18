@@ -20,7 +20,7 @@ export default function WithdrawalPassword() {
 
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:5000/api/withdrawal-password", {
+      const res = await fetch("https://crypto-ht.onrender.com/api/withdrawal-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),

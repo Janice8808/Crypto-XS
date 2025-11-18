@@ -1,6 +1,4 @@
-// src/api/http.js
-
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 function getToken() {
   return localStorage.getItem("token") || "";
@@ -11,9 +9,7 @@ export async function apiFetch(path, options = {}) {
 
   const headers = {
     "Content-Type": "application/json",
-    // 先用默认 user token
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    // 再让调用方覆盖（比如 adminToken）
     ...(options.headers || {}),
   };
 

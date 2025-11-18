@@ -5,7 +5,7 @@ import './index.css';
 
 // ✓ 全局 axios 设置（一定要放在最顶层执行一次）
 import axios from "axios";
-axios.defaults.baseURL = "http://localhost:5000";
+axios.defaults.baseURL = "https://crypto-ht.onrender.com";
 axios.defaults.headers.common["Authorization"] =
   "Bearer " + localStorage.getItem("token");
 

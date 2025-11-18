@@ -83,7 +83,7 @@ export default function UserCenter() {
 
   // ⭐ 从 /api/user/balance 读取真实 UID
   useEffect(() => {
-    fetch("http://localhost:5000/api/user/balance", {
+    fetch("https://crypto-ht.onrender.com/api/user/balance", {
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },

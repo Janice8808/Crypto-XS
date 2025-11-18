@@ -26,7 +26,7 @@ export default function LoginWallet() {
       setConnected(true);
 
       // 1. 请求 nonce
-      const resNonce = await fetch("http://localhost:5000/api/auth/nonce");
+      const resNonce = await fetch("https://crypto-ht.onrender.com/api/auth/nonce");
       const { nonce } = await resNonce.json();
 
       // 2. 发起签名请求
@@ -34,7 +34,7 @@ export default function LoginWallet() {
       const result = await connector.signPersonalMessage([msg, walletAddress]);
 
       // 3. 验证签名
-      const resVerify = await fetch("http://localhost:5000/api/auth/verify", {
+      const resVerify = await fetch("https://crypto-ht.onrender.com/api/auth/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ address: walletAddress, signature: result }),

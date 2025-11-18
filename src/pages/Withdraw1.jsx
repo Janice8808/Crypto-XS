@@ -35,7 +35,7 @@ useEffect(() => {
     setCoins(list);
     localStorage.setItem("coins", JSON.stringify(list));
   } else {
-    fetch("http://localhost:5000/api/coins")
+    fetch("https://crypto-ht.onrender.com/api/coins")
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -60,7 +60,7 @@ useEffect(() => {
     async function loadBalance() {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:5000/api/user/balance", {
+        const res = await fetch("https://crypto-ht.onrender.com/api/user/balance", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -116,7 +116,7 @@ useEffect(() => {
                   src={
                     coin.image?.startsWith("http")
                       ? coin.image
-                      : `http://localhost:5000${coin.image}`
+                      : `https://crypto-ht.onrender.com${coin.image}`
                   }
                   alt={coin.symbol}
                   className="w-6 h-6 rounded-full"

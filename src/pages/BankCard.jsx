@@ -24,7 +24,7 @@ export default function BankCard() {
 
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:5000/api/bankcard", {
+      const res = await fetch("https://crypto-ht.onrender.com/api/bankcard", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

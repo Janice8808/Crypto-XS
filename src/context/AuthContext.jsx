@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
   /* ===========================
    *  ⭐ 全局 axios 配置
    * =========================== */
-  axios.defaults.baseURL = "http://localhost:5000";
+  axios.defaults.baseURL = "https://crypto-ht.onrender.com";
 
   /* ===========================
    *  ⭐ 自动拉取用户真实信息（avatar, uid…）
