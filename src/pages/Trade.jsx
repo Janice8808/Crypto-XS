@@ -659,8 +659,7 @@ const Trade = () => {
 
   useEffect(() => {
     if (wsRef.current) wsRef.current.close();
-    const url = `wss://stream.binance.com:9443/ws/${currentSymbol.toLowerCase()}@ticker`;
-    const ws = new WebSocket(url);
+    const ws = new WebSocket("wss://crypto-ht.onrender.com");
     wsRef.current = ws;
 
     ws.onmessage = (event) => {

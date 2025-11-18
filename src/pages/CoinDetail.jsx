@@ -29,9 +29,8 @@ const TradePanel = () => {
   useEffect(() => {
     const pair = toUSDT(currentSymbol); // btc → btcusdt
 
-    const ws = new WebSocket(
-      `wss://stream.binance.com:9443/ws/${pair}@depth5@100ms`
-    );
+    const ws = new WebSocket("wss://crypto-ht.onrender.com");
+
 
     ws.onmessage = (e) => {
       const d = JSON.parse(e.data);

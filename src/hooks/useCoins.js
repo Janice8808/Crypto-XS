@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { apiFetch } from "@/api/http";
 
 export const useCoins = () => {
   const [allCoins, setAllCoins] = useState([]);
@@ -41,7 +42,7 @@ export const useCoins = () => {
     VETUSDT: "vechain",
     ICPUSDT: "internet-computer",
     MANAUSDT: "decentraland",
-    EOSUSDT: "eos"
+    EOSUSDT: "eos",
   };
 
   const fetchCoinsWithLogo = async () => {
@@ -49,66 +50,56 @@ export const useCoins = () => {
       setLoading(true);
       setError(null);
 
-      // 1️⃣ 先取缓存的 Logo
-      let logoMap = {};
-      const logoCache = localStorage.getItem("coinLogoMap");
-      if (logoCache) {
-        logoMap = JSON.parse(logoCache);
+      // 1️⃣ 统一从后端 /api/coins 拿数据，做 30 秒缓存
+      let data;
+      const cache = localStorage.getItem("marketCoins");
+      const cacheTime = localStorage.getItem("marketCoinsTime");
+
+      if (cache && cacheTime && Date.now() - Number(cacheTime) < 30000) {
+        data = JSON.parse(cache);
       } else {
-        const res = await fetch("https://crypto-ht.onrender.com/api/coins");
-        const text = await res.text();
-        let data;
-        try {
-          data = JSON.parse(text);
-        } catch(err) {
-          console.error("解析币种 JSON 出错:", err);
-          setError("币种数据解析失败");
-          setAllCoins([]);
-          setHotCoins([]);
-          setLoading(false);
-          return;
+        // 走自己后端，不再直接访问 Binance
+        data = await apiFetch("/api/coins");
+        localStorage.setItem("marketCoins", JSON.stringify(data));
+        localStorage.setItem("marketCoinsTime", String(Date.now()));
+      }
+
+      // 2️⃣ 把返回结果按 id 存成 map，方便用 coinIdsMap 查
+      const coinById = {};
+      data.forEach((c) => {
+        if (c.id) {
+          coinById[c.id] = c;
         }
-        Object.keys(coinIdsMap).forEach(sym => {
-          const coin = data.find(d => d.id === coinIdsMap[sym]);
-          if (coin) logoMap[sym] = coin.image;
-        });
-        localStorage.setItem("coinLogoMap", JSON.stringify(logoMap));
-      }
+      });
 
-      // 2️⃣ 取 Binance 24h 数据（支持缓存 30s）
-      let binanceData;
-      const binanceCache = localStorage.getItem("binance24h");
-      const binanceTime = localStorage.getItem("binance24hTime");
-      if (binanceCache && binanceTime && Date.now() - parseInt(binanceTime) < 30000) {
-        binanceData = JSON.parse(binanceCache);
-      } else {
-        const binanceRes = await fetch("https://api.binance.com/api/v3/ticker/24hr");
-        binanceData = await binanceRes.json();
-        localStorage.setItem("binance24h", JSON.stringify(binanceData));
-        localStorage.setItem("binance24hTime", Date.now().toString());
-      }
+      // 3️⃣ 组合成需要的列表：symbol 还是用 BTCUSDT 这套
+      const filteredAll = realTimeList
+        .map((sym) => {
+          const id = coinIdsMap[sym]; // 例如 BTCUSDT -> "bitcoin"
+          const coin = coinById[id];
+          if (!coin) return null;
 
-      // 3️⃣ 组合数据
-      const filteredAll = binanceData
-        .filter(c => realTimeList.includes(c.symbol))
-        .map(c => ({
-          symbol: c.symbol,
-          price: parseFloat(c.lastPrice).toFixed(4),
-          change: parseFloat(c.priceChangePercent).toFixed(2),
-          logo: logoMap[c.symbol] || "/images/default-coin.png"
-        }));
+          return {
+            symbol: sym,                                      // 仍然 BTCUSDT
+            price: Number(coin.price).toFixed(4),             // 后端给的价格
+            change: Number(coin.change ?? 0).toFixed(2),      // 24h 涨跌幅
+            logo: coin.image || "/images/default-coin.png",   // 后端给的 image
+          };
+        })
+        .filter(Boolean);
 
-      const filteredHot = filteredAll.filter(c => hotList.includes(c.symbol));
+      const filteredHot = filteredAll.filter((c) =>
+        hotList.includes(c.symbol)
+      );
 
       setAllCoins(filteredAll);
       setHotCoins(filteredHot);
-      setLoading(false);
-
     } catch (err) {
       console.error("获取币种数据失败:", err);
       setAllCoins([]);
       setHotCoins([]);
       setError("获取币种数据失败");
+    } finally {
       setLoading(false);
     }
   };
