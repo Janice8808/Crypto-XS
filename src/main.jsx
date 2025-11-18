@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import App from './App.jsx';
 import './index.css';
 
 // ✓ 全局 axios 设置（一定要放在最顶层执行一次）
