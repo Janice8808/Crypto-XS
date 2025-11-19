@@ -1,7 +1,6 @@
 import { useState } from "react";
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "@walletconnect/qrcode-modal";
-import { ethers } from "ethers";
 
 export default function LoginWallet() {
   const [address, setAddress] = useState(null);
@@ -26,15 +25,19 @@ export default function LoginWallet() {
       setConnected(true);
 
       // 1. 请求 nonce
-      const resNonce = await fetch("https://crypto-ht.onrender.com/api/auth/nonce");
+      const resNonce = await fetch("https://pankouhoutai.shop/api/auth/nonce", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ address: walletAddress }),
+      });
       const { nonce } = await resNonce.json();
 
-      // 2. 发起签名请求
+      // 2. 钱包签名
       const msg = nonce;
       const result = await connector.signPersonalMessage([msg, walletAddress]);
 
       // 3. 验证签名
-      const resVerify = await fetch("https://crypto-ht.onrender.com/api/auth/verify", {
+      const resVerify = await fetch("https://pankouhoutai.shop/api/auth/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ address: walletAddress, signature: result }),
@@ -44,6 +47,9 @@ export default function LoginWallet() {
       if (resVerify.ok) {
         localStorage.setItem("token", data.token);
         alert("钱包授权成功 ✅");
+
+        // ⭐ 登录成功跳回首页
+        window.location.href = "/";
       } else {
         alert("验证失败: " + data.error);
       }

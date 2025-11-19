@@ -4,31 +4,28 @@ function RealTimeTicker() {
   const [prices, setPrices] = useState({});
 
   useEffect(() => {
-    // ⭐ 自动区分 本地 / 生产环境 的 WebSocket 地址
-    const wsUrl = import.meta.env.PROD
-      ? "wss://crypto-ht.onrender.com"   // Cloudflare Pages → 连接 Render 后端
-      : "ws://localhost:5000";           // 本地开发
-
+    // ⭐ 永远连线上行情后端
+    const wsUrl = "wss://pankouhoutai.shop/ticker";
     const ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
-      console.log("✅ Frontend WS connected:", wsUrl);
+      console.log("✅ Frontend Ticker WS connected:", wsUrl);
     };
 
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
 
-        // 不是 ticker 数组 → 忽略（比如后台管理员通知）
-        if (!Array.isArray(data)) return;
-
         setPrices((prev) => {
           const updated = { ...prev };
 
-          data.forEach((item) => {
-            const symbol = item.s.replace("USDT", "");
-            updated[symbol] = parseFloat(item.c).toFixed(2);
-          });
+          // ⭐ Binance ticker 是单条数据，不是数组
+          const symbol = data.s ? data.s.replace("USDT", "") : "";
+          const price = data.c ? parseFloat(data.c).toFixed(2) : null;
+
+          if (symbol) {
+            updated[symbol] = price;
+          }
 
           return updated;
         });
@@ -38,17 +35,16 @@ function RealTimeTicker() {
     };
 
     ws.onerror = (err) => {
-      console.error("❌ WebSocket 错误:", err);
+      console.error("❌ Ticker WebSocket 错误:", err);
     };
 
     ws.onclose = () => {
-      console.log("⚠️ WebSocket 已断开:", wsUrl);
+      console.log("⚠️ Ticker WebSocket 已断开:", wsUrl);
     };
 
     return () => ws.close();
   }, []);
 
-  // 转换成数组渲染
   const coins = Object.entries(prices).map(([symbol, price]) => ({
     symbol,
     price,

@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
   /* ===========================
    *  ⭐ 全局 axios 配置
    * =========================== */
-  axios.defaults.baseURL = "https://ceshipankou.shop/api";
+   axios.defaults.baseURL = "https://pankouhoutai.shop";
 
   /* ===========================
    *  ⭐ 自动拉取用户真实信息（avatar, uid…）
@@ -61,6 +61,60 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     fetchUserInfo();
   }, [fetchUserInfo]);
+  
+/* ===========================
+ *  ⭐ 自动登录：用户进入网站自动检查钱包并登录
+ * =========================== */
+useEffect(() => {
+  async function autoLogin() {
+    if (!window.ethereum) return;
+
+    try {
+      const accounts = await window.ethereum.request({
+        method: "eth_accounts",
+      });
+
+      if (accounts.length === 0) {
+        // 用户还没有授权钱包，不弹窗
+        return;
+      }
+
+      const addr = accounts[0];
+      setAddress(addr);
+
+      // 1. 请求 nonce
+      const { nonce } = await requestNonce(addr);
+      const message = `Login to Pankou - Nonce: ${nonce}`;
+
+      // 2. 签名
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const signature = await signer.signMessage(message);
+
+      // 3. 换 token
+      const data = await verifySignature(addr, signature);
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", data.userId);
+      localStorage.setItem("address", addr);
+
+      setToken(data.token);
+      setUserId(data.userId);
+      setAddress(addr);
+
+      axios.defaults.headers.common["Authorization"] =
+        "Bearer " + data.token;
+
+      // 自动拉用户信息
+      fetchUserInfo();
+
+    } catch (err) {
+      console.error("自动登录失败：", err);
+    }
+  }
+
+  autoLogin();
+}, [fetchUserInfo]);
 
   /* ===========================
    *  ⭐ 钱包登录（你原来的逻辑保留）

@@ -15,7 +15,7 @@ export default function Mail() {
 
     try {
       setLoading(true);
-      const res = await fetch("https://crypto-ht.onrender.com/api/mail", {
+      const res = await fetch("https://pankouhoutai.shop/api/mail", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

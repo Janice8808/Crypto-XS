@@ -100,7 +100,7 @@ const GlobeIcon = () => (
 
 const Home = () => {
 
-  const { allCoins, hotCoins, wsConnected } = useCoins();
+  const { allCoins, hotCoins } = useCoins();
 
   // =============== 用户地址 + UID ===============
   const address = localStorage.getItem("address") || "";
@@ -109,7 +109,7 @@ const Home = () => {
   const [uid, setUid] = useState("--");
 
   useEffect(() => {
-    fetch("https://crypto-ht.onrender.com/api/user/balance", {
+    fetch("https://pankouhoutai.shop/api/user/balance", {
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
@@ -120,7 +120,7 @@ const Home = () => {
       });
   }, []);
 
-  // =============== 其他逻辑保持原样 ===============
+  // =============== 功能入口保持原样 ===============
   const features = [
     { name: "User center", icon: iconUser },
     { name: "MSb", icon: iconMSB },
@@ -145,8 +145,25 @@ const Home = () => {
     return () => clearInterval(t);
   }, []);
 
-  /* 热门币种固定 3 个 */
-  const top3 = hotCoins.slice(0, 3);
+  /* ============================
+   🔥 1. 热门币种固定三种，不跳位置
+   ============================ */
+  const HOT_SYMBOLS = ["BTC", "ETH", "BNB"];  
+  const top3 = HOT_SYMBOLS.map(sym =>
+    hotCoins.find(c => c.symbol === sym) || { symbol: sym, price: "--", change: 0 }
+  );
+
+  /* ============================
+   🔥 2. 实时行情固定 25 个，不跳位置
+   ============================ */
+  const DISPLAY_SYMBOLS = [
+    "BTC","ETH","BNB","SOL","XRP","DOGE","ADA","TRX","AVAX","DOT",
+    "LTC","UNI","LINK","ATOM","ETC","XMR","TON","APT","NEAR","FTM",
+    "ALGO","SAND","MANA","ICP","FIL"
+  ];
+  const stableList = DISPLAY_SYMBOLS.map(sym =>
+    allCoins.find(c => c.symbol === sym) || { symbol: sym, price: "--", change: 0, logo: "/images/default.png" }
+  );
 
   return (
     <div className="w-full max-w-5xl mx-auto bg-gray-100 min-h-screen text-black relative">
@@ -286,12 +303,12 @@ const Home = () => {
           <span className="w-1/3 text-right">24h</span>
         </div>
 
-        {allCoins.map((coin) => {
+        {stableList.map((coin) => {
           const up = coin.change >= 0;
           return (
             <Link
               key={coin.symbol}
-              to={`/coin/${coin.symbol}`}
+              to={`/coin/${coin.symbol}USDT`}
               className="flex items-center px-2 py-2 hover:bg-gray-100 transition"
             >
 

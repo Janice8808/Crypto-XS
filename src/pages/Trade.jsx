@@ -144,15 +144,13 @@ const OrderForm = ({ symbol, modalType, price, onClose }) => {
 
     try {
       const data = await apiFetch("/api/order/create", {
-        method: "POST",
-        body: JSON.stringify({
-          amount,
-          period: selectedPeriod,
-          type: modalType,
-          symbol: "USDT",
-          price: buyPrice,
-        }),
-      });
+  method: "POST",
+  body: JSON.stringify({
+    amount,
+    symbol: currentSymbol,   // ⭐ 用真正的交易对
+  }),
+});
+
 
       if (!data || data.error) {
         setLocalBalance((prev) => prev + amount);
@@ -211,7 +209,7 @@ const OrderForm = ({ symbol, modalType, price, onClose }) => {
           amount,
           percent,
           isWin,
-          symbol: "USDT",
+          symbol,
         }),
       });
     } catch (err) {}
@@ -580,9 +578,8 @@ const Trade = () => {
   useEffect(() => {
     if (wsRef.current) wsRef.current.close();
 
-const WS_URL = import.meta.env.PROD
-  ? "wss://crypto-ht.onrender.com"
-  : "ws://localhost:5000";
+const WS_URL = "wss://pankouhoutai.shop/ticker";
+
 
     const ws = new WebSocket(WS_URL);
     wsRef.current = ws;

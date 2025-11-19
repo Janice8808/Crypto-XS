@@ -1,8 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { fetchWithdrawList } from "@/api/user";
 
 export default function DeFiRecord() {
   const nav = useNavigate();
+  const [records, setRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadRecords();
+  }, []);
+
+  async function loadRecords() {
+    try {
+      const list = await fetchWithdrawList();
+      setRecords(list);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const formatTime = (ts) => {
+    if (!ts) return "-";
+    return new Date(ts).toLocaleString();
+  };
 
   return (
     <div className="w-full min-h-screen bg-white text-black">
@@ -27,15 +50,37 @@ export default function DeFiRecord() {
 
       {/* 表头 */}
       <div className="flex justify-between px-4 py-3 text-gray-600 text-sm border-b">
-        <span>name</span>
+        <span>Symbol</span>
         <span>Time</span>
       </div>
 
-      {/* 空记录提示 */}
-      <div className="text-center text-gray-400 mt-10">
-        There is no currency withdrawal record at the moment
-      </div>
+      {/* 加载中 */}
+      {loading && (
+        <div className="text-center text-gray-400 mt-10">loading...</div>
+      )}
 
+      {/* 无记录 */}
+      {!loading && records.length === 0 && (
+        <div className="text-center text-gray-400 mt-10">
+          There is no currency withdrawal record at the moment
+        </div>
+      )}
+
+      {/* 有记录 */}
+      {!loading &&
+        records.length > 0 &&
+        records.map((r) => (
+          <div
+            key={r.id}
+            className="flex justify-between px-4 py-3 border-b text-sm text-gray-800"
+          >
+            <div>
+              <div>{r.symbol}</div>
+              <div className="text-xs text-gray-500">{r.amount}</div>
+            </div>
+            <div className="text-xs text-gray-500">{formatTime(r.createdAt)}</div>
+          </div>
+        ))}
     </div>
   );
 }

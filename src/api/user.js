@@ -5,3 +5,9 @@ export function fetchUserBalance() {
     method: "GET"
   });
 }
+// 用户提币记录
+export function fetchWithdrawList() {
+  return apiFetch("/api/withdraw/list", {
+    method: "GET",
+  });
+}

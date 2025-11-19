@@ -1,108 +1,78 @@
-import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState, useRef } from "react";
 
-// 创建 axios 实例
-const api = axios.create({
-  baseURL: 'https://api.coingecko.com/api/v3',
-  timeout: 10000,
-});
+// ⭐ 你的后端行情 WebSocket 地址（不要改）
+const WS_URL = "wss://pankouhoutai.shop/ticker";
 
-// 缓存对象
-const cache = {};
-
-// 封装请求函数（自动重试 + 缓存）
-async function fetchWithCache(url, cacheTime = 30, maxRetries = 5) {
-  const now = Date.now();
-
-  // 如果缓存存在且未过期，直接返回缓存数据
-  if (cache[url] && now - cache[url].timestamp < cacheTime * 1000) {
-    return cache[url].data;
-  }
-
-  let attempt = 0;
-
-  while (attempt < maxRetries) {
-    try {
-      const response = await api.get(url);
-      const data = response.data;
-
-      // 更新缓存
-      cache[url] = {
-        data,
-        timestamp: Date.now(),
-      };
-
-      return data;
-    } catch (error) {
-      if (error.response && error.response.status === 429) {
-        const retryAfter = parseInt(error.response.headers['retry-after'] || '30', 10);
-        console.warn(`请求过于频繁，等待 ${retryAfter} 秒后重试...`);
-        await new Promise(resolve => setTimeout(resolve, (retryAfter + 1) * 1000));
-        attempt++;
-      } else {
-        throw error;
-      }
-    }
-  }
-
-  throw new Error('请求失败，重试次数已用尽');
-}
-
-// React 组件
 const CryptoMarket = () => {
-  const [data, setData] = useState([]);
-  const intervalRef = useRef(null);
-
-  // 列出你想要的币种
-  const coins = [
-    'bitcoin', 'ethereum', 'binancecoin', 'ripple', 'solana',
-    'cardano', 'dogecoin', 'litecoin', 'polkadot'
-  ];
-
-  const fetchData = async () => {
-    try {
-      const url = `/coins/markets?vs_currency=usd&ids=${coins.join(',')}`;
-      const result = await fetchWithCache(url, 30);
-      setData(result);
-    } catch (err) {
-      console.error('获取行情失败:', err.message);
-    }
-  };
+  const [price, setPrice] = useState(null);
 
   useEffect(() => {
-    // 首次加载
-    fetchData();
+    // ====== 连接你的后端行情 WS ======
+    const ws = new WebSocket(WS_URL);
 
-    // 定时刷新（比如每 30 秒刷新一次）
-    intervalRef.current = setInterval(fetchData, 30000);
+    ws.onopen = () => {
+      console.log("📡 Market WS connected:", WS_URL);
+    };
 
-    // 清理定时器
-    return () => clearInterval(intervalRef.current);
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data); // Binance 原始 ticker JSON
+
+        // Binance ticker 数据格式需要 c = 最新价
+        setPrice({
+          symbol: data.s,
+          last: parseFloat(data.c),
+          change: parseFloat(data.P),
+          high: parseFloat(data.h),
+          low: parseFloat(data.l),
+          volume: parseFloat(data.v),
+        });
+      } catch (e) {}
+    };
+
+    ws.onerror = (err) => {
+      console.log("❌ Market WS error:", err);
+    };
+
+    ws.onclose = () => {
+      console.log("⚠️ Market WS closed");
+    };
+
+    return () => ws.close();
   }, []);
 
   return (
-    <div>
-      <h2>实时行情</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>名称</th>
-            <th>价格(USD)</th>
-            <th>24h变化</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map(coin => (
-            <tr key={coin.id}>
-              <td>{coin.name}</td>
-              <td>${coin.current_price.toLocaleString()}</td>
-              <td style={{ color: coin.price_change_percentage_24h >= 0 ? 'green' : 'red' }}>
-                {coin.price_change_percentage_24h.toFixed(2)}%
-              </td>
+    <div style={{ padding: "16px", color: "#000" }}>
+      <h2 style={{ marginBottom: "12px" }}>BTCUSDT 实时行情（后端 WS）</h2>
+
+      {!price ? (
+        <div>加载中...</div>
+      ) : (
+        <table border="1" cellPadding="8">
+          <thead>
+            <tr>
+              <th>交易对</th>
+              <th>最新价</th>
+              <th>涨跌幅(%)</th>
+              <th>24H 最高</th>
+              <th>24H 最低</th>
+              <th>成交量</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{price.symbol}</td>
+              <td>{price.last}</td>
+              <td style={{ color: price.change >= 0 ? "green" : "red" }}>
+                {price.change}%
+              </td>
+              <td>{price.high}</td>
+              <td>{price.low}</td>
+              <td>{price.volume}</td>
+            </tr>
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };

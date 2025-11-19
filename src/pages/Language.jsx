@@ -20,11 +20,11 @@ export default function Language() {
 
   // 从后端加载当前语言设置
   useEffect(() => {
-    fetch("https://crypto-ht.onrender.com/api/userinfo")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.language) setSelected(data.language);
-      })
+    fetch("https://pankouhoutai.shop/api/userinfo", {
+  headers: { 
+    Authorization: "Bearer " + localStorage.getItem("token")
+  }
+})
       .catch((err) => console.error("加载语言失败:", err));
   }, []);
 
@@ -32,11 +32,14 @@ export default function Language() {
   const handleSelect = async (lang) => {
     setSelected(lang);
     try {
-      const res = await fetch("https://crypto-ht.onrender.com/api/language", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ language: lang }),
-      });
+const res = await fetch("https://pankouhoutai.shop/api/language", {
+  method: "POST",
+  headers: { 
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + localStorage.getItem("token")
+  },
+  body: JSON.stringify({ language: lang })
+});
 
       const data = await res.json();
       if (res.ok) {

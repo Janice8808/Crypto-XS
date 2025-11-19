@@ -35,7 +35,7 @@ useEffect(() => {
     setCoins(list);
     localStorage.setItem("coins", JSON.stringify(list));
   } else {
-    fetch("https://crypto-ht.onrender.com/api/market/coins")   // ✅ 修正这里
+    fetch("https://pankouhoutai.shop/api/coins")   // ✅ 修正这里
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -59,7 +59,7 @@ useEffect(() => {
     async function loadBalance() {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("https://crypto-ht.onrender.com/api/user/balance", {
+        const res = await fetch("https://pankouhoutai.shop/api/user/balance", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -115,7 +115,7 @@ useEffect(() => {
                   src={
                     coin.image?.startsWith("http")
                       ? coin.image
-                      : `https://crypto-ht.onrender.com${coin.image}`
+                      : `https://pankouhoutai.shop${coin.image}`
                   }
                   alt={coin.symbol}
                   className="w-6 h-6 rounded-full"

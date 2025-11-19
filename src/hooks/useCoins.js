@@ -6,11 +6,7 @@ export const useCoins = () => {
   const [hotCoins, setHotCoins] = useState([]);
   const [wsConnected, setWsConnected] = useState(false);
 
-  // 保存 CoinGecko 数据：按 id & 按 symbol 映射
-  const [coinById, setCoinById] = useState({});
-  const [coinBySymbol, setCoinBySymbol] = useState({});
-
-  // 25 个实时币种
+  // 25 个实时币
   const realTimeList = [
     "BTCUSDT","ETHUSDT","BNBUSDT","XRPUSDT","SOLUSDT",
     "ADAUSDT","DOGEUSDT","LTCUSDT","DOTUSDT","MATICUSDT",
@@ -19,98 +15,124 @@ export const useCoins = () => {
     "ALGOUSDT","VETUSDT","ICPUSDT","MANAUSDT","EOSUSDT"
   ];
 
-  const hotList = ["BTCUSDT", "ETHUSDT", "BCHUSDT"];
+  const hotList = ["BTCUSDT","ETHUSDT","BCHUSDT"];
 
-  // 🌟 fallback：从后端拿一次（CoinGecko 官方数据）
-  const fetchFallbackData = async () => {
-    try {
-      const data = await apiFetch("/api/market");
+  // ========== 第一步：加载静态币种列表（来自后端 API） ==========
+  useEffect(() => {
+    async function loadCoins() {
+      try {
+        const list = await apiFetch("/api/coins");
 
-      const mapById = {};
-      const mapBySymbol = {};
+        // 给每个币种加默认结构
+        const formatted = list.map((c) => ({
+          symbol: c.symbol,
+          price: "--",
+          change: 0,
+          logo: `/images/coins/${c.symbol}.png`,
+        }));
 
-      data.forEach((c) => {
-        // c.id: "bitcoin" / "ethereum" ...
-        // c.symbol: "btc" / "eth" ...
-        mapById[c.id] = c;
-
-        const symUSDT = (c.symbol || "").toUpperCase() + "USDT";
-        mapBySymbol[symUSDT] = c;
-      });
-
-      setCoinById(mapById);
-      setCoinBySymbol(mapBySymbol);
-
-      // 用 fallback 先渲染一版（避免页面空白）
-      const list = realTimeList
-        .map((sym) => {
-          const coin = mapBySymbol[sym];
-          if (!coin) return null;
-          return {
+        // 初始显示
+        const ordered = realTimeList.map(
+          (sym) => formatted.find((c) => c.symbol === sym) || {
             symbol: sym,
-            price: Number(coin.current_price).toFixed(4),
-            change: Number(
-              coin.price_change_percentage_24h ?? 0
-            ).toFixed(2),
-            logo: coin.image || "/images/default-coin.png",
-          };
-        })
-        .filter(Boolean);
+            price: "--",
+            change: 0,
+            logo: `/images/coins/${sym}.png`,
+          }
+        );
 
-      setAllCoins(list);
-      setHotCoins(list.filter((c) => hotList.includes(c.symbol)));
-    } catch (e) {
-      console.log("fallback 获取失败：", e);
+        setAllCoins(ordered);
+        setHotCoins(
+          hotList.map(
+            (sym) => formatted.find((c) => c.symbol === sym) || {
+              symbol: sym,
+              price: "--",
+              change: 0,
+              logo: `/images/coins/${sym}.png`,
+            }
+          )
+        );
+      } catch (e) {
+        console.log("Load coins error", e);
+      }
     }
-  };
 
-  // 🌟 WebSocket：实时行情（用 symbol 映射 CoinGecko logo）
+    loadCoins();
+  }, []);
+
+  // ========== 第二步：WebSocket 行情（实时价格） ==========
   useEffect(() => {
     let ws;
 
-    function connectWs() {
-      ws = new WebSocket("wss://stream.binance.com:9443/ws/!ticker@arr");
+    function connect() {
+      ws = new WebSocket("wss://pankouhoutai.shop/ticker");
 
       ws.onopen = () => {
         setWsConnected(true);
-        console.log("🔥 Binance WS 已连接");
+        console.log("🔥 ticker WS connected");
       };
 
       ws.onclose = () => {
         setWsConnected(false);
-        console.log("❗WS 断开，5 秒后重连...");
-        setTimeout(connectWs, 5000);
+        console.log("❗ ticker WS closed，5 秒后重连");
+        setTimeout(connect, 5000);
       };
 
       ws.onmessage = (e) => {
-        const tickers = JSON.parse(e.data);
+        const t = JSON.parse(e.data);
 
-        const filtered = tickers
-          .filter((item) => realTimeList.includes(item.s))
-          .map((item) => {
-            // 这里直接用 symbol 去找 CoinGecko 数据
-            const gecko = coinBySymbol[item.s];
+        const sym = t.s;
+        if (!realTimeList.includes(sym)) return;
 
-            return {
-              symbol: item.s,
-              price: Number(item.c).toFixed(4),
-              change: Number(item.P).toFixed(2),
-              logo: gecko?.image || "/images/default-coin.png",
-            };
+        const price = Number(t.c || 0);
+        const change = Number(t.P || 0);
+
+        // 更新总列表
+        setAllCoins((prev) => {
+          const map = new Map(prev.map((c) => [c.symbol, c]));
+
+          map.set(sym, {
+            symbol: sym,
+            price: price.toFixed(4),
+            change: change.toFixed(2),
+            logo: `/images/coins/${sym}.png`,
           });
 
-        setAllCoins(filtered);
-        setHotCoins(filtered.filter((c) => hotList.includes(c.symbol)));
+          return realTimeList.map(
+            (s) => map.get(s) || {
+              symbol: s,
+              price: "--",
+              change: 0,
+              logo: `/images/coins/${s}.png`,
+            }
+          );
+        });
+
+        // 更新 hotCoins
+        if (hotList.includes(sym)) {
+          setHotCoins((prev) => {
+            const map = new Map(prev.map((c) => [c.symbol, c]));
+            map.set(sym, {
+              symbol: sym,
+              price: price.toFixed(4),
+              change: change.toFixed(2),
+              logo: `/images/coins/${sym}.png`,
+            });
+            return hotList.map(
+              (s) => map.get(s) || {
+                symbol: s,
+                price: "--",
+                change: 0,
+                logo: `/images/coins/${s}.png`,
+              }
+            );
+          });
+        }
       };
     }
 
-    connectWs();
+    connect();
     return () => ws && ws.close();
-  }, [coinBySymbol]); // ⭐ 有 CoinGecko 映射后，重建 WS 使用官方 logo
-
-  // 页面初次渲染：先走 fallback
-  useEffect(() => {
-    fetchFallbackData();
   }, []);
 
   return {
