@@ -100,6 +100,8 @@ const GlobeIcon = () => (
 
 const Home = () => {
 
+  const { allCoins, hotCoins, wsConnected } = useCoins();
+
   // =============== 用户地址 + UID ===============
   const address = localStorage.getItem("address") || "";
   const maskedAddress = maskAddress(address);
@@ -130,7 +132,6 @@ const Home = () => {
     { name: "Withdraw", icon: iconWithdraw },
   ];
 
-  const { allCoins, hotCoins } = useCoins();
   const [currentBanner, setCurrentBanner] = useState(0);
   const [showLang, setShowLang] = useState(false);
   const [unread] = useState(2);
