@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCoins } from "../hooks/useCoins";
-import useTicker from "../hooks/useTicker";
-
+import { useTicker } from "../hooks/useTicker";
 
 // ============ 地址遮挡函数 ============
 const maskAddress = (addr) => {
