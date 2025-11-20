@@ -2,7 +2,6 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import "./i18n";
-import { useAppKit } from "@reown/appkit/react";
 
 // 公共组件
 import Layout from "./Layout";
@@ -37,23 +36,9 @@ import LoginWallet from "./pages/LoginWallet";
 import AdminPanel from "./pages/AdminPanel";
 
 function App() {
-  const appKit = useAppKit();
+  
 
-  // ============== 自动弹出连接钱包（无 token 时自动执行） ==============
-  useEffect(() => {
-    const token = localStorage.getItem("token");
 
-    // 没有登录状态才弹出钱包选择
-    if (!token) {
-      setTimeout(() => {
-        try {
-          appKit.open();
-        } catch (err) {
-          console.error("Wallet modal open error:", err);
-        }
-      }, 300); // 稍微延迟避免 UI 卡住
-    }
-  }, [appKit]);
   // =====================================================================
 
   return (
