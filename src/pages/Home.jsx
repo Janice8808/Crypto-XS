@@ -150,19 +150,9 @@ const Home = () => {
     { symbol: "BNB", price: bnb.price, change: bnb.change },
   ];
 
-  const DISPLAY_SYMBOLS = [
-    "BTC","ETH","BNB","SOL","XRP","DOGE","ADA","TRX","AVAX","DOT",
-    "LTC","UNI","LINK","ATOM","ETC","XMR","TON","APT","NEAR","FTM",
-    "ALGO","SAND","MANA","ICP","FIL"
-  ];
+// 直接复用 allCoins，与 Market 页面保持一致
+const stableList = allCoins.slice(0, 30); // 想展示多少条你自己调
 
-const stableList = DISPLAY_SYMBOLS.map((sym) =>
-  allCoins.find((c) => c.symbol === sym) || {
-    symbol: sym,
-    price: "--",
-    change: 0,
-  }
-);
 
   return (
     <div className="w-full max-w-5xl mx-auto bg-gray-100 min-h-screen text-black relative">
