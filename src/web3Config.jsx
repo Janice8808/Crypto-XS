@@ -1,5 +1,5 @@
 // src/web3Config.jsx
-import { mainnet, base } from "viem/chains";
+import { mainnet, base } from "wagmi/chains";
 import { createConfig, http } from "wagmi";
 import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
