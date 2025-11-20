@@ -103,7 +103,8 @@ const Home = () => {
 
   const { allCoins, hotCoins } = useCoins();
 
-  const btc = useTicker(); 
+ const { price: btcPrice, changePercent: btcChange } = useTicker("BTCUSDT");
+
 
   // =============== 用户地址 + UID ===============
   const address = localStorage.getItem("address") || "";
@@ -277,22 +278,27 @@ const Home = () => {
         </div>
 
         {/* 热门币种（固定 3） */}
-        <div className="grid grid-cols-3 gap-4">
-          {top3.map((coin) => {
-            const up = coin.change >= 0;
-            return (
-              <div key={coin.symbol} className="text-center py-2">
-                <div className="text-gray-600 text-sm">{coin.symbol}</div>
-                <div className={`font-bold ${up ? "text-green-500" : "text-red-500"}`}>
-                  ${coin.symbol === "BTC" ? btc : coin.price}
-                </div>
-                <div className={`${up ? "text-green-500" : "text-red-500"}`}>
-                  {up ? "+" : ""}{coin.change}%
-                </div>
-              </div>
-            );
-          })}
+<div className="grid grid-cols-3 gap-4">
+  {top3.map((coin) => {
+    const up = coin.symbol === "BTC"
+      ? btcChange >= 0
+      : coin.change >= 0;
+
+    return (
+      <div key={coin.symbol} className="text-center py-2">
+        <div className="text-gray-600 text-sm">{coin.symbol}</div>
+
+        <div className={`font-bold ${up ? "text-green-500" : "text-red-500"}`}>
+          ${coin.symbol === "BTC" ? btcPrice : coin.price}
         </div>
+
+        <div className={`${up ? "text-green-500" : "text-red-500"}`}>
+          {up ? "+" : ""}{coin.symbol === "BTC" ? btcChange : coin.change}%
+        </div>
+      </div>
+    );
+  })}
+</div>
 
       </div>
 
