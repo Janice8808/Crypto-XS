@@ -81,7 +81,16 @@ function App() {
             </AuthGate>
           }
         />
-
+<Route
+  path="/coin-detail"
+  element={
+    <AuthGate>
+      <Layout>
+        <CoinDetail />
+      </Layout>
+    </AuthGate>
+  }
+/>
         <Route
           path="/trade"
           element={
