@@ -156,14 +156,13 @@ const Home = () => {
     "ALGO","SAND","MANA","ICP","FIL"
   ];
 
-  const stableList = DISPLAY_SYMBOLS.map((sym) =>
-    allCoins.find((c) => c.symbol === sym) || {
-      symbol: sym,
-      price: "--",
-      change: 0,
-      logo: coinIcons[sym] || "/images/default.png",
-    }
-  );
+const stableList = DISPLAY_SYMBOLS.map((sym) =>
+  allCoins.find((c) => c.symbol === sym) || {
+    symbol: sym,
+    price: "--",
+    change: 0,
+  }
+);
 
   return (
     <div className="w-full max-w-5xl mx-auto bg-gray-100 min-h-screen text-black relative">

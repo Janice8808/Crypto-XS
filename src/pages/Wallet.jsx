@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCoins } from "../hooks/useCoins";
 import { useUserBalances } from "@/hooks/useUserBalances";
+import { coinIcons } from "../assets/coinIcons";
 
 export default function Wallet() {
   const navigate = useNavigate();
@@ -135,7 +136,7 @@ balance = Number(balance || 0);
               >
                 <div className="flex items-center space-x-3">
                   <img
-                    src={coin.logo || coin.image}
+                    src={coinIcons[sym] || "/images/default.png"}
                     alt={sym}
                     className="w-6 h-6 rounded-full"
                     onError={(e) => {

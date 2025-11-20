@@ -4,7 +4,7 @@ import { useCoins } from "../hooks/useCoins";
 import { coinIcons } from "../assets/coinIcons";
 const Market = () => {
   const { allCoins } = useCoins();
-
+console.log(allCoins.map(c => c.symbol));
   return (
     <div className="w-full min-h-screen text-black px-2 py-4 bg-white">
       {/* 页面标题 */}
