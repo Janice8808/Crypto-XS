@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCoins } from "../hooks/useCoins";
-import { useTicker } from "../hooks/useTicker";   // ⭐ 正确导入方式
 
 // ============ 地址遮挡函数 ============
 const maskAddress = (addr) => {
@@ -100,10 +99,11 @@ const GlobeIcon = () => (
 const Home = () => {
   const { allCoins, hotCoins } = useCoins();
 
-  // ⭐ 正确使用 useTicker (BTC)
-  const { price: btcPrice, changePercent: btcChange } = useTicker("BTCUSDT");
+  // ⭐ 热门币（不再使用 useTicker）
+  const btc = hotCoins.find((c) => c.symbol === "BTC") || { price: "--", change: 0 };
+  const eth = hotCoins.find((c) => c.symbol === "ETH") || { price: "--", change: 0 };
+  const bnb = hotCoins.find((c) => c.symbol === "BNB") || { price: "--", change: 0 };
 
-  // =========== 用户地址 + UID ==========
   const address = localStorage.getItem("address") || "";
   const maskedAddress = maskAddress(address);
   const [uid, setUid] = useState("--");
@@ -142,14 +142,14 @@ const Home = () => {
     return () => clearInterval(t);
   }, []);
 
-  // 🔥 热门币种固定
   const HOT_SYMBOLS = ["BTC", "ETH", "BNB"];
 
-  const top3 = HOT_SYMBOLS.map((sym) =>
-    hotCoins.find((c) => c.symbol === sym) || { symbol: sym, price: "--", change: 0 }
-  );
+  const top3 = [
+    { symbol: "BTC", price: btc.price, change: btc.change },
+    { symbol: "ETH", price: eth.price, change: eth.change },
+    { symbol: "BNB", price: bnb.price, change: bnb.change },
+  ];
 
-  // 🔥 大列表固定
   const DISPLAY_SYMBOLS = [
     "BTC","ETH","BNB","SOL","XRP","DOGE","ADA","TRX","AVAX","DOT",
     "LTC","UNI","LINK","ATOM","ETC","XMR","TON","APT","NEAR","FTM",
@@ -186,7 +186,8 @@ const Home = () => {
           <button className="relative p-0 bg-transparent">
             <MailIcon />
             {unread > 0 && (
-              <span className="absolute -top-1 -right-2 bg-red-600 text-[10px] px-1 rounded-full">
+              <span className="absolute -top-1 -right-2 bg-red-600
+ text-[10px] px-1 rounded-full">
                 {unread}
               </span>
             )}
@@ -198,7 +199,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Language selector */}
       {showLang && (
         <div className="absolute right-4 top-16 bg-white rounded shadow w-28 text-black">
           <div className="px-3 py-2 hover:bg-gray-100 cursor-pointer">English</div>
@@ -206,7 +206,6 @@ const Home = () => {
         </div>
       )}
 
-      {/* Banner */}
       <div className="w-full h-56 relative overflow-hidden bg-gray-800">
         {images.map((src, idx) => (
           <img
@@ -219,15 +218,12 @@ const Home = () => {
         ))}
       </div>
 
-      {/* Notice */}
       <div className="py-2 flex items-center bg-gradient-to-t from-gray-200 via-gray-500 to-gray-800 text-white px-3 -mt-1">
         🔈 <span className="ml-2 text-sm">欢迎来到 TradeUS 模拟交易平台！</span>
       </div>
 
-      {/* Big white card */}
       <div className="-mt-2 bg-white mx-2 rounded-xl p-4 shadow">
 
-        {/* 功能入口 */}
         <div className="grid grid-cols-4 gap-4 mb-5">
           {features.map((item) => (
             <Link
@@ -250,7 +246,6 @@ const Home = () => {
           ))}
         </div>
 
-        {/* Online + FastBuy */}
         <div className="flex gap-2 mb-6 px-1">
           <div className="w-1/3">
             <img src="/images/online.jpg" className="w-full h-[70px] rounded-lg object-fill" />
@@ -264,22 +259,19 @@ const Home = () => {
         {/* 热门币种 */}
         <div className="grid grid-cols-3 gap-4">
           {top3.map((coin) => {
-            const up =
-              coin.symbol === "BTC"
-                ? btcChange >= 0
-                : coin.change >= 0;
+            const up = coin.change >= 0;
 
             return (
               <div key={coin.symbol} className="text-center py-2">
                 <div className="text-gray-600 text-sm">{coin.symbol}</div>
 
                 <div className={`font-bold ${up ? "text-green-500" : "text-red-500"}`}>
-                  ${coin.symbol === "BTC" ? btcPrice : coin.price}
+                  ${coin.price}
                 </div>
 
                 <div className={`${up ? "text-green-500" : "text-red-500"}`}>
                   {up ? "+" : ""}
-                  {coin.symbol === "BTC" ? btcChange : coin.change}%
+                  {coin.change}%
                 </div>
               </div>
             );
