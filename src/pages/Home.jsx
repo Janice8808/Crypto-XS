@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCoins } from "../hooks/useCoins";
+import useTicker from "../hooks/useTicker";
+
 
 // ============ 地址遮挡函数 ============
 const maskAddress = (addr) => {
@@ -101,6 +103,8 @@ const GlobeIcon = () => (
 const Home = () => {
 
   const { allCoins, hotCoins } = useCoins();
+
+  const btc = useTicker(); 
 
   // =============== 用户地址 + UID ===============
   const address = localStorage.getItem("address") || "";
@@ -281,7 +285,7 @@ const Home = () => {
               <div key={coin.symbol} className="text-center py-2">
                 <div className="text-gray-600 text-sm">{coin.symbol}</div>
                 <div className={`font-bold ${up ? "text-green-500" : "text-red-500"}`}>
-                  ${coin.price}
+                  ${coin.symbol === "BTC" ? btc : coin.price}
                 </div>
                 <div className={`${up ? "text-green-500" : "text-red-500"}`}>
                   {up ? "+" : ""}{coin.change}%
