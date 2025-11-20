@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useCoins } from "../hooks/useCoins";
-
+import { coinIcons } from "../assets/coinIcons";
 const Market = () => {
   const { allCoins } = useCoins();
 
@@ -29,7 +29,7 @@ const Market = () => {
             {/* Symbol */}
             <span className="w-1/3 flex items-center text-gray-500 font-medium">
               <img
-                src={coin.logo}
+                src={coinIcons[coin.symbol] || "/images/default.png"}
                 alt={coin.symbol}
                 className="w-6 h-6 rounded-full mr-2"
                 onError={(e) => { e.target.onerror = null; e.target.src = "/images/default-coin.png"; }}

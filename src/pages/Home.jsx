@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCoins } from "../hooks/useCoins";
-
+import { coinIcons } from "../assets/coinIcons";
 // ============ 地址遮挡函数 ============
 const maskAddress = (addr) => {
   if (!addr) return "--";
@@ -161,7 +161,7 @@ const Home = () => {
       symbol: sym,
       price: "--",
       change: 0,
-      logo: "/images/default.png",
+      logo: coinIcons[sym] || "/images/default.png",
     }
   );
 
@@ -300,7 +300,7 @@ const Home = () => {
               className="flex items-center px-2 py-2 hover:bg-gray-100 transition"
             >
               <div className="w-1/3 flex items-center">
-                <img src={coin.logo} className="w-6 h-6 rounded-full mr-2" />
+                <img src={coinIcons[coin.symbol] || "/images/default.png"} className="w-6 h-6 rounded-full mr-2" />
                 <span className="text-gray-600">{coin.symbol}</span>
               </div>
 
