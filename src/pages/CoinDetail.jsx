@@ -71,29 +71,42 @@ export default function CoinDetail() {
   }, []);
 
   // ===== 根据最新价模拟一个简单的盘口（右侧价格列表） =====
-  const { asks, bids } = useMemo(() => {
-    if (!lastPrice) return { asks: [], bids: [] };
-    const p = Number(lastPrice);
+const { asks, bids } = useMemo(() => {
+  if (!lastPrice) return { asks: [], bids: [] };
+  const p = Number(lastPrice);
 
-    const genSide = (direction) => {
-      const list = [];
-      for (let i = 0; i < 5; i++) {
-        const diff = (i + 1) * 0.5;
-        const priceLevel =
-          direction === "up" ? p + diff : p - diff;
-        list.push({
-          price: priceLevel.toFixed(4),
-          qty: (Math.random() * 0.01 + 0.0001).toFixed(4),
-        });
-      }
-      return list;
-    };
+  // 数量范围真实一点
+  const genQty = () =>
+    (Math.random() * 0.02 + 0.0003).toFixed(4);
 
-    return {
-      asks: genSide("up"), // 卖盘（红色）
-      bids: genSide("down"), // 买盘（绿色）
-    };
-  }, [lastPrice]);
+  // 价格波动真实一点
+  const genPriceLevels = (direction) => {
+    let list = [];
+    let base = p;
+
+    for (let i = 0; i < 5; i++) {
+      // 偏移范围：0.1 - 1.2 美金，但逐层递增
+      let offset = (Math.random() * 1.1 + 0.1) * (i + 1);
+
+      let price =
+        direction === "ask"
+          ? base + offset
+          : base - offset;
+
+      list.push({
+        price: price.toFixed(4),
+        qty: genQty(),
+      });
+    }
+
+    return list;
+  };
+
+  return {
+    asks: genPriceLevels("ask"),
+    bids: genPriceLevels("bid"),
+  };
+}, [lastPrice]);
 
   // ===== 快捷百分比按钮 =====
   const handlePercentClick = (percent) => {
