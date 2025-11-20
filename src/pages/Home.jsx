@@ -221,7 +221,7 @@ const stableList = allCoins.slice(0, 30); // 想展示多少条你自己调
                 item.name === "User center" ? "/user" :
                 item.name === "MSb" ? "/user/msb" :
                 item.name === "introduction" ? "/intro" :
-                item.name === "Currency" ? "/coin/BTC" :
+                item.name === "Currency" ? "/coin-detail" :
                 item.name === "Deposit" ? "/deposit1" :
                 item.name === "DeFi" ? "/defi" :
                 item.name === "Futures" ? "/trade" :
