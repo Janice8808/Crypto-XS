@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { apiFetch } from "@/api/http";
 
+// ⭐ 全局缓存
+let lastCoinsCache = {};
+
 export const useCoins = () => {
   const [allCoins, setAllCoins] = useState([]);
   const [hotCoins, setHotCoins] = useState([]);
@@ -9,22 +12,35 @@ export const useCoins = () => {
 
   const loadPrices = async () => {
     try {
-      // ⭐ 调用你后端的 REST API（无 WebSocket，更稳定）
       const data = await apiFetch("/api/coins");
 
-      // 全部币种
-      setAllCoins(data);
+      if (!Array.isArray(data)) return;
 
-      // 热门币（BTC / ETH / BNB）
-      setHotCoins(data.filter((c) => HOT.includes(c.symbol)));
+      data.forEach((item) => {
+        if (!item || !item.symbol) return;
+
+        const sym = item.symbol;
+
+        if (!lastCoinsCache[sym]) {
+          lastCoinsCache[sym] = item;
+        } else {
+          if (item.price) lastCoinsCache[sym].price = item.price;
+          if (item.change) lastCoinsCache[sym].change = item.change;
+        }
+      });
+
+      const coinsArray = Object.values(lastCoinsCache);
+
+      setAllCoins(coinsArray);
+      setHotCoins(coinsArray.filter((c) => HOT.includes(c.symbol)));
     } catch (err) {
       console.log("Load coins error:", err);
     }
   };
 
   useEffect(() => {
-    loadPrices(); // 首次加载
-    const timer = setInterval(loadPrices, 3000); // ⭐ 每 3 秒刷新
+    loadPrices();
+    const timer = setInterval(loadPrices, 3000);
     return () => clearInterval(timer);
   }, []);
 
