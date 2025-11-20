@@ -77,6 +77,7 @@ export default function LoginWallet() {
     });
 
     const data = await r2.json();
+    console.log("verify 返回数据:", data);
 
     if (r2.ok) {
       localStorage.setItem("token", data.token);
