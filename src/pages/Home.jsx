@@ -145,9 +145,9 @@ const Home = () => {
   const HOT_SYMBOLS = ["BTC", "ETH", "BNB"];
 
   const top3 = [
-    { symbol: "BTC", price: btc.price, change: btc.change },
-    { symbol: "ETH", price: eth.price, change: eth.change },
-    { symbol: "BNB", price: bnb.price, change: bnb.change },
+    { symbol: "BTC/USDT", price: btc.price, change: btc.change },
+    { symbol: "ETH/USDT", price: eth.price, change: eth.change },
+    { symbol: "BNB/USDT", price: bnb.price, change: bnb.change },
   ];
 
 // 直接复用 allCoins，与 Market 页面保持一致
