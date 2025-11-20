@@ -208,7 +208,7 @@ const stableList = allCoins.slice(0, 30); // 想展示多少条你自己调
       </div>
 
       <div className="py-2 flex items-center bg-gradient-to-t from-gray-200 via-gray-500 to-gray-800 text-white px-3 -mt-1">
-        🔈 <span className="ml-2 text-sm">欢迎来到 TradeUS 模拟交易平台！</span>
+        🔈 <span className="ml-2 text-sm">Wellcome to visit Crypto.com</span>
       </div>
 
       <div className="-mt-2 bg-white mx-2 rounded-xl p-4 shadow">
