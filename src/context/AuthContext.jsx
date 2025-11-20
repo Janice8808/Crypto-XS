@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import { ethers } from "ethers";
 import { requestNonce, verifySignature } from "@/api/auth";
+
+// ⭐ wagmi（支持所有钱包）
+import { getWalletClient, getAccount } from "@wagmi/core";
 
 const AuthContext = createContext(null);
 
@@ -10,13 +12,13 @@ export const AuthProvider = ({ children }) => {
   const [userId, setUserId] = useState(null);
   const [token, setToken] = useState(null);
 
-  const [user, setUser] = useState(null); // ⭐ 新增：全局用户信息（avatar, uid, language, address…)
+  const [user, setUser] = useState(null);
   const [loadingUserInfo, setLoadingUserInfo] = useState(true);
 
   const [connecting, setConnecting] = useState(false);
 
   /* ===========================
-   *  初始化：从 localStorage 恢复登陆
+   *  恢复登录
    * =========================== */
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
@@ -32,13 +34,10 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  /* ===========================
-   *  ⭐ 全局 axios 配置
-   * =========================== */
-   axios.defaults.baseURL = "https://pankouhoutai.shop";
+  axios.defaults.baseURL = "https://pankouhoutai.shop";
 
   /* ===========================
-   *  ⭐ 自动拉取用户真实信息（avatar, uid…）
+   *  拉取用户信息
    * =========================== */
   const fetchUserInfo = useCallback(async () => {
     if (!token) {
@@ -61,84 +60,73 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     fetchUserInfo();
   }, [fetchUserInfo]);
-  
-/* ===========================
- *  ⭐ 自动登录：用户进入网站自动检查钱包并登录
- * =========================== */
-useEffect(() => {
-  async function autoLogin() {
-    if (!window.ethereum) return;
 
-    try {
-      const accounts = await window.ethereum.request({
-        method: "eth_accounts",
-      });
-
-      if (accounts.length === 0) {
-        // 用户还没有授权钱包，不弹窗
-        return;
-      }
-
-      const addr = accounts[0];
-      setAddress(addr);
-
-      // 1. 请求 nonce
-      const { nonce } = await requestNonce(addr);
-      const message = `Login to Pankou - Nonce: ${nonce}`;
-
-      // 2. 签名
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const signature = await signer.signMessage(message);
-
-      // 3. 换 token
-      const data = await verifySignature(addr, signature);
-
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("userId", data.userId);
-      localStorage.setItem("address", addr);
-
-      setToken(data.token);
-      setUserId(data.userId);
-      setAddress(addr);
-
-      axios.defaults.headers.common["Authorization"] =
-        "Bearer " + data.token;
-
-      // 自动拉用户信息
-      fetchUserInfo();
-
-    } catch (err) {
-      console.error("自动登录失败：", err);
-    }
-  }
-
-  autoLogin();
-}, [fetchUserInfo]);
 
   /* ===========================
-   *  ⭐ 钱包登录（你原来的逻辑保留）
+   *  自动登录（Base + Onchain + 所有钱包）
    * =========================== */
-  const connectWallet = useCallback(async () => {
-    if (!window.ethereum) {
-      alert("请先安装 MetaMask");
-      return;
+  useEffect(() => {
+    async function autoLogin() {
+      try {
+        const acc = getAccount();
+        if (!acc?.address) return;
+
+        const addr = acc.address;
+        setAddress(addr);
+
+        const { nonce } = await requestNonce(addr);
+        const message = `Login to Pankou - Nonce: ${nonce}`;
+
+        const walletClient = await getWalletClient();
+        if (!walletClient) return;
+
+        const signature = await walletClient.signMessage({ message });
+
+        const data = await verifySignature(addr, signature);
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("userId", data.userId);
+        localStorage.setItem("address", addr);
+
+        setToken(data.token);
+        setUserId(data.userId);
+        setAddress(addr);
+
+        axios.defaults.headers.common["Authorization"] =
+          "Bearer " + data.token;
+
+        fetchUserInfo();
+      } catch (err) {
+        console.error("自动登录失败:", err);
+      }
     }
 
+    autoLogin();
+  }, [fetchUserInfo]);
+
+
+  /* ===========================
+   *  手动连接钱包（备用）
+   * =========================== */
+  const connectWallet = useCallback(async () => {
     try {
       setConnecting(true);
 
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const addr = await signer.getAddress();
+      const acc = getAccount();
+      if (!acc?.address) {
+        alert("请先点击页面自动弹出的连接钱包");
+        return;
+      }
 
+      const addr = acc.address;
       const { nonce } = await requestNonce(addr);
       const message = `Login to Pankou - Nonce: ${nonce}`;
-      const signature = await signer.signMessage(message);
+
+      const walletClient = await getWalletClient();
+      const signature = await walletClient.signMessage({ message });
 
       const data = await verifySignature(addr, signature);
 
-      // 保存
       localStorage.setItem("token", data.token);
       localStorage.setItem("userId", data.userId);
       localStorage.setItem("address", addr);
@@ -150,16 +138,15 @@ useEffect(() => {
       axios.defaults.headers.common["Authorization"] =
         "Bearer " + data.token;
 
-      // ⭐ 登录成功后立刻拉用户信息
       fetchUserInfo();
-
-    } catch (e) {
-      console.error("Wallet connect error:", e);
-      alert("钱包登录失败");
+    } catch (err) {
+      console.error("Wallet connect error:", err);
+      alert("钱包连接失败");
     } finally {
       setConnecting(false);
     }
   }, [fetchUserInfo]);
+
 
   /* ===========================
    *  退出登录
@@ -172,22 +159,21 @@ useEffect(() => {
     setUser(null);
   };
 
+
   return (
     <AuthContext.Provider
       value={{
         token,
         userId,
         address,
-
-        user,               // ⭐ 全局用户信息
-        loadingUserInfo,
-
+        user,
         connecting,
+        loadingUserInfo,
         isLoggedIn: !!token && !!userId,
 
         connectWallet,
         logout,
-        refreshUser: fetchUserInfo, // ⭐ 页面可主动刷新
+        refreshUser: fetchUserInfo,
       }}
     >
       {children}

@@ -1,21 +1,22 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App.jsx';
-import './index.css';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.jsx";
+import "./index.css";
 
-// ✓ 全局 axios 设置（一定要放在最顶层执行一次）
 import axios from "axios";
 axios.defaults.baseURL = "https://ceshipankou.shop/api";
 axios.defaults.headers.common["Authorization"] =
   "Bearer " + localStorage.getItem("token");
 
-// ✓ AuthProvider
-import { AuthProvider } from '@/context/AuthContext';
+import { AuthProvider } from "@/context/AuthContext";
+import { Web3Provider } from "@/web3Config";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <AuthProvider>
-      <App />
+      <Web3Provider>
+        <App />
+      </Web3Provider>
     </AuthProvider>
   </React.StrictMode>
 );

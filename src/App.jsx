@@ -1,7 +1,8 @@
 // App.jsx
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import "./i18n";
+import { useAppKit } from "@reown/appkit/react";
 
 // 公共组件
 import Layout from "./Layout";
@@ -36,6 +37,25 @@ import LoginWallet from "./pages/LoginWallet";
 import AdminPanel from "./pages/AdminPanel";
 
 function App() {
+  const appKit = useAppKit();
+
+  // ============== 自动弹出连接钱包（无 token 时自动执行） ==============
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    // 没有登录状态才弹出钱包选择
+    if (!token) {
+      setTimeout(() => {
+        try {
+          appKit.open();
+        } catch (err) {
+          console.error("Wallet modal open error:", err);
+        }
+      }, 300); // 稍微延迟避免 UI 卡住
+    }
+  }, [appKit]);
+  // =====================================================================
+
   return (
     <Router>
       <Routes>
@@ -107,7 +127,9 @@ function App() {
         <Route path="/deposit1" element={<AuthGate><Deposit1 /></AuthGate>} />
         <Route path="/withdraw1" element={<AuthGate><Withdraw1 /></AuthGate>} />
         <Route path="/buycrypto1" element={<AuthGate><BuyCrypto1 /></AuthGate>} />
+
         <Route path="/admin" element={<AuthGate><AdminPanel /></AuthGate>} />
+
         <Route path="/user" element={<AuthGate><UserCenter /></AuthGate>} />
         <Route path="/user/mail" element={<AuthGate><Mail /></AuthGate>} />
         <Route path="/user/bank" element={<AuthGate><BankCard /></AuthGate>} />
