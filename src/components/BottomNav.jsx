@@ -8,7 +8,7 @@ const BottomNav = () => {
   const navItems = [
     { path: "/", label: "Home", icon: <Home size={22} /> },
     { path: "/market", label: "Market", icon: <BarChart2 size={22} /> },
-    { path: "/coin", label: "Currency", icon: <Info size={22} /> },
+    { path: "/coin/BTC", label: "Currency", icon: <Info size={22} /> },
     { path: "/trade", label: "Futures", icon: <LineChart size={22} /> },
     { path: "/wallet", label: "Wallets", icon: <Wallet size={22} /> },
   ];
