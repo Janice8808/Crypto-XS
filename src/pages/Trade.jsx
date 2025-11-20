@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { apiFetch } from "@/api/http";
 import { useUserBalances } from "@/hooks/useUserBalances";
 import { createOrder } from "@/api/order";   // ⭐ 新增
+import { useTicker } from "@/hooks/useTicker";
 
 // TradingView 图表组件
 const TradingViewWidget = ({ symbol }) => {
@@ -558,62 +559,28 @@ const Trade = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
-  const [price, setPrice] = useState(0);
-  const [changePercent, setChangePercent] = useState(0);
-  const [low, setLow] = useState(0);
-  const [high, setHigh] = useState(0);
-  const [amount24h, setAmount24h] = useState(0);
-  const wsRef = useRef(null);
-
-  const symbolsList = ["BTCUSDT", "ETHUSDT", "LTCUSDT", "XRPUSDT"];
-  const priceColor = changePercent >= 0 ? "#2ecc71" : "#e74c3c";
-
-  const handleSymbolChange = (symbol) => {
-    setCurrentSymbol(symbol);
-    setShowMenu(false);
-  };
-
-  // ========== 行情 WebSocket ==========
-  useEffect(() => {
-    if (wsRef.current) wsRef.current.close();
-
-const WS_URL = `wss://pankouhoutai.shop/ticker?symbol=${currentSymbol}`;
 
 
-    const ws = new WebSocket(WS_URL);
-    wsRef.current = ws;
+const symbolsList = ["BTCUSDT", "ETHUSDT", "LTCUSDT", "XRPUSDT"];
 
-    ws.onopen = () => {
-      console.log("📡 Trade Ticker WS connected:", WS_URL);
-    };
+const handleSymbolChange = (symbol) => {
+  setCurrentSymbol(symbol);
+  setShowMenu(false);
+};
 
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
+// ⭐ 使用前端直接连接 Binance 的实时行情 Hook
+const {
+  price,
+  changePercent,
+  low,
+  high,
+  amount24h,
+} = useTicker(currentSymbol);
 
-        // Binance ticker 格式
-        if (data.e !== "24hrTicker") return;
+// ⭐ changePercent 在这里才有值，所以 priceColor 要写在这里
+const priceColor = changePercent >= 0 ? "#2ecc71" : "#e74c3c";
 
-        setPrice(parseFloat(data.c));
-        setChangePercent(parseFloat(data.P));
-        setLow(parseFloat(data.l));
-        setHigh(parseFloat(data.h));
-        setAmount24h(parseFloat(data.v));
-      } catch (err) {
-        console.error("WS parse error:", err);
-      }
-    };
 
-    ws.onerror = (err) => {
-      console.error("❌ Ticker WS error:", err);
-    };
-
-    ws.onclose = () => {
-      console.log("⚠️ Ticker WS closed");
-    };
-
-    return () => ws.close();
-  }, [currentSymbol]);
 
   return (
     <div
