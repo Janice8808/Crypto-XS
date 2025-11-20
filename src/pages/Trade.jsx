@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { apiFetch } from "@/api/http";
 import { useUserBalances } from "@/hooks/useUserBalances";
+import { createOrder } from "@/api/order";   // ⭐ 新增
 
 // TradingView 图表组件
 const TradingViewWidget = ({ symbol }) => {
@@ -142,38 +143,36 @@ const OrderForm = ({ symbol, modalType, price, onClose }) => {
 
     setLocalBalance((prev) => prev - amount);
 
-    try {
-      const data = await apiFetch("/api/order/create", {
-  method: "POST",
-  body: JSON.stringify({
+try {
+  const data = await createOrder({
+    symbol,
     amount,
-    symbol: currentSymbol,   // ⭐ 用真正的交易对
-  }),
-});
+    direction: modalType === "Buy Up" ? "LONG" : "SHORT",
+  });
 
+  if (!data || data.error) {
+    setLocalBalance((prev) => prev + amount);
+    alert(data?.error || "Order failed");
+    return;
+  }
 
-      if (!data || data.error) {
-        setLocalBalance((prev) => prev + amount);
-        alert(data?.error || "Order failed");
-        return;
-      }
+  if (typeof data.balance === "number") {
+    setLocalBalance(data.balance);
+  }
 
-      if (typeof data.balance === "number") {
-        setLocalBalance(data.balance);
-      }
+  const p = periods.find((x) => x.time === selectedPeriod);
 
-      const p = periods.find((x) => x.time === selectedPeriod);
+  setCountdown({
+    ...p,
+    amount,
+    startPrice: buyPrice,
+  });
+  setTimeLeft(p.time);
+} catch (err) {
+  setLocalBalance((prev) => prev + amount);
+  alert("Network error");
+}
 
-      setCountdown({
-        ...p,
-        amount,
-        startPrice: buyPrice,
-      });
-      setTimeLeft(p.time);
-    } catch (err) {
-      setLocalBalance((prev) => prev + amount);
-      alert("Network error");
-    }
   };
 
   // 倒计时逻辑
@@ -578,7 +577,7 @@ const Trade = () => {
   useEffect(() => {
     if (wsRef.current) wsRef.current.close();
 
-const WS_URL = "wss://pankouhoutai.shop/ticker";
+const WS_URL = `wss://pankouhoutai.shop/ticker?symbol=${currentSymbol}`;
 
 
     const ws = new WebSocket(WS_URL);
