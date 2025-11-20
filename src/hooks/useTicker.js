@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export function useTicker(symbol) {
+export default function useTicker(symbol) {
   const wsRef = useRef(null);
   const [price, setPrice] = useState("--");
   const [changePercent, setChangePercent] = useState(0);
