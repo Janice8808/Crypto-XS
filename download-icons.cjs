@@ -8,6 +8,7 @@ const https = require("https");
 
 // TrustWallet 镜像（100% 下载成功）
 const coins = {
+  USDT: "https://cryptologos.cc/logos/tether-usdt-logo.png",
   BTC: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/bitcoin/info/logo.png",
   ETH: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
   BNB: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/info/logo.png",

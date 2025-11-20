@@ -1,4 +1,5 @@
 export const coinIcons = {
+  USDT: "/coin-icons/USDT.png",
   BTC: "/coin-icons/BTC.png",
   ETH: "/coin-icons/ETH.png",
   BNB: "/coin-icons/BNB.png",
