@@ -160,12 +160,22 @@ useEffect(() => {
 
 
 
-  // ====== 工具函数 ======
-  const formatTime = (ts) => {
-    if (!ts) return "-";
-    const d = new Date(ts);
-    return d.toLocaleString();
-  };
+const formatTime = (ts) => {
+  if (!ts) return "-";
+
+  // 确保 ts 是数字
+  const d = new Date(Number(ts));
+
+  // 格式：YYYY/MM/DD HH:mm
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mi = String(d.getMinutes()).padStart(2, "0");
+
+  return `${yyyy}/${mm}/${dd} ${hh}:${mi}`;
+};
+
 
   const calcStatus = (balances = {}) => {
     const total = Object.values(balances).reduce(
