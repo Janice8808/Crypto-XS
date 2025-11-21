@@ -254,7 +254,7 @@ const stableList = allCoins.slice(0, 30); // 想展示多少条你自己调
     key={marqueeKey}
     className="
       absolute left-0 
-      top-[23%] -translate-y-1/2
+      top-[18%] -translate-y-1/2
       whitespace-nowrap 
       text-white text-base
       animate-marquee-under z-50
