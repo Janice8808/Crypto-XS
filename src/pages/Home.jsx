@@ -414,7 +414,7 @@ const top3 = [
 
     return (
       <Link
-        key={coin.symbol}
+        key={coin.symbol + refresh}
         to={`/coin/${coin.base}-USDT`}   // ⭐ 跳转用 "-"
         className="text-center py-2"
       >
