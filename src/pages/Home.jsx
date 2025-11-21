@@ -252,7 +252,7 @@ const stableList = allCoins.slice(0, 30); // 想展示多少条你自己调
 
     <div
       key={marqueeKey}
-      className="absolute left-0 whitespace-nowrap text-white text-base animate-marquee-under z-10 drop-shadow-[0_0_4px_rgba(0,0,0,0.6)]"
+      className="absolute left-0 whitespace-nowrap text-white text-base animate-marquee-under z-20 drop-shadow-[0_0_4px_rgba(0,0,0,0.6)]"
     >
       Welcome to visit Crypto.com
     </div>
