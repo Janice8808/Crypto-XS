@@ -137,7 +137,7 @@ function App() {
         <Route path="/user/msb" element={<AuthGate><MSBCertification /></AuthGate>} />
 
         {/* 没匹配的全部重定向到首页 */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Home />} />
 
       </Routes>
     </Router>
