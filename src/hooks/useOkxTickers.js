@@ -14,7 +14,7 @@ export function useOkxTickers(symbols = []) {
       console.log("OKX 多币 WS 已连接");
 
       const subs = symbols.map((s) => ({
-        channel: "trades",
+        channel: "tickers",
         instId: s, // 如 BTC-USDT
       }));
 
