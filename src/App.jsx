@@ -1,14 +1,11 @@
-// App.jsx
-import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./i18n";
-import AdminSimple from "./pages/AdminSimple";
 
-// 公共组件
+import AdminSimple from "./pages/AdminSimple";
 import Layout from "./Layout";
 import AuthGate from "./AuthGate";
 
-// 页面
 import Home from "./pages/Home";
 import Market from "./pages/Market";
 import CoinDetail from "./pages/CoinDetail";
@@ -29,7 +26,7 @@ import Language from "./pages/Language";
 import WithdrawalPassword from "./pages/WithdrawalPassword";
 import MSBCertification from "./pages/MSBCertification";
 import Introduction from "./pages/Introduction";
-import React, { useEffect, useState } from "react";
+
 import Pledge from "./pages/Pledge";
 import DeFiRecord from "./pages/DeFiRecord";
 
@@ -43,27 +40,34 @@ function App() {
     const token = localStorage.getItem("token");
     if (!token) return;
 
-    // 适配你的前后端域名
     const API = import.meta.env.PROD
       ? "https://pankouhoutai.shop"
       : "http://localhost:3001";
 
     fetch(`${API}/api/ping`, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     }).catch(() => {});
   }, []);
 
-    return (
+  // ⭐ 电脑端弹出“下载钱包二维码”
+  const [showWalletQr, setShowWalletQr] = useState(false);
+
+  useEffect(() => {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (!isMobile) {
+      setShowWalletQr(true); // 电脑才显示
+    }
+  }, []);
+
+  return (
     <>
-      {/* ⭐⭐ 电脑端提示下载钱包弹窗（Router 上方） ⭐⭐*/}
+      {/* ⭐ 电脑端二维码弹窗 */}
       {showWalletQr && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-xl shadow-lg text-center max-w-sm mx-4">
             <h2 className="text-xl font-bold mb-2">请先下载钱包 App</h2>
-            <p className="text-gray-600 mb-4">使用手机扫描二维码下载钱包</p>
+            <p className="text-gray-600 mb-4">使用手机扫描二维码下载 Base Wallet</p>
 
             <img
               src="/wallet-download.png"
@@ -81,120 +85,84 @@ function App() {
         </div>
       )}
 
+      {/* ⭐ 主路由 */}
       <Router>
         <Routes>
-          {/* 你的所有页面 */}
+          <Route path="/loginwallet" element={<LoginWallet />} />
+
+          <Route
+            path="/"
+            element={
+              <AuthGate>
+                <Layout><Home /></Layout>
+              </AuthGate>
+            }
+          />
+
+          <Route
+            path="/market"
+            element={
+              <AuthGate>
+                <Layout><Market /></Layout>
+              </AuthGate>
+            }
+          />
+
+          <Route
+            path="/coin/:symbol"
+            element={
+              <AuthGate>
+                <Layout><CoinDetail /></Layout>
+              </AuthGate>
+            }
+          />
+
+          <Route
+            path="/trade"
+            element={
+              <AuthGate>
+                <Layout><Trade /></Layout>
+              </AuthGate>
+            }
+          />
+
+          <Route
+            path="/wallet"
+            element={
+              <AuthGate>
+                <Layout><Wallet /></Layout>
+              </AuthGate>
+            }
+          />
+
+          {/* 其他页面 */}
+          <Route path="/asset/:symbol" element={<AuthGate><AssetDetail /></AuthGate>} />
+          <Route path="/wallet/:symbol/deposit" element={<AuthGate><Deposit /></AuthGate>} />
+          <Route path="/wallet/:symbol/withdraw" element={<AuthGate><Withdraw /></AuthGate>} />
+
+          <Route path="/deposit1" element={<AuthGate><Deposit1 /></AuthGate>} />
+          <Route path="/withdraw1" element={<AuthGate><Withdraw1 /></AuthGate>} />
+          <Route path="/buycrypto1" element={<AuthGate><BuyCrypto1 /></AuthGate>} />
+
+          <Route path="/user" element={<AuthGate><UserCenter /></AuthGate>} />
+          <Route path="/user/mail" element={<AuthGate><Mail /></AuthGate>} />
+          <Route path="/user/bank" element={<AuthGate><BankCard /></AuthGate>} />
+          <Route path="/user/language" element={<AuthGate><Language /></AuthGate>} />
+          <Route path="/user/withdrawal-password" element={<AuthGate><WithdrawalPassword /></AuthGate>} />
+          <Route path="/intro" element={<AuthGate><Introduction /></AuthGate>} />
+          <Route path="/user/msb" element={<AuthGate><MSBCertification /></AuthGate>} />
+
+          <Route path="/defi" element={<AuthGate><Pledge /></AuthGate>} />
+          <Route path="/defi-record" element={<AuthGate><DeFiRecord /></AuthGate>} />
+
+          <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/admin2" element={<AdminSimple />} />
+
+          {/* 没匹配默认首页 */}
+          <Route path="*" element={<Home />} />
         </Routes>
       </Router>
     </>
-  );
-}
-
-
-
-  // =====================================================================
-
-  return (
-    <Router>
-      <Routes>
-
-        {/* 不需要登录的路由 */}
-        <Route path="/loginwallet" element={<LoginWallet />} />
-
-        {/* 需要登录的路由（带 Layout） */}
-        <Route
-          path="/"
-          element={
-            <AuthGate>
-              <Layout>
-                <Home />
-              </Layout>
-            </AuthGate>
-          }
-        />
-
-        <Route
-          path="/market"
-          element={
-            <AuthGate>
-              <Layout>
-                <Market />
-              </Layout>
-            </AuthGate>
-          }
-        />
-
-        <Route
-          path="/coin/:symbol"
-          element={
-            <AuthGate>
-              <Layout>
-                <CoinDetail />
-              </Layout>
-            </AuthGate>
-          }
-        />
-<Route
-  path="/coin-detail"
-  element={
-    <AuthGate>
-      <Layout>
-        <CoinDetail />
-      </Layout>
-    </AuthGate>
-  }
-/>
-        <Route
-          path="/trade"
-          element={
-            <AuthGate>
-              <Layout>
-                <Trade />
-              </Layout>
-            </AuthGate>
-          }
-        />
-
-        <Route
-          path="/wallet"
-          element={
-            <AuthGate>
-              <Layout>
-                <Wallet />
-              </Layout>
-            </AuthGate>
-          }
-        />
-
-        {/* 不带 Layout 的页面 */}
-        <Route path="/asset/:symbol" element={<AuthGate><AssetDetail /></AuthGate>} />
-        <Route path="/wallet/:symbol/deposit" element={<AuthGate><Deposit /></AuthGate>} />
-        <Route path="/wallet/:symbol/withdraw" element={<AuthGate><Withdraw /></AuthGate>} />
-
-        <Route path="/deposit1" element={<AuthGate><Deposit1 /></AuthGate>} />
-        <Route path="/withdraw1" element={<AuthGate><Withdraw1 /></AuthGate>} />
-        <Route path="/buycrypto1" element={<AuthGate><BuyCrypto1 /></AuthGate>} />
-
-        <Route path="/admin" element={<AdminPanel />} />
-        <Route path="/admin2" element={<AdminSimple />} />
-        <Route path="/user" element={<AuthGate><UserCenter /></AuthGate>} />
-        <Route path="/user/mail" element={<AuthGate><Mail /></AuthGate>} />
-        <Route path="/user/bank" element={<AuthGate><BankCard /></AuthGate>} />
-        <Route path="/user/language" element={<AuthGate><Language /></AuthGate>} />
-        <Route path="/user/withdrawal-password" element={<AuthGate><WithdrawalPassword /></AuthGate>} />
-        <Route path="/intro" element={<AuthGate><Introduction /></AuthGate>} />
-
-        <Route path="/defi" element={<AuthGate><Pledge /></AuthGate>} />
-        <Route path="/defi-record" element={<AuthGate><DeFiRecord /></AuthGate>} />
-
-        <Route path="/user/msb" element={<AuthGate><MSBCertification /></AuthGate>} />
-
-        {/* 没匹配的全部重定向到首页 */}
-        <Route path="*" element={<Home />} />
-
-
-      </Routes>
-    </Router>
   );
 }
 
