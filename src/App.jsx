@@ -122,7 +122,7 @@ function App() {
         <Route path="/withdraw1" element={<AuthGate><Withdraw1 /></AuthGate>} />
         <Route path="/buycrypto1" element={<AuthGate><BuyCrypto1 /></AuthGate>} />
 
-        <Route path="/admin" element={<AuthGate><AdminPanel /></AuthGate>} />
+        <Route path="/admin" element={<AdminPanel />} />
 
         <Route path="/user" element={<AuthGate><UserCenter /></AuthGate>} />
         <Route path="/user/mail" element={<AuthGate><Mail /></AuthGate>} />
