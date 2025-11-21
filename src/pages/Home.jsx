@@ -263,7 +263,7 @@ const stableList = allCoins.slice(0, 30); // 想展示多少条你自己调
 
 
 
-      <div className="-mt-6 bg-white mx-2 rounded-xl p-4 shadow relative z-10">
+      <div className="-mt-6 bg-white mx-2 rounded-xl p-4 shadow relative z-5">
 
         <div className="grid grid-cols-4 gap-4 mb-5">
           {features.map((item) => (
