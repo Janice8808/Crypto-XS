@@ -67,42 +67,6 @@ function App() {
   <div className="fixed inset-0 bg-[#0b0f1a]/90 z-50 flex items-center justify-center px-4">
     <div className="bg-white pt-6 pb-4 px-6 rounded-3xl shadow-2xl text-center max-w-lg w-full relative">
 
-{/* 顶部 WalletConnect 样式 LOGO */}
-<div className="flex items-center justify-center gap-2 mb-4 mt-1">
-  <svg
-    width="32"
-    height="20"
-    viewBox="0 0 40 24"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M4 9c2.2-2.4 4.6-3.6 8-3.6s5.8 1.2 8 3.6l-2.3 2.3c-1.6-1.7-3.2-2.6-5.7-2.6s-4.1.9-5.7 2.6L4 9z"
-      fill="#3B99FC"
-    />
-    <path
-      d="M10 15c1.5-1.7 3-2.6 5-2.6s3.5.9 5 2.6l-2.2 2.2c-.8-.9-1.6-1.4-2.8-1.4s-2 .5-2.8 1.4L10 15z"
-      fill="#3B99FC"
-    />
-  </svg>
-  <span className="text-gray-900 text-base font-semibold">
-    WalletConnect
-  </span>
-</div>
-
-
-      {/* 关闭按钮 */}
-      <button
-        onClick={() => setShowWalletQr(false)}
-        className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 text-xl"
-      >
-        ×
-      </button>
-
-      {/* 文案 */}
-      <p className="text-gray-600 text-base mb-6">
-        Scan the QR code below to download Base Wallet
-      </p>
-
       {/* 大二维码 */}
       <img
         src="/wallet-download.png"
@@ -110,8 +74,6 @@ function App() {
         className="w-[320px] h-[320px] mx-auto mb-6"
       />
 
-      {/* 底部提示 */}
-      <p className="text-gray-400 text-sm">Copy link: https://www.coinbase.com/wallet/downloads</p>
     </div>
   </div>
 )}
