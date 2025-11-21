@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 // 后端 API
-const API = "https://pankouhoudan.onrender.com";   // Render 后端（你可以改）
+const API = "https://pankouhoutai.shop";   // Render 后端（你可以改）
 
 export default function AdminSimple() {
   const [password, setPassword] = useState("");
