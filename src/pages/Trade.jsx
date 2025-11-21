@@ -218,10 +218,16 @@ const handleFinish = async () => {
       }),
     });
 
-    // ⭐ 前端永远只用后端余额
-    if (res?.balances?.USDT !== undefined) {
-      setLocalBalance(Number(res.balances.USDT));
-    }
+const real = Number(res?.balances?.USDT);
+
+if (isNaN(real)) {
+  console.error("后端返回余额不是数字：", res?.balances?.USDT);
+  setLocalBalance(0);
+} else {
+  setLocalBalance(real);
+}
+
+
 
   } catch (err) {
     console.error("结算失败:", err);
