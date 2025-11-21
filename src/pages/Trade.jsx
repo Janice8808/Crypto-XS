@@ -815,13 +815,16 @@ const priceColor = changePercent >= 0 ? "#2ecc71" : "#e74c3c";
 {/* 下单弹窗 */}
 {showModal && (
   <BottomModal onClose={() => setShowModal(false)}>
+    {/* ⭐ TradingView 价格传参在这里 */}
     <OrderForm 
-      symbol={currentSymbol} 
-      modalType={modalType} 
-      price={tvPrice ?? price}   {/* ⭐ 修改：让下单用 TradingView 的实时价格 */}
+      symbol={currentSymbol}
+      modalType={modalType}
+      price={tvPrice ?? price}
     />
   </BottomModal>
 )}
+
+
 
     </div>
   );
