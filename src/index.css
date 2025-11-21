@@ -90,3 +90,26 @@ button:focus-visible {
 .animate-scroll:hover {
   animation-play-state: paused;
 }
+
+@keyframes marqueeMove {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  10% {
+    transform: translateX(0%);
+    opacity: 1;
+  }
+  80% {
+    transform: translateX(100%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+
+.animate-marquee {
+  animation: marqueeMove 4s linear infinite;
+}

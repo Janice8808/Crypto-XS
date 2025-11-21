@@ -99,6 +99,7 @@ const GlobeIcon = () => (
 );
 
 const Home = () => {
+  const [marqueeKey, setMarqueeKey] = useState(0);
   const SYMBOLS = [
   "BTC-USDT","ETH-USDT","BNB-USDT","SOL-USDT","XRP-USDT",
   "DOGE-USDT","ADA-USDT","TRX-USDT","AVAX-USDT","DOT-USDT",
@@ -147,6 +148,15 @@ const bnb = tickers["BNB-USDT"] || { price: "--", change: 0 };
   const [unread] = useState(2);
 
   const images = ["/images/banner1.jpg", "/images/banner2.jpg", "/images/banner3.jpg"];
+ 
+  // ========= 2️⃣ ⭐ 定时器放这里 ⭐ =========
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setMarqueeKey(k => k + 1);  // ⭐ 每4秒重播一次动画
+    }, 4000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const t = setInterval(() => {
@@ -223,9 +233,16 @@ const stableList = allCoins.slice(0, 30); // 想展示多少条你自己调
 </div>
 
 
-      <div className="py-2 flex items-center bg-gradient-to-t from-gray-200 via-gray-500 to-gray-800 text-white px-3 -mt-1">
-        🔈 <span className="ml-2 text-sm">Wellcome to visit Crypto.com</span>
-      </div>
+{/* 滚动公告条 */}
+<div className="relative overflow-hidden bg-gradient-to-r from-gray-200 via-gray-500 to-gray-800 h-12 flex items-center px-3 -mt-1">
+  <div
+    key={marqueeKey}
+    className="absolute whitespace-nowrap text-white text-sm flex items-center animate-marquee"
+  >
+    🔈 <span className="ml-2">Welcome to visit Crypto.com</span>
+  </div>
+</div>
+
 
       <div className="-mt-2 bg-white mx-2 rounded-xl p-4 shadow">
 
