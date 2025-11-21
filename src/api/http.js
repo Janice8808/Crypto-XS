@@ -1,7 +1,7 @@
 // src/api/http.js
 
 // 去掉尾部的 /，并且如果没设置环境变量，就用后端的线上地址
-const API_BASE = "https://pankouhoudan.onrender.com";
+const API_BASE = "https://pankouhoutai.shop";
 
 function getUserToken() {
   return localStorage.getItem("token") || "";
