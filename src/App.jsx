@@ -64,19 +64,26 @@ function App() {
     <>
       {/* ⭐ 电脑端二维码弹窗 */}
 {showWalletQr && (
-  <div className="fixed inset-0 bg-[#0b0f1a]/90 z-50 flex items-center justify-center px-4">
-    <div className="bg-white pt-6 pb-4 px-6 rounded-3xl shadow-2xl text-center max-w-lg w-full relative">
+  <div className="fixed inset-0 bg-[#16171a]/90 z-50 flex items-center justify-center px-4">
+    <div className="bg-transparent rounded-3xl text-center max-w-lg w-full relative">
 
-      {/* 大二维码 */}
+      <button
+        onClick={() => setShowWalletQr(false)}
+        className="absolute right-2 top-2 text-white/70 hover:text-white text-3xl"
+      >
+        ×
+      </button>
+
       <img
-        src="/wallet-download.png"
-        alt="wallet qr"
-        className="w-[320px] h-[320px] mx-auto mb-6"
+        src="/walletconnect-full.png"
+        alt="WalletConnect QR"
+        className="w-full rounded-3xl shadow-2xl"
       />
 
     </div>
   </div>
 )}
+
 
 
 
