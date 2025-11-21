@@ -50,39 +50,43 @@ function App() {
     }).catch(() => {});
   }, []);
 
-  // ⭐ 电脑端弹出“下载钱包二维码”
-  const [showWalletQr, setShowWalletQr] = useState(false);
+// ⭐ 电脑端弹出“下载钱包二维码”
+const [showWalletQr, setShowWalletQr] = useState(false);
 
-  useEffect(() => {
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (!isMobile) {
-      setShowWalletQr(true); // 电脑才显示
-    }
-  }, []);
+useEffect(() => {
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if (!isMobile) {
+    setShowWalletQr(true); // 电脑才显示
+  }
+}, []);
 
-  return (
-    <>
-      {/* ⭐ 电脑端二维码弹窗 */}
-{showWalletQr && (
-  <div className="fixed inset-0 bg-[#16171a]/90 z-50 flex items-center justify-center px-4">
-    <div className="bg-transparent rounded-3xl text-center max-w-lg w-full relative">
+return (
+  <>
+    {/* ⭐ 电脑端二维码弹窗 */}
+    {showWalletQr && (
+      <div className="fixed inset-0 bg-[#16171a]/90 z-50 flex items-center justify-center px-4">
+        <div className="bg-transparent text-center max-w-lg w-full">
 
-      <button
-        onClick={() => setShowWalletQr(false)}
-        className="absolute right-2 top-2 text-white/70 hover:text-white text-3xl"
-      >
-        ×
-      </button>
+          {/* 二维码图片 */}
+          <img
+            src="/walletconnect-full.png"
+            alt="WalletConnect QR"
+            className="w-full rounded-3xl shadow-2xl mx-auto"
+          />
 
-      <img
-        src="/walletconnect-full.png"
-        alt="WalletConnect QR"
-        className="w-full rounded-3xl shadow-2xl"
-      />
+          {/* 图片下方一个 × */}
+          <div
+            onClick={() => setShowWalletQr(false)}
+            className="mt-4 text-white/70 hover:text-white text-4xl cursor-pointer select-none"
+          >
+            ×
+          </div>
 
-    </div>
-  </div>
-)}
+        </div>
+      </div>
+    )}
+  </>
+);
 
 
 
