@@ -195,17 +195,19 @@ const stableList = allCoins.slice(0, 30); // 想展示多少条你自己调
         </div>
       )}
 
-      <div className="w-full h-56 relative overflow-hidden bg-gray-800">
-        {images.map((src, idx) => (
-          <img
-            key={idx}
-            src={src}
-            className={`w-full h-full object-cover absolute transition-opacity duration-700 ${
-              idx === currentBanner ? "opacity-100" : "opacity-0"
-            }`}
-          />
-        ))}
-      </div>
+<div className="w-full relative bg-gray-800 overflow-hidden">
+  {images.map((src, idx) => (
+    <img
+      key={idx}
+      src={src}
+      className={`w-full h-auto transition-opacity duration-700 ${
+        idx === currentBanner ? "opacity-100" : "opacity-0"
+      }`}
+      style={{ display: idx === currentBanner ? "block" : "none" }}
+    />
+  ))}
+</div>
+
 
       <div className="py-2 flex items-center bg-gradient-to-t from-gray-200 via-gray-500 to-gray-800 text-white px-3 -mt-1">
         🔈 <span className="ml-2 text-sm">Wellcome to visit Crypto.com</span>

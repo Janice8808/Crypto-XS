@@ -1,124 +1,74 @@
 // src/pages/CoinDetail.jsx
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchUserBalance } from "@/api/user";
 import { apiFetch } from "@/api/http";
 
-// 从环境变量里拿后端地址（比如 https://pankouhoutai.shop/api）
-// 强制使用线上后端，不依赖 VITE_API_BASE
+// 永远使用线上 API
 const API_BASE = "https://pankouhoutai.shop/api";
 
-// WebSocket：直接连线上 ticker
-const WS_BASE = "wss://pankouhoutai.shop";
-
-
 export default function CoinDetail() {
-  const { symbol } = useParams(); // 例如 btcusdt
+  const { symbol } = useParams();
   const navigate = useNavigate();
   const upperSymbol = (symbol || "BTCUSDT").toUpperCase();
 
-  const [side, setSide] = useState("buy"); // buy / sell
-  const [orderType, setOrderType] = useState("limit"); // limit / market
+  const [side, setSide] = useState("buy");
+  const [orderType, setOrderType] = useState("limit");
 
-  const [price, setPrice] = useState(""); // 价格输入框
-  const [qty, setQty] = useState(""); // 数量输入框
+  const [price, setPrice] = useState("");
+  const [qty, setQty] = useState("");
 
   const [availableUsdt, setAvailableUsdt] = useState(0);
-  const [lastPrice, setLastPrice] = useState(null);
-  const [changePct, setChangePct] = useState(null);
+  const [lastPrice, setLastPrice] = useState(50000);
+  const [changePct, setChangePct] = useState(0);
 
   const [submitting, setSubmitting] = useState(false);
   const [submitMsg, setSubmitMsg] = useState("");
 
-  // ===== 顶部点击左侧四横杠，返回市场列表 =====
+  // ====== 返回市场页 ======
   const handleBack = () => {
-    navigate("/markets");
+    navigate("/market");
   };
 
-  // ===== WebSocket 实时价格 =====
+  // ====== 模拟实时盘口（每秒刷新）======
+  const [orderBook, setOrderBook] = useState({ asks: [], bids: [] });
+
   useEffect(() => {
-    const ws = new WebSocket(`wss://pankouhoutai.shop/ticker`);
+    const timer = setInterval(() => {
+      const base = Number(lastPrice || 50000);
 
-    ws.onmessage = (evt) => {
-      try {
-        const data = JSON.parse(evt.data);
-        // 后端目前是 BTCUSDT 一个流，这里兼容 symbol 判断
-        if (!data.s || data.s.toUpperCase() !== upperSymbol) return;
-        setLastPrice(Number(data.c));
-        setChangePct(Number(data.P));
-        if (!price) {
-          setPrice(data.c); // 首次自动带入价格
-        }
-      } catch (_) {}
-    };
+      const gen = (isAsk) => {
+        return Array.from({ length: 5 }).map(() => {
+          const diff = (Math.random() * 3 + 0.1) * (isAsk ? 1 : -1);
+          return {
+            price: (base + diff).toFixed(4),
+            qty: (Math.random() * 0.02 + 0.001).toFixed(4),
+          };
+        });
+      };
 
-    return () => ws.close();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [upperSymbol]);
+      setOrderBook({
+        asks: gen(true),
+        bids: gen(false),
+      });
+    }, 1000);
 
-  // ===== 获取用户可用余额 =====
+    return () => clearInterval(timer);
+  }, [lastPrice]);
+
+  // ===== 获取用户余额 =====
   useEffect(() => {
     async function loadBalance() {
       try {
         const res = await fetchUserBalance();
         const usdt = res?.balances?.USDT ?? 0;
         setAvailableUsdt(Number(usdt));
-      } catch (_) {
-        // 未登录就不显示余额
-      }
+      } catch (_) {}
     }
     loadBalance();
   }, []);
 
-  // ===== 根据最新价模拟一个简单的盘口（右侧价格列表） =====
-const { asks, bids } = useMemo(() => {
-  if (!lastPrice) return { asks: [], bids: [] };
-  const p = Number(lastPrice);
-
-  // 数量范围真实一点
-  const genQty = () =>
-    (Math.random() * 0.02 + 0.0003).toFixed(4);
-
-  // 价格波动真实一点
-  const genPriceLevels = (direction) => {
-    let list = [];
-    let base = p;
-
-    for (let i = 0; i < 5; i++) {
-      // 偏移范围：0.1 - 1.2 美金，但逐层递增
-      let offset = (Math.random() * 1.1 + 0.1) * (i + 1);
-
-      let price =
-        direction === "ask"
-          ? base + offset
-          : base - offset;
-
-      list.push({
-        price: price.toFixed(4),
-        qty: genQty(),
-      });
-    }
-
-    return list;
-  };
-
-  return {
-    asks: genPriceLevels("ask"),
-    bids: genPriceLevels("bid"),
-  };
-}, [lastPrice]);
-
-  // ===== 快捷百分比按钮 =====
-  const handlePercentClick = (percent) => {
-    if (!price) return;
-    const p = Number(price);
-    if (!p) return;
-    const total = (availableUsdt * percent) / 100;
-    const q = total / p;
-    setQty(q.toFixed(4));
-  };
-
-  // ===== 下单 =====
+  // ====== 下单 ======
   const handleSubmit = async () => {
     setSubmitMsg("");
     if (!qty || Number(qty) <= 0) {
@@ -128,16 +78,16 @@ const { asks, bids } = useMemo(() => {
 
     try {
       setSubmitting(true);
+
       await apiFetch("/api/order/create", {
-  method: "POST",
-  body: JSON.stringify({
-    symbol: upperSymbol,
-    amount: Number(qty)
-  }),
-});
+        method: "POST",
+        body: JSON.stringify({
+          symbol: upperSymbol,
+          amount: Number(qty),
+        }),
+      });
 
       setSubmitMsg("下单成功");
-      // 下单成功后清空数量
       setQty("");
     } catch (err) {
       setSubmitMsg(err.message || "下单失败，请检查是否已登录");
@@ -207,91 +157,34 @@ const { asks, bids } = useMemo(() => {
 
   return (
     <div style={containerStyle}>
-      {/* 顶部导航栏 */}
+
+      {/* 顶部 */}
       <div style={topBarStyle}>
-        {/* 左侧四条横杠图标 */}
-        <div
-          onClick={handleBack}
-          style={{ padding: 8, marginRight: 8, cursor: "pointer" }}
-        >
-          <div
-            style={{
-              width: 18,
-              height: 2,
-              backgroundColor: "#333",
-              marginBottom: 3,
-            }}
-          />
-          <div
-            style={{
-              width: 18,
-              height: 2,
-              backgroundColor: "#333",
-              marginBottom: 3,
-            }}
-          />
-          <div
-            style={{
-              width: 12,
-              height: 2,
-              backgroundColor: "#333",
-              marginBottom: 3,
-            }}
-          />
+        <div onClick={handleBack} style={{ padding: 8, marginRight: 8, cursor: "pointer" }}>
+          <div style={{ width: 18, height: 2, backgroundColor: "#333", marginBottom: 3 }} />
+          <div style={{ width: 18, height: 2, backgroundColor: "#333", marginBottom: 3 }} />
+          <div style={{ width: 12, height: 2, backgroundColor: "#333", marginBottom: 3 }} />
           <div style={{ width: 12, height: 2, backgroundColor: "#333" }} />
         </div>
-        {/* 中间币对名称 */}
-        <div style={{ flex: 1, textAlign: "left" }}>
-          <div
-            style={{
-              fontSize: 16,
-              fontWeight: 600,
-              color: "#222",
-            }}
-          >
-            {upperSymbol.replace("USDT", "/USDT")}
+
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 16, fontWeight: 600 }}>{upperSymbol.replace("USDT", "/USDT")}</div>
+          <div style={{ fontSize: 11, color: changePct >= 0 ? "#16a34a" : "#dc2626" }}>
+            {lastPrice} ({changePct.toFixed(2)}%)
           </div>
-          {lastPrice && (
-            <div
-              style={{
-                fontSize: 11,
-                color: changePct >= 0 ? "#16a34a" : "#dc2626",
-              }}
-            >
-              {lastPrice} ({changePct?.toFixed(2)}%)
-            </div>
-          )}
         </div>
-        {/* 右侧小图标占位 */}
-        <div
-          style={{
-            width: 24,
-            height: 24,
-            borderRadius: 12,
-            border: "1px solid #ddd",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 10,
-            color: "#999",
-          }}
-        >
+
+        <div style={{ width: 24, height: 24, borderRadius: 12, border: "1px solid #ddd", textAlign: "center" }}>
           📈
         </div>
       </div>
 
-      {/* 主体卡片：左侧下单、右侧盘口 */}
+      {/* 交易区域 */}
       <div style={cardStyle}>
-        {/* 左侧：下单区域 */}
+        {/* 左侧下单 */}
         <div>
-          {/* 买卖切换 */}
-          <div
-            style={{
-              display: "flex",
-              gap: 8,
-              marginBottom: 8,
-            }}
-          >
+          {/* 买卖按钮 */}
+          <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
             <button
               onClick={() => setSide("buy")}
               style={{
@@ -307,6 +200,7 @@ const { asks, bids } = useMemo(() => {
             >
               Buy
             </button>
+
             <button
               onClick={() => setSide("sell")}
               style={{
@@ -324,44 +218,34 @@ const { asks, bids } = useMemo(() => {
             </button>
           </div>
 
-          {/* 限价 / 市价 */}
-          <div
-            style={{
-              display: "flex",
-              gap: 16,
-              fontSize: 13,
-              marginBottom: 8,
-            }}
-          >
+          {/* 限价/市价 */}
+          <div style={{ display: "flex", gap: 16, fontSize: 13, marginBottom: 8 }}>
             <button
               onClick={() => setOrderType("limit")}
               style={{
                 border: "none",
                 background: "transparent",
-                color:
-                  orderType === "limit" ? "#22c55e" : "#666",
+                color: orderType === "limit" ? "#22c55e" : "#666",
                 fontWeight: orderType === "limit" ? 600 : 400,
-                cursor: "pointer",
               }}
             >
               limit order
             </button>
+
             <button
               onClick={() => setOrderType("market")}
               style={{
                 border: "none",
                 background: "transparent",
-                color:
-                  orderType === "market" ? "#22c55e" : "#666",
+                color: orderType === "market" ? "#22c55e" : "#666",
                 fontWeight: orderType === "market" ? 600 : 400,
-                cursor: "pointer",
               }}
             >
               market order
             </button>
           </div>
 
-          {/* 价格输入 */}
+          {/* 限价才显示价格 */}
           {orderType === "limit" && (
             <div style={{ marginBottom: 8 }}>
               <div style={inputWrapperStyle}>
@@ -373,32 +257,15 @@ const { asks, bids } = useMemo(() => {
                 />
                 <button
                   type="button"
-                  onClick={() =>
-                    setPrice((prev) =>
-                      (Number(prev || lastPrice || 0) - 0.1).toFixed(2)
-                    )
-                  }
-                  style={{
-                    ...smallButtonBase,
-                    marginRight: 4,
-                    border: "none",
-                    color: "#555",
-                  }}
+                  onClick={() => setPrice((p) => (Number(p || lastPrice) - 0.1).toFixed(2))}
+                  style={{ ...smallButtonBase, border: "none", color: "#555" }}
                 >
                   -
                 </button>
                 <button
                   type="button"
-                  onClick={() =>
-                    setPrice((prev) =>
-                      (Number(prev || lastPrice || 0) + 0.1).toFixed(2)
-                    )
-                  }
-                  style={{
-    ...smallButtonBase,
-    border: "none",
-    color: "#555",   // ⭐ 加这一行
-  }}
+                  onClick={() => setPrice((p) => (Number(p || lastPrice) + 0.1).toFixed(2))}
+                  style={{ ...smallButtonBase, border: "none", color: "#555" }}
                 >
                   +
                 </button>
@@ -406,7 +273,7 @@ const { asks, bids } = useMemo(() => {
             </div>
           )}
 
-          {/* 数量输入 */}
+          {/* 数量 */}
           <div style={{ marginBottom: 8 }}>
             <div style={inputWrapperStyle}>
               <input
@@ -417,35 +284,15 @@ const { asks, bids } = useMemo(() => {
               />
               <button
                 type="button"
-                onClick={() =>
-                  setQty((prev) =>
-                    (Number(prev || 0) - 0.001 > 0
-                      ? Number(prev || 0) - 0.001
-                      : 0
-                    ).toFixed(3)
-                  )
-                }
-                style={{
-                  ...smallButtonBase,
-                  marginRight: 4,
-                  border: "none",
-                  color: "#555",
-                }}
+                onClick={() => setQty((prev) => Math.max(Number(prev) - 0.001, 0).toFixed(3))}
+                style={{ ...smallButtonBase, border: "none", color: "#555" }}
               >
                 -
               </button>
               <button
                 type="button"
-                onClick={() =>
-                  setQty((prev) =>
-                    (Number(prev || 0) + 0.001).toFixed(3)
-                  )
-                }
-                style={{
-    ...smallButtonBase,
-    border: "none",
-    color: "#555",   // ⭐ 加这一行
-  }}
+                onClick={() => setQty((prev) => (Number(prev) + 0.001).toFixed(3))}
+                style={{ ...smallButtonBase, border: "none", color: "#555" }}
               >
                 +
               </button>
@@ -453,19 +300,15 @@ const { asks, bids } = useMemo(() => {
           </div>
 
           {/* 百分比按钮 */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: 8,
-              marginTop: 4,
-            }}
-          >
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
             {[25, 50, 75, 100].map((p) => (
               <button
                 key={p}
-                type="button"
-                onClick={() => handlePercentClick(p)}
+                onClick={() => {
+                  if (!price) return;
+                  const q = ((availableUsdt * p) / 100) / Number(price);
+                  setQty(q.toFixed(4));
+                }}
                 style={{
                   flex: 1,
                   marginRight: p === 100 ? 0 : 4,
@@ -474,7 +317,6 @@ const { asks, bids } = useMemo(() => {
                   border: "1px solid #e5e5e5",
                   fontSize: 11,
                   backgroundColor: "#fafafa",
-                  cursor: "pointer",
                   color: "#555",
                 }}
               >
@@ -484,40 +326,26 @@ const { asks, bids } = useMemo(() => {
           </div>
 
           {/* 可用余额 */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              fontSize: 12,
-              marginBottom: 6,
-            }}
-          >
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 6 }}>
             <span style={labelStyle}>Available</span>
-            <span style={{ fontSize: 12, color: "#111" }}>
-              {availableUsdt.toFixed(4)} USDT
-            </span>
+            <span style={{ color: "#111" }}>{availableUsdt.toFixed(4)} USDT</span>
           </div>
 
-          {/* Turnover 输入 */}
+          {/* Turnover */}
           <div style={{ marginBottom: 10 }}>
             <div style={inputWrapperStyle}>
               <input
                 style={inputStyle}
-                placeholder="Turnover"
+                value={price && qty ? (Number(price) * Number(qty)).toFixed(4) : ""}
                 readOnly
-                value={
-                  price && qty
-                    ? (Number(price) * Number(qty)).toFixed(4)
-                    : ""
-                }
+                placeholder="Turnover"
               />
               <span style={{ fontSize: 12, color: "#555" }}>USDT</span>
             </div>
           </div>
 
-          {/* 绿色按钮（未登录时可以写 Login，这里统一“Place Order”） */}
+          {/* 下单按钮 */}
           <button
-            type="button"
             onClick={handleSubmit}
             disabled={submitting}
             style={{
@@ -529,8 +357,6 @@ const { asks, bids } = useMemo(() => {
               color: "#fff",
               fontSize: 15,
               fontWeight: 600,
-              marginTop: 4,
-              cursor: "pointer",
               opacity: submitting ? 0.7 : 1,
             }}
           >
@@ -542,9 +368,7 @@ const { asks, bids } = useMemo(() => {
               style={{
                 marginTop: 6,
                 fontSize: 12,
-                color: submitMsg.includes("成功")
-                  ? "#16a34a"
-                  : "#dc2626",
+                color: submitMsg.includes("成功") ? "#16a34a" : "#dc2626",
               }}
             >
               {submitMsg}
@@ -552,30 +376,17 @@ const { asks, bids } = useMemo(() => {
           )}
         </div>
 
-        {/* 右侧：盘口列表 */}
-        <div
-          style={{
-            paddingLeft: 8,
-            borderLeft: "1px solid #f1f1f1",
-            fontSize: 12,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              color: "#999",
-              marginBottom: 4,
-            }}
-          >
+        {/* ====== 右侧盘口 ====== */}
+        <div style={{ paddingLeft: 8, borderLeft: "1px solid #f1f1f1", fontSize: 12 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", color: "#999", marginBottom: 4 }}>
             <span>Price</span>
             <span>Quantity</span>
           </div>
 
           {/* 卖盘（红色） */}
-          {asks.map((row, idx) => (
+          {orderBook.asks.map((row, idx) => (
             <div
-              key={"ask" + idx}
+              key={`ask-${idx}`}
               style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -589,17 +400,12 @@ const { asks, bids } = useMemo(() => {
           ))}
 
           {/* 分割线 */}
-          <div
-            style={{
-              borderTop: "1px dashed #eee",
-              margin: "4px 0",
-            }}
-          />
+          <div style={{ borderTop: "1px dashed #eee", margin: "4px 0" }} />
 
           {/* 买盘（绿色） */}
-          {bids.map((row, idx) => (
+          {orderBook.bids.map((row, idx) => (
             <div
-              key={"bid" + idx}
+              key={`bid-${idx}`}
               style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -614,71 +420,20 @@ const { asks, bids } = useMemo(() => {
         </div>
       </div>
 
-      {/* ===== 下方 Limit Order 区域 ===== */}
+      {/* ====== 空订单区域 ====== */}
       <div
         style={{
           margin: "28px 16px 120px 16px",
-          marginTop: 0,
           backgroundColor: "#ffffff",
           borderRadius: 12,
           padding: "18px 16px 48px 16px",
           minHeight: 240,
         }}
       >
-        {/* 顶部：limit order + 图标 */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 14,
-          }}
-        >
-          <div
-            style={{
-              fontSize: 14,
-              fontWeight: 600,
-              color: "#888",
-            }}
-          >
-            limit order
-          </div>
-
-          <div
-            style={{
-              width: 20,
-              height: 20,
-              cursor: "pointer",
-            }}
-          >
-            {/* 三条横线图标 */}
-            <div
-              style={{
-                width: "100%",
-                height: 2,
-                backgroundColor: "#aaa",
-                marginBottom: 4,
-              }}
-            ></div>
-            <div
-              style={{
-                width: "70%",
-                height: 2,
-                backgroundColor: "#aaa",
-                marginBottom: 4,
-              }}
-            ></div>
-            <div
-              style={{
-                width: "55%",
-                height: 2,
-                backgroundColor: "#aaa",
-              }}
-            ></div>
-          </div>
+        <div style={{ fontSize: 14, fontWeight: 600, color: "#888", marginBottom: 14 }}>
+          limit order
         </div>
 
-        {/* 空状态 */}
         <div
           style={{
             marginTop: 40,
@@ -687,7 +442,6 @@ const { asks, bids } = useMemo(() => {
             fontSize: 13,
           }}
         >
-          {/* 空图标（浅灰） */}
           <div style={{ marginBottom: 10 }}>
             <div
               style={{
@@ -697,41 +451,12 @@ const { asks, bids } = useMemo(() => {
                 opacity: 0.25,
                 borderRadius: 4,
                 border: "1.5px solid #ccc",
-                borderStyle: "solid",
-                borderColor: "#ddd",
                 position: "relative",
               }}
             >
-              <div
-                style={{
-                  width: "70%",
-                  height: 2,
-                  backgroundColor: "#ccc",
-                  position: "absolute",
-                  top: 12,
-                  left: "15%",
-                }}
-              ></div>
-              <div
-                style={{
-                  width: "50%",
-                  height: 2,
-                  backgroundColor: "#ccc",
-                  position: "absolute",
-                  top: 20,
-                  left: "15%",
-                }}
-              ></div>
-              <div
-                style={{
-                  width: "65%",
-                  height: 2,
-                  backgroundColor: "#ccc",
-                  position: "absolute",
-                  top: 28,
-                  left: "15%",
-                }}
-              ></div>
+              <div style={{ width: "70%", height: 2, backgroundColor: "#ccc", position: "absolute", top: 12, left: "15%" }} />
+              <div style={{ width: "50%", height: 2, backgroundColor: "#ccc", position: "absolute", top: 20, left: "15%" }} />
+              <div style={{ width: "65%", height: 2, backgroundColor: "#ccc", position: "absolute", top: 28, left: "15%" }} />
             </div>
           </div>
 
