@@ -71,9 +71,17 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
-  useEffect(() => {
-    if (token) fetchUserInfo();
-  }, [token, fetchUserInfo]);
+useEffect(() => {
+  const isAdminPage = window.location.pathname.startsWith("/admin");
+  if (isAdminPage) {
+    // 后台不需要加载用户信息
+    setLoadingUserInfo(false);
+    return;
+  }
+
+  if (token) fetchUserInfo();
+}, [token, fetchUserInfo]);
+
 
   /* ===========================
    *  退出登录
