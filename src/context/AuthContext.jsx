@@ -14,22 +14,43 @@ export const AuthProvider = ({ children }) => {
   axios.defaults.baseURL = "https://pankouhoutai.shop";
 
   /* ===========================
-   *  恢复登录（从 localStorage 读取）
+   *  启动时自动恢复 / 创建游客账号
    * =========================== */
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     const savedUid = localStorage.getItem("userId");
-    const savedAddress = localStorage.getItem("walletAddress");
 
-    if (savedToken && savedUid && savedAddress) {
+    if (savedToken && savedUid) {
+      // 已有 token → 直接登录
       setToken(savedToken);
       setUserId(savedUid);
-      setAddress(savedAddress);
-
       axios.defaults.headers.common["Authorization"] = "Bearer " + savedToken;
+
+      setLoadingUserInfo(false);
+      return;
     }
 
-    setLoadingUserInfo(false);
+    // 没有 token → 自动创建游客账号
+    axios.post("/api/guest-login")
+      .then(res => {
+        const d = res.data?.data;
+
+        if (d?.token && d?.userId) {
+          localStorage.setItem("token", d.token);
+          localStorage.setItem("userId", d.userId);
+
+          setToken(d.token);
+          setUserId(d.userId);
+
+          axios.defaults.headers.common["Authorization"] = "Bearer " + d.token;
+        }
+      })
+      .catch(err => {
+        console.error("游客账号创建失败:", err);
+      })
+      .finally(() => {
+        setLoadingUserInfo(false);
+      });
   }, []);
 
   /* ===========================
