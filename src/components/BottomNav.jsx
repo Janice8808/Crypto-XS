@@ -10,7 +10,7 @@ const BottomNav = () => {
     { path: "/market", label: "Market", icon: <BarChart2 size={22} /> },
 
     // ❗ 从 "/coin/BTC" 改成 "/coin-detail"
-    { path: "/coin-detail", label: "Currency", icon: <Info size={22} /> },
+    { path: "/coin/BTC", label: "Currency", icon: <Info size={22} /> },
 
     { path: "/trade", label: "Futures", icon: <LineChart size={22} /> },
     { path: "/wallet", label: "Wallets", icon: <Wallet size={22} /> },
