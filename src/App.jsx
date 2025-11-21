@@ -29,7 +29,7 @@ import Language from "./pages/Language";
 import WithdrawalPassword from "./pages/WithdrawalPassword";
 import MSBCertification from "./pages/MSBCertification";
 import Introduction from "./pages/Introduction";
-
+import React, { useEffect, useState } from "react";
 import Pledge from "./pages/Pledge";
 import DeFiRecord from "./pages/DeFiRecord";
 
@@ -56,7 +56,40 @@ function App() {
     }).catch(() => {});
   }, []);
 
-  
+    return (
+    <>
+      {/* ⭐⭐ 电脑端提示下载钱包弹窗（Router 上方） ⭐⭐*/}
+      {showWalletQr && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-xl shadow-lg text-center max-w-sm mx-4">
+            <h2 className="text-xl font-bold mb-2">请先下载钱包 App</h2>
+            <p className="text-gray-600 mb-4">使用手机扫描二维码下载钱包</p>
+
+            <img
+              src="/wallet-download.png"
+              alt="wallet qr"
+              className="w-48 mx-auto mb-4 rounded"
+            />
+
+            <button
+              className="w-full py-2 bg-blue-600 text-white rounded-lg mt-2"
+              onClick={() => setShowWalletQr(false)}
+            >
+              我已安装，继续浏览
+            </button>
+          </div>
+        </div>
+      )}
+
+      <Router>
+        <Routes>
+          {/* 你的所有页面 */}
+        </Routes>
+      </Router>
+    </>
+  );
+}
+
 
 
   // =====================================================================
