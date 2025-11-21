@@ -510,12 +510,13 @@ if (controlChanged || remarkChanged) {
                             {remark || "—"}
                           </div>
                         </td>
-                        <td className="px-2 py-2 align-top text-gray-600">
-                          <div className="text-[11px] leading-snug">
-                            <div>{loginCount}次 时间</div>
-                            <div>{formatTime(u.lastLogin)}</div>
-                          </div>
-                        </td>
+<td className="px-2 py-2 align-top text-gray-600">
+  <div className="text-[11px] leading-snug">
+    <div>访问次数：{loginCount || 0} 次</div>
+    <div>最后访问：{formatTime(u.lastSeen)}</div>
+  </div>
+</td>
+
                         <td className="px-2 py-2 align-top text-gray-600">
                           <div className="text-[11px] leading-snug">
                             <div>

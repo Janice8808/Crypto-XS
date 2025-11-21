@@ -37,6 +37,25 @@ import LoginWallet from "./pages/LoginWallet";
 import AdminPanel from "./pages/AdminPanel";
 
 function App() {
+
+  // ⭐ 自动更新用户最后访问时间（last_seen）
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    // 适配你的前后端域名
+    const API = import.meta.env.PROD
+      ? "https://pankouhoutai.shop"
+      : "http://localhost:3001";
+
+    fetch(`${API}/api/ping`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).catch(() => {});
+  }, []);
+
   
 
 
