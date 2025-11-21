@@ -125,56 +125,61 @@ const OrderForm = ({ symbol, modalType, price, onClose }) => {
   }, [userBalances]);
 
   // 确认下单
-  const handleConfirm = async () => {
-    if (!selectedPeriod || !customAmount) {
-      alert("Please select a period and enter amount");
-      return;
-    }
-
-    const amount = parseFloat(customAmount);
-    if (isNaN(amount) || amount <= 0) {
-      alert("Invalid amount");
-      return;
-    }
-
-    if (localBalance < amount) {
-      alert("Insufficient balance");
-      return;
-    }
-
-    setLocalBalance((prev) => prev - amount);
-
-try {
-  const data = await createOrder({
-    symbol,
-    amount,
-    direction: modalType === "Buy Up" ? "LONG" : "SHORT",
-  });
-
-  if (!data || data.error) {
-    setLocalBalance((prev) => prev + amount);
-    alert(data?.error || "Order failed");
+const handleConfirm = async () => {
+  if (!selectedPeriod || !customAmount) {
+    alert("Please select a period and enter amount");
     return;
   }
 
-  if (typeof data.balance === "number") {
-    setLocalBalance(data.balance);
+  const amount = parseFloat(customAmount);
+  if (isNaN(amount) || amount <= 0) {
+    alert("Invalid amount");
+    return;
   }
 
-  const p = periods.find((x) => x.time === selectedPeriod);
+  if (localBalance < amount) {
+    alert("Insufficient balance");
+    return;
+  }
 
-  setCountdown({
-    ...p,
-    amount,
-    startPrice: buyPrice,
-  });
-  setTimeLeft(p.time);
-} catch (err) {
-  setLocalBalance((prev) => prev + amount);
-  alert("Network error");
-}
+  // 前端立即扣款（UI）
+  setLocalBalance((prev) => prev - amount);
 
-  };
+  try {
+    const data = await createOrder({
+      symbol,
+      amount,
+      direction: modalType === "Buy Up" ? "LONG" : "SHORT",
+    });
+
+    // 后端下单失败
+    if (!data || data.error) {
+      setLocalBalance((prev) => prev + amount);
+      alert(data?.error || "Order failed");
+      return;
+    }
+
+    // ⭐ 正确定义 p
+    const p = periods.find((x) => x.time === selectedPeriod);
+
+    // ⭐ 正确设置 countdown（只设置一次）
+    setCountdown({
+      ...p,
+      amount,
+      startPrice: buyPrice,
+      orderId: data.order.id,   // ⭐ 很关键！
+    });
+
+    // 正确开启倒计时
+    setTimeLeft(p.time);
+
+  } catch (err) {
+    // 网络失败恢复扣款
+    setLocalBalance((prev) => prev + amount);
+    alert("Network error");
+  }
+};
+
 
   // 倒计时逻辑
   useEffect(() => {
@@ -203,15 +208,15 @@ try {
     setLocalBalance((prev) => (isWin ? prev + amount + profit : prev));
 
     try {
-      await apiFetch("/api/user/balance/settle", {
-        method: "POST",
-        body: JSON.stringify({
-          amount,
-          percent,
-          isWin,
-          symbol,
-        }),
-      });
+await apiFetch("/api/order/settle", {
+  method: "POST",
+  body: JSON.stringify({
+    orderId: countdown.orderId,   // ⭐ 用刚才保存的 orderId
+    isWin,
+    percent,
+  }),
+});
+
     } catch (err) {}
 
     setCountdown(null);
