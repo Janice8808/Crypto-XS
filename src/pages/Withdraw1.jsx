@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useCoins } from "../hooks/useCoins";
 
 // ====== 让 USDT 一定出现 ======
 function ensureUsdt(coins) {
@@ -26,33 +27,14 @@ export default function Withdraw1() {
   const [balances, setBalances] = useState({});
   const [search, setSearch] = useState("");
 
+  const { allCoins } = useCoins();
 // 获取币种列表
+// 用 allCoins 代替 coins
 useEffect(() => {
-  const cached = localStorage.getItem("coins");
-  if (cached) {
-    let list = JSON.parse(cached) || [];
-    list = ensureUsdt(list); // 🔥 确保一定有 USDT
-    setCoins(list);
-    localStorage.setItem("coins", JSON.stringify(list));
-  } else {
-    fetch("https://pankouhoutai.shop/api/coins")   // ✅ 修正这里
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          let list = ensureUsdt(data);
-          setCoins(list);
-          localStorage.setItem("coins", JSON.stringify(list));
-        } else {
-          console.warn("Invalid coins data:", data);
-          setCoins([]);
-        }
-      })
-      .catch((err) => {
-        console.error("Failed to fetch coins:", err);
-        setCoins([]);
-      });
-  }
-}, []);
+  let list = Array.isArray(allCoins) ? allCoins : [];
+  list = ensureUsdt(list); // USDT 强制置顶
+  setCoins(list);
+}, [allCoins]);
 
   // ✅ 获取用户余额
   useEffect(() => {
@@ -74,8 +56,7 @@ useEffect(() => {
   // 搜索过滤
   const filteredCoins = coins.filter(
     (coin) =>
-      coin.symbol?.toLowerCase().includes(search.toLowerCase()) ||
-      coin.name?.toLowerCase().includes(search.toLowerCase())
+coin.symbol?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -111,19 +92,16 @@ useEffect(() => {
               className="flex items-center justify-between bg-white rounded-xl p-3 shadow-sm hover:bg-gray-100 cursor-pointer transition"
             >
               <div className="flex items-center space-x-3">
-                <img
-                  src={
-                    coin.image?.startsWith("http")
-                      ? coin.image
-                      : `https://pankouhoutai.shop${coin.image}`
-                  }
-                  alt={coin.symbol}
-                  className="w-6 h-6 rounded-full"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "/images/default-coin.png";
-                  }}
-                />
+<img
+  src={coin.logo || "/images/default-coin.png"}
+  alt={coin.symbol}
+  className="w-6 h-6 rounded-full"
+  onError={(e) => {
+    e.target.onerror = null;
+    e.target.src = "/images/default-coin.png";
+  }}
+/>
+
                 <span className="font-medium text-gray-800 uppercase">
                   {sym}
                 </span>
