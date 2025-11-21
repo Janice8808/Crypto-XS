@@ -63,27 +63,32 @@ function App() {
   return (
     <>
       {/* ⭐ 电脑端二维码弹窗 */}
-      {showWalletQr && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-xl shadow-lg text-center max-w-sm mx-4">
-            <h2 className="text-xl font-bold mb-2">请先下载钱包 App</h2>
-            <p className="text-gray-600 mb-4">使用手机扫描二维码下载 Base Wallet</p>
+{showWalletQr && (
+  <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center px-4">
+    <div className="bg-white p-8 rounded-2xl shadow-2xl text-center max-w-md w-full">
+      <h2 className="text-2xl font-bold mb-3 text-gray-900">
+        Download Base Wallet
+      </h2>
+      <p className="text-gray-600 text-base mb-6">
+        Please scan the QR code below with your mobile device to install the wallet.
+      </p>
 
-            <img
-              src="/wallet-download.png"
-              alt="wallet qr"
-              className="w-48 mx-auto mb-4 rounded"
-            />
+      <img
+        src="/wallet-download.png"
+        alt="wallet qr"
+        className="w-64 mx-auto mb-6 rounded-xl shadow-lg"
+      />
 
-            <button
-              className="w-full py-2 bg-blue-600 text-white rounded-lg mt-2"
-              onClick={() => setShowWalletQr(false)}
-            >
-              我已安装，继续浏览
-            </button>
-          </div>
-        </div>
-      )}
+      <button
+        className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-base font-semibold transition"
+        onClick={() => setShowWalletQr(false)}
+      >
+        I already installed the App
+      </button>
+    </div>
+  </div>
+)}
+
 
       {/* ⭐ 主路由 */}
       <Router>
