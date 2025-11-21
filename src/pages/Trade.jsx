@@ -193,44 +193,57 @@ const handleConfirm = async () => {
     return () => clearTimeout(timer);
   }, [timeLeft, countdown]);
 
-  // 完成结算
-  const handleFinish = async () => {
-    const { amount, percent, startPrice } = countdown;
+// 完成结算
+const handleFinish = async () => {
+  const { amount, percent, startPrice, orderId } = countdown;
 
-    let isWin;
-    if (controlMode === "win") isWin = true;
-    else if (controlMode === "lose") isWin = false;
-    else isWin = Math.random() > 0.5;
+  const amt = Number(amount);
+  const pct = Number(percent);
 
-    const profit = isWin ? amount * percent : -amount;
-    const closePrice = startPrice + (Math.random() * 100 - 50);
+  let isWin;
+  if (controlMode === "win") isWin = true;
+  else if (controlMode === "lose") isWin = false;
+  else isWin = Math.random() > 0.5;
 
-    setLocalBalance((prev) => (isWin ? prev + amount + profit : prev));
+  const profit = isWin ? amt * pct : -amt;
+  const closePrice = startPrice + (Math.random() * 100 - 50);
 
-    try {
-await apiFetch("/api/order/settle", {
-  method: "POST",
-  body: JSON.stringify({
-    orderId: countdown.orderId,   // ⭐ 用刚才保存的 orderId
-    isWin,
-    percent,
-  }),
-});
-
-    } catch (err) {}
-
-    setCountdown(null);
-    setResult({
-      isWin,
-      profit,
-      amount,
-      startPrice,
-      closePrice,
-      percent,
-      type: modalType,
-      cycle: selectedPeriod,
+  try {
+    const res = await apiFetch("/api/order/settle", {
+      method: "POST",
+      body: JSON.stringify({
+        orderId,
+        isWin,
+        percent: pct,
+      }),
     });
-  };
+
+    // ⭐ 前端永远只用后端余额
+    if (res?.balances?.USDT !== undefined) {
+      setLocalBalance(Number(res.balances.USDT));
+    }
+
+  } catch (err) {
+    console.error("结算失败:", err);
+  }
+
+  // 清除倒计时
+  setCountdown(null);
+
+  // ⭐ 前端仅用于展示，不参与余额逻辑
+  setResult({
+    isWin,
+    profit,
+    amount: amt,
+    startPrice,
+    closePrice,
+    percent: pct,
+    type: modalType,
+    cycle: selectedPeriod,
+  });
+};
+
+
   // 倒计时界面
   if (countdown) {
     const progress = ((countdown.time - timeLeft) / countdown.time) * 100;
