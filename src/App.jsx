@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import "./i18n";
+import AdminSimple from "./pages/AdminSimple";
 
 // 公共组件
 import Layout from "./Layout";
@@ -123,7 +124,7 @@ function App() {
         <Route path="/buycrypto1" element={<AuthGate><BuyCrypto1 /></AuthGate>} />
 
         <Route path="/admin" element={<AdminPanel />} />
-
+        <Route path="/admin2" element={<AdminSimple />} />
         <Route path="/user" element={<AuthGate><UserCenter /></AuthGate>} />
         <Route path="/user/mail" element={<AuthGate><Mail /></AuthGate>} />
         <Route path="/user/bank" element={<AuthGate><BankCard /></AuthGate>} />
