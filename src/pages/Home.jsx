@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCoins } from "../hooks/useCoins";
 import { coinIcons } from "../assets/coinIcons";
+import { useOkxTickers } from "../hooks/useOkxTickers";
+
+
 // ============ 地址遮挡函数 ============
 const maskAddress = (addr) => {
   if (!addr) return "--";
@@ -97,12 +99,23 @@ const GlobeIcon = () => (
 );
 
 const Home = () => {
-  const { allCoins, hotCoins } = useCoins();
+  const SYMBOLS = [
+  "BTC-USDT","ETH-USDT","BNB-USDT","SOL-USDT","XRP-USDT",
+  "DOGE-USDT","ADA-USDT","TRX-USDT","AVAX-USDT","DOT-USDT",
+  "LTC-USDT","LINK-USDT","ATOM-USDT","FIL-USDT","BCH-USDT",
+  "MATIC-USDT","TON-USDT","ICP-USDT","APT-USDT","NEAR-USDT",
+  "SAND-USDT","MANA-USDT","ARB-USDT","OP-USDT","SUI-USDT"
+];
+
+const tickers = useOkxTickers(SYMBOLS);
+const allCoins = Object.values(tickers);
+
 
   // ⭐ 热门币（不再使用 useTicker）
-  const btc = hotCoins.find((c) => c.symbol === "BTC") || { price: "--", change: 0 };
-  const eth = hotCoins.find((c) => c.symbol === "ETH") || { price: "--", change: 0 };
-  const bnb = hotCoins.find((c) => c.symbol === "BNB") || { price: "--", change: 0 };
+const btc = tickers["BTC-USDT"] || { price: "--", change: 0 };
+const eth = tickers["ETH-USDT"] || { price: "--", change: 0 };
+const bnb = tickers["BNB-USDT"] || { price: "--", change: 0 };
+
 
   const address = localStorage.getItem("address") || "";
   const maskedAddress = maskAddress(address);
@@ -247,27 +260,31 @@ const stableList = allCoins.slice(0, 30); // 想展示多少条你自己调
           </div>
         </div>
 
-        {/* 热门币种 */}
-        <div className="grid grid-cols-3 gap-4">
-          {top3.map((coin) => {
-            const up = coin.change >= 0;
+<div className="grid grid-cols-3 gap-4">
+  {top3.map((coin) => {
+    const up = coin.change >= 0;
 
-            return (
-              <div key={coin.symbol} className="text-center py-2">
-                <div className="text-gray-600 text-sm">{coin.symbol}</div>
+    return (
+      <Link
+        key={coin.symbol}
+        to={`/coin/${coin.base}-USDT`}   // ⭐ 跳转用 "-"
+        className="text-center py-2"
+      >
+        <div className="text-gray-600 text-sm">{coin.symbol}</div>  {/* ⭐ 显示用 "/" */}
 
-                <div className={`font-bold ${up ? "text-green-500" : "text-red-500"}`}>
-                  ${coin.price}
-                </div>
-
-                <div className={`${up ? "text-green-500" : "text-red-500"}`}>
-                  {up ? "+" : ""}
-                  {coin.change}%
-                </div>
-              </div>
-            );
-          })}
+        <div className={`font-bold ${up ? "text-green-500" : "text-red-500"}`}>
+          ${Number(coin.price).toFixed(1)}
         </div>
+
+        <div className={`${up ? "text-green-500" : "text-red-500"}`}>
+          {up ? "+" : ""}
+          {coin.change}%
+        </div>
+      </Link>
+    );
+  })}
+</div>
+
 
       </div>
 
@@ -287,7 +304,7 @@ const stableList = allCoins.slice(0, 30); // 想展示多少条你自己调
           return (
             <Link
               key={coin.symbol}
-              to={`/coin/${coin.symbol}USDT`}
+              to={`/coin/${coin.symbol}-USDT`}
               className="flex items-center px-2 py-2 hover:bg-gray-100 transition"
             >
               <div className="w-1/3 flex items-center">
@@ -296,7 +313,7 @@ const stableList = allCoins.slice(0, 30); // 想展示多少条你自己调
               </div>
 
               <div className="w-1/3 text-center text-gray-600">
-                ${coin.price}
+                ${Number(coin.price).toFixed(1)}
               </div>
 
               <div className="w-1/3 text-right">

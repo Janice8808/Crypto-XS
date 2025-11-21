@@ -4,12 +4,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { fetchUserBalance } from "@/api/user";
 import { apiFetch } from "@/api/http";
 
-// 从环境变量里拿后端地址（比如 https://pankouhoutai.shop/api）
-// 强制使用线上后端，不依赖 VITE_API_BASE
-const API_BASE = "https://pankouhoutai.shop/api";
-
-// WebSocket：直接连线上 ticker
-const WS_BASE = "wss://pankouhoutai.shop";
+// ====== OKX WebSocket 地址 ======
+const OKX_WS = "wss://ws.okx.com:8443/ws/v5/public";
 
 
 export default function CoinDetail() {
@@ -30,6 +26,34 @@ export default function CoinDetail() {
   const [submitting, setSubmitting] = useState(false);
   const [submitMsg, setSubmitMsg] = useState("");
 
+  // ====== OKX Ticker（实时最新价/24h） ======
+useEffect(() => {
+  const instId = upperSymbol.replace("USDT", "-USDT");
+  const ws = new WebSocket(OKX_WS);
+
+  ws.onopen = () => {
+    ws.send(
+      JSON.stringify({
+        op: "subscribe",
+        args: [{ channel: "tickers", instId }]
+      })
+    );
+  };
+
+  ws.onmessage = (evt) => {
+    const msg = JSON.parse(evt.data);
+    if (!msg.data) return;
+
+    const d = msg.data[0]; 
+    setLastPrice(Number(d.last));
+    const open = Number(d.open24h);
+    const pct = ((d.last - open) / open) * 100;
+    setChangePct(pct);
+  };
+
+  return () => ws.close();
+}, [upperSymbol]);
+
   // ===== 顶部点击左侧四横杠，返回市场列表 =====
   const handleBack = () => {
     navigate("/markets");
@@ -38,28 +62,40 @@ export default function CoinDetail() {
 // ===== 模拟盘口（每秒波动） =====
 const [orderBook, setOrderBook] = useState({ asks: [], bids: [] });
 
+// ====== OKX 盘口（books5）=====
 useEffect(() => {
-  const timer = setInterval(() => {
-    const base = Number(lastPrice || 50000);
+  const instId = upperSymbol.replace("USDT", "-USDT");
+  const ws = new WebSocket(OKX_WS);
 
-    const gen = (isAsk) => {
-      return Array.from({ length: 5 }).map(() => {
-        const diff = (Math.random() * 3 + 0.1) * (isAsk ? 1 : -1);
-        return {
-          price: (base + diff).toFixed(4),
-          qty: (Math.random() * 0.02 + 0.001).toFixed(4),
-        };
-      });
-    };
+  ws.onopen = () => {
+    ws.send(
+      JSON.stringify({
+        op: "subscribe",
+        args: [{ channel: "books5", instId }]
+      })
+    );
+  };
+
+  ws.onmessage = (evt) => {
+    const msg = JSON.parse(evt.data);
+    if (!msg.data) return;
+
+    const d = msg.data[0];
 
     setOrderBook({
-      asks: gen(true),
-      bids: gen(false),
+      asks: d.asks.map(([p, qty]) => ({
+        price: Number(p).toFixed(2),
+        qty: Number(qty).toFixed(4),
+      })),
+      bids: d.bids.map(([p, qty]) => ({
+        price: Number(p).toFixed(2),
+        qty: Number(qty).toFixed(4),
+      })),
     });
-  }, 1000);
+  };
 
-  return () => clearInterval(timer);
-}, [lastPrice]);
+  return () => ws.close();
+}, [upperSymbol]);
 
 
   // ===== 获取用户可用余额 =====
@@ -219,7 +255,8 @@ useEffect(() => {
               color: "#222",
             }}
           >
-            {upperSymbol.replace("USDT", "/USDT")}
+            {upperSymbol.replace(/USDT$/,"/USDT")}
+
           </div>
           {lastPrice && (
             <div
@@ -228,7 +265,7 @@ useEffect(() => {
                 color: changePct >= 0 ? "#16a34a" : "#dc2626",
               }}
             >
-              {lastPrice} ({changePct?.toFixed(2)}%)
+              {lastPrice.toFixed(2)} ({changePct?.toFixed(2)}%)
             </div>
           )}
         </div>
@@ -567,7 +604,7 @@ useEffect(() => {
           />
 
           {/* 买盘（绿色） */}
-          {orderBook.asks.map((row, idx) => (
+          {orderBook.bids.map((row, idx) => (
             <div
               key={"bid" + idx}
               style={{
