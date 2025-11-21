@@ -11,17 +11,19 @@ export function useOkxTickers(symbols = []) {
     wsRef.current = ws;
 
     ws.onopen = () => {
-      console.log("OKX trades WS 已连接");
+      console.log("OKX 多币 WS 已连接");
 
       const subs = symbols.map((s) => ({
         channel: "trades",
-        instId: s,
+        instId: s, // 如 BTC-USDT
       }));
 
-      ws.send(JSON.stringify({
-        op: "subscribe",
-        args: subs,
-      }));
+      ws.send(
+        JSON.stringify({
+          op: "subscribe",
+          args: subs,
+        })
+      );
     };
 
     ws.onmessage = (event) => {
@@ -32,17 +34,22 @@ export function useOkxTickers(symbols = []) {
       const inst = d.instId; // BTC-USDT
       const sym = inst.replace("-USDT", "");
 
-      const price = Number(d.p); // 最新成交价
+      const last = Number(d.last || 0);
+      const open = Number(d.open24h || 0);
+      const change = open ? ((last - open) / open) * 100 : 0;
 
       setTickers((prev) => ({
         ...prev,
         [inst]: {
           symbol: sym,
-          price,
-          change: prev[inst]?.change ?? 0, // 保留旧涨跌幅
+          price: last,
+          change: change.toFixed(2),
         },
       }));
     };
+
+    ws.onclose = () => console.log("OKX WS 断开");
+    ws.onerror = (err) => console.log("WS 错误:", err);
 
     return () => ws.close();
   }, [symbols]);
