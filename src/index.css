@@ -94,18 +94,14 @@ button:focus-visible {
 @keyframes marqueeMove {
   0% {
     transform: translateX(-100%);
-    opacity: 0;
+    opacity: 1;
   }
-  10% {
+  40% {
     transform: translateX(0%);
     opacity: 1;
   }
-  80% {
-    transform: translateX(100%);
-    opacity: 1;
-  }
   100% {
-    transform: translateX(120%);
+    transform: translateX(100%);
     opacity: 0;
   }
 }
@@ -113,3 +109,4 @@ button:focus-visible {
 .animate-marquee {
   animation: marqueeMove 4s linear infinite;
 }
+

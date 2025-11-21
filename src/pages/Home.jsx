@@ -150,13 +150,13 @@ const bnb = tickers["BNB-USDT"] || { price: "--", change: 0 };
   const images = ["/images/banner1.jpg", "/images/banner2.jpg", "/images/banner3.jpg"];
  
   // ========= 2️⃣ ⭐ 定时器放这里 ⭐ =========
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setMarqueeKey(k => k + 1);  // ⭐ 每4秒重播一次动画
-    }, 4000);
+useEffect(() => {
+  const timer = setInterval(() => {
+    setMarqueeKey(k => k + 1);
+  }, 4000);  // 跟动画时间一致
 
-    return () => clearInterval(timer);
-  }, []);
+  return () => clearInterval(timer);
+}, []);
 
   useEffect(() => {
     const t = setInterval(() => {
@@ -234,14 +234,26 @@ const stableList = allCoins.slice(0, 30); // 想展示多少条你自己调
 
 
 {/* 滚动公告条 */}
-<div className="relative overflow-hidden bg-gradient-to-r from-gray-200 via-gray-500 to-gray-800 h-12 flex items-center px-3 -mt-1">
-  <div
-    key={marqueeKey}
-    className="absolute whitespace-nowrap text-white text-sm flex items-center animate-marquee"
-  >
-    🔈 <span className="ml-2">Welcome to visit Crypto.com</span>
+<div className="relative overflow-hidden h-12 px-3 -mt-1
+  bg-gradient-to-t from-black via-gray-700 via-gray-500 via-gray-300 to-white
+  flex items-center">
+
+  {/* 喇叭固定不动 */}
+  <div className="text-white text-lg mr-2">🔈</div>
+
+  {/* 滚动文字容器 */}
+  <div className="relative flex-1 overflow-hidden">
+
+    <div
+      key={marqueeKey}
+      className="absolute whitespace-nowrap text-white text-sm animate-marquee"
+    >
+      Welcome to visit Crypto.com
+    </div>
+
   </div>
 </div>
+
 
 
       <div className="-mt-2 bg-white mx-2 rounded-xl p-4 shadow">
