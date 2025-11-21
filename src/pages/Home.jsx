@@ -234,9 +234,16 @@ const stableList = allCoins.slice(0, 30); // 想展示多少条你自己调
 
 
 {/* 滚动公告条 */}
-<div className="relative overflow-hidden h-12 px-3 -mt-1
-  bg-gradient-to-t from-black via-gray-700 via-gray-500 via-gray-300 to-white
-  flex items-center">
+<div className="
+  relative overflow-hidden 
+  h-36 
+  px-3 -mt-1 flex items-center
+  bg-gradient-to-b 
+  from-[#1E1E22]
+  via-[#3C3C42]
+  via-[#63636A]
+  to-[#A4A4AA]
+">
 
   {/* 喇叭固定不动 */}
   <div className="text-white text-lg mr-2">🔈</div>
