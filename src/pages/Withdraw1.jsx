@@ -88,19 +88,20 @@ coin.symbol?.toLowerCase().includes(search.toLowerCase())
           return (
             <div
               key={coin.id || coin.symbol}
-              onClick={() => navigate(`/withdraw/${sym}`)}
+              onClick={() => navigate(`/wallet/${sym}/withdraw`)}
               className="flex items-center justify-between bg-white rounded-xl p-3 shadow-sm hover:bg-gray-100 cursor-pointer transition"
             >
               <div className="flex items-center space-x-3">
 <img
-  src={coin.logo || "/images/default-coin.png"}
-  alt={coin.symbol}
+  src={`/coin-icons/${sym}.png`}
+  alt={sym}
   className="w-6 h-6 rounded-full"
   onError={(e) => {
     e.target.onerror = null;
     e.target.src = "/images/default-coin.png";
   }}
 />
+
 
                 <span className="font-medium text-gray-800 uppercase">
                   {sym}
