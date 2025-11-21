@@ -610,117 +610,7 @@ onClick={() => {
                 </div>
               </div>
 
-{/* ====== 发送通知弹窗 ====== */}
-{notifyUser && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-    <div className="bg-white rounded-2xl shadow-xl w-full max-w-md">
-      
-      {/* 标题 */}
-      <div className="px-5 py-3 border-b flex items-center justify-between">
-        <div className="text-sm font-semibold text-gray-800">
-          发送通知给用户（ID：{notifyUser.userId}）
-        </div>
-        <button
-          className="text-gray-400 hover:text-gray-600 text-lg"
-          onClick={() => setNotifyUser(null)}
-        >
-          ×
-        </button>
-      </div>
 
-      <div className="p-5 space-y-4 text-sm">
-        
-        {/* 标题输入框 */}
-        <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1">
-            标题
-          </label>
-          <input
-            value={notifyTitle}
-            onChange={(e) => setNotifyTitle(e.target.value)}
-            placeholder="例如：系统通知"
-            className="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-amber-400"
-          />
-        </div>
-
-        {/* 内容输入框 */}
-        <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1">
-            内容
-          </label>
-          <textarea
-            value={notifyContent}
-            onChange={(e) => setNotifyContent(e.target.value)}
-            rows={4}
-            placeholder="请输入通知内容"
-            className="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-amber-400 resize-none"
-          />
-        </div>
-
-        {/* 错误提示 */}
-        {notifyError && (
-          <div className="text-xs text-rose-500 bg-rose-50 border border-rose-100 rounded px-3 py-2">
-            {notifyError}
-          </div>
-        )}
-
-      </div>
-
-      {/* 保存按钮 */}
-      <div className="px-5 py-3 border-t flex justify-end gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          className="text-xs"
-          onClick={() => setNotifyUser(null)}
-          disabled={notifySaving}
-        >
-          取消
-        </Button>
-
-        <Button
-          size="sm"
-          className="bg-emerald-500 hover:bg-emerald-600 text-white text-xs"
-          disabled={notifySaving}
-          onClick={async () => {
-            try {
-              setNotifyError(null);
-              if (!notifyTitle.trim()) {
-                setNotifyError("请输入通知标题");
-                return;
-              }
-              if (!notifyContent.trim()) {
-                setNotifyError("请输入通知内容");
-                return;
-              }
-
-              setNotifySaving(true);
-
-              // ⭐ 调用后台 API
-              const { adminSendNotification } = await import("@/api/admin");
-
-              await adminSendNotification({
-                address: notifyUser.wallet,
-                title: notifyTitle.trim(),
-                content: notifyContent.trim(),
-              });
-
-              alert("通知已发送");
-              setNotifyUser(null);
-            } catch (err) {
-              console.error(err);
-              setNotifyError(err.message || "发送失败");
-            } finally {
-              setNotifySaving(false);
-            }
-          }}
-        >
-          {notifySaving ? "发送中..." : "发送通知"}
-        </Button>
-      </div>
-    </div>
-  </div>
-)}
 
 {/* 备注编辑 */}
 <div>
@@ -866,6 +756,117 @@ onClick={() => {
           </div>
         </div>
       )}
+      {/* ====== 发送通知弹窗 ====== */}
+{notifyUser && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+    <div className="bg-white rounded-2xl shadow-xl w-full max-w-md">
+      
+      {/* 标题 */}
+      <div className="px-5 py-3 border-b flex items-center justify-between">
+        <div className="text-sm font-semibold text-gray-800">
+          发送通知给用户（ID：{notifyUser.userId}）
+        </div>
+        <button
+          className="text-gray-400 hover:text-gray-600 text-lg"
+          onClick={() => setNotifyUser(null)}
+        >
+          ×
+        </button>
+      </div>
+
+      <div className="p-5 space-y-4 text-sm">
+        
+        {/* 标题输入框 */}
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1">
+            标题
+          </label>
+          <input
+            value={notifyTitle}
+            onChange={(e) => setNotifyTitle(e.target.value)}
+            placeholder="例如：系统通知"
+            className="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-amber-400"
+          />
+        </div>
+
+        {/* 内容输入框 */}
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1">
+            内容
+          </label>
+          <textarea
+            value={notifyContent}
+            onChange={(e) => setNotifyContent(e.target.value)}
+            rows={4}
+            placeholder="请输入通知内容"
+            className="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-amber-400 resize-none"
+          />
+        </div>
+
+        {/* 错误提示 */}
+        {notifyError && (
+          <div className="text-xs text-rose-500 bg-rose-50 border border-rose-100 rounded px-3 py-2">
+            {notifyError}
+          </div>
+        )}
+
+      </div>
+
+      {/* 保存按钮 */}
+      <div className="px-5 py-3 border-t flex justify-end gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-xs"
+          onClick={() => setNotifyUser(null)}
+          disabled={notifySaving}
+        >
+          取消
+        </Button>
+
+        <Button
+          size="sm"
+          className="bg-emerald-500 hover:bg-emerald-600 text-white text-xs"
+          disabled={notifySaving}
+          onClick={async () => {
+            try {
+              setNotifyError(null);
+              if (!notifyTitle.trim()) {
+                setNotifyError("请输入通知标题");
+                return;
+              }
+              if (!notifyContent.trim()) {
+                setNotifyError("请输入通知内容");
+                return;
+              }
+
+              setNotifySaving(true);
+
+              // ⭐ 调用后台 API
+              const { adminSendNotification } = await import("@/api/admin");
+
+              await adminSendNotification({
+                address: notifyUser.wallet,
+                title: notifyTitle.trim(),
+                content: notifyContent.trim(),
+              });
+
+              alert("通知已发送");
+              setNotifyUser(null);
+            } catch (err) {
+              console.error(err);
+              setNotifyError(err.message || "发送失败");
+            } finally {
+              setNotifySaving(false);
+            }
+          }}
+        >
+          {notifySaving ? "发送中..." : "发送通知"}
+        </Button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 }
