@@ -248,13 +248,13 @@ const stableList = allCoins.slice(0, 30); // 想展示多少条你自己调
   <div className="text-yellow-400 text-lg mr-2 z-20 relative top-1">🔊</div>
 
 {/* 滚动文字区域 */}
-<div className="relative flex-1 overflow-hidden flex items-center min-h-[24px]">
+<div className="relative flex-1 overflow-hidden min-h-[24px]">
 
   <div
     key={marqueeKey}
     className="
       absolute left-0 
-      top-[18%] -translate-y-1/2
+      top-[20%] -translate-y-1/2
       whitespace-nowrap 
       text-white text-base
       animate-marquee-under z-50
