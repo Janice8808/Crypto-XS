@@ -21,7 +21,7 @@ export default function LoginWallet() {
   async function loginWithWallet() {
     try {
       if (!window.ethereum) {
-        alert("请使用 MetaMask 或 WalletConnect 浏览器打开");
+        alert("Please open this using Bace browser.");
         return;
       }
 
@@ -64,7 +64,7 @@ export default function LoginWallet() {
       window.location.replace("/");
     } catch (err) {
       console.error(err);
-      alert("钱包授权失败，请重试");
+      alert("Wallet authorization failed, please try again.");
       setLoading(false); // 停止 loading，避免死循环
     }
   }
@@ -72,7 +72,7 @@ export default function LoginWallet() {
   return (
     <div className="min-h-screen flex items-center justify-center text-white bg-black">
       {loading ? (
-        <p>等待钱包授权，请在你的钱包中点击确认…</p>
+        <p>Waiting for wallet authorization. Please click "Confirm" in your wallet...</p>
       ) : (
         <button
           onClick={loginWithWallet}
