@@ -101,27 +101,50 @@ const GlobeIcon = () => (
 const Home = () => {
   const navigate = useNavigate();
   const [marqueeKey, setMarqueeKey] = useState(0);
+
+  // 1️⃣ 币种订阅列表（给 WebSocket 用）
   const SYMBOLS = [
-  "BTC-USDT","ETH-USDT","BNB-USDT","SOL-USDT","XRP-USDT",
-  "DOGE-USDT","ADA-USDT","TRX-USDT","AVAX-USDT","DOT-USDT",
-  "LTC-USDT","LINK-USDT","ATOM-USDT","FIL-USDT","BCH-USDT",
-  "MATIC-USDT","TON-USDT","ICP-USDT","APT-USDT","NEAR-USDT",
-  "SAND-USDT","MANA-USDT","ARB-USDT","OP-USDT","SUI-USDT"
-];
+    "BTC-USDT","ETH-USDT","BNB-USDT","SOL-USDT","XRP-USDT",
+    "DOGE-USDT","ADA-USDT","TRX-USDT","AVAX-USDT","DOT-USDT",
+    "LTC-USDT","LINK-USDT","ATOM-USDT","FIL-USDT","BCH-USDT",
+    "MATIC-USDT","TON-USDT","ICP-USDT","APT-USDT","NEAR-USDT",
+    "SAND-USDT","MANA-USDT","ARB-USDT","OP-USDT","SUI-USDT"
+  ];
 
-const tickers = useOkxTickers(SYMBOLS);
-const allCoins = Object.values(tickers);
+  // 2️⃣ 固定展示顺序（页面用这个）
+  const FIXED_LIST = [
+    "BTC-USDT","ETH-USDT","BNB-USDT","SOL-USDT","XRP-USDT",
+    "DOGE-USDT","ADA-USDT","TRX-USDT","AVAX-USDT","DOT-USDT",
+    "LTC-USDT","LINK-USDT","ATOM-USDT","FIL-USDT","BCH-USDT",
+    "MATIC-USDT","TON-USDT","ICP-USDT","APT-USDT","NEAR-USDT",
+    "SAND-USDT","MANA-USDT","ARB-USDT","OP-USDT","SUI-USDT"
+  ];
 
+  // 3️⃣ 实时行情
+  const tickers = useOkxTickers(SYMBOLS);
 
-  // ⭐ 热门币（不再使用 useTicker）
-const btc = tickers["BTC-USDT"] || { price: "--", change: 0 };
-const eth = tickers["ETH-USDT"] || { price: "--", change: 0 };
-const bnb = tickers["BNB-USDT"] || { price: "--", change: 0 };
+  // ⭐ 热门币
+  const btc = tickers["BTC-USDT"] || { price: "--", change: 0 };
+  const eth = tickers["ETH-USDT"] || { price: "--", change: 0 };
+  const bnb = tickers["BNB-USDT"] || { price: "--", change: 0 };
 
+  // 4️⃣ 用固定列表 + 实时 tickers 生成稳定列表（只写一次！）
+  const stableList = FIXED_LIST.map((id) => {
+    const t = tickers[id] || {};
+    return {
+      symbol: id.replace("-USDT", ""), // e.g. "BTC"
+      price: t.price || "--",
+      change: t.change || 0,
+    };
+  });
 
   const address = localStorage.getItem("address") || "";
   const maskedAddress = maskAddress(address);
   const [uid, setUid] = useState("--");
+
+  // ⬇️ 你后面的 useEffect、features、banner、WebSocket 等，继续保持不动即可
+  // ...
+
 
   useEffect(() => {
     fetch("https://pankouhoutai.shop/api/user/balance", {
@@ -249,10 +272,6 @@ const top3 = [
   { base: "ETH", symbol: "ETH/USDT", price: eth.price, change: eth.change },
   { base: "BNB", symbol: "BNB/USDT", price: bnb.price, change: bnb.change },
 ];
-
-
-// 直接复用 allCoins，与 Market 页面保持一致
-const stableList = allCoins.slice(0, 30); // 想展示多少条你自己调
 
 
   return (
