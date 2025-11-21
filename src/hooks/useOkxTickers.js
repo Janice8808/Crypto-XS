@@ -40,7 +40,7 @@ export function useOkxTickers(symbols = []) {
 
       setTickers((prev) => ({
         ...prev,
-        [sym]: {
+        [inst]: {
           symbol: sym,
           price: last,
           change: change.toFixed(2),
