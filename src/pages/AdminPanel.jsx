@@ -105,7 +105,7 @@ useEffect(() => {
 
   // ⭐ 正确区分 本地 / 线上
   const wsUrl = import.meta.env.PROD
-    ? "wss://crypto-ht.onrender.com"   // 必须写死你的 Render 后端
+    ? "wss:///pankouhoutai.shop/admin-ws"   // 必须写死你的 Render 后端
     : "ws://localhost:5000";           // 本地开发环境
 
   console.log("📡 Admin WS connecting:", wsUrl);
