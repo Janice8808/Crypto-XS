@@ -157,11 +157,12 @@ const bnb = tickers["BNB-USDT"] || { price: "--", change: 0 };
 
   const HOT_SYMBOLS = ["BTC", "ETH", "BNB"];
 
-  const top3 = [
-    { symbol: "BTC/USDT", price: btc.price, change: btc.change },
-    { symbol: "ETH/USDT", price: eth.price, change: eth.change },
-    { symbol: "BNB/USDT", price: bnb.price, change: bnb.change },
-  ];
+const top3 = [
+  { base: "BTC", symbol: "BTC/USDT", price: btc.price, change: btc.change },
+  { base: "ETH", symbol: "ETH/USDT", price: eth.price, change: eth.change },
+  { base: "BNB", symbol: "BNB/USDT", price: bnb.price, change: bnb.change },
+];
+
 
 // 直接复用 allCoins，与 Market 页面保持一致
 const stableList = allCoins.slice(0, 30); // 想展示多少条你自己调
