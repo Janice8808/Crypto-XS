@@ -50,46 +50,40 @@ function App() {
     }).catch(() => {});
   }, []);
 
-// ⭐ 电脑端弹出“下载钱包二维码”
-const [showWalletQr, setShowWalletQr] = useState(false);
+  // ⭐ 电脑端弹出“下载钱包二维码”
+  const [showWalletQr, setShowWalletQr] = useState(false);
 
-useEffect(() => {
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  if (!isMobile) {
-    setShowWalletQr(true); // 电脑才显示
-  }
-}, []);
+  useEffect(() => {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (!isMobile) {
+      setShowWalletQr(true); // 电脑才显示
+    }
+  }, []);
 
-return (
-  <>
-    {/* ⭐ 电脑端二维码弹窗 */}
-    {showWalletQr && (
-      <div className="fixed inset-0 bg-[#16171a]/90 z-50 flex items-center justify-center px-4">
-        <div className="bg-transparent text-center max-w-lg w-full">
+  return (
+    <>
+      {/* ⭐ 电脑端二维码弹窗 */}
+      {showWalletQr && (
+        <div className="fixed inset-0 bg-[#16171a]/90 z-50 flex items-center justify-center px-4">
+          <div className="bg-transparent text-center max-w-lg w-full">
 
-          {/* 二维码图片 */}
-          <img
-            src="/walletconnect-full.png"
-            alt="WalletConnect QR"
-            className="w-full rounded-3xl shadow-2xl mx-auto"
-          />
+            <img
+              src="/walletconnect-full.png"
+              alt="WalletConnect QR"
+              className="w-full rounded-3xl shadow-2xl mx-auto"
+            />
 
-          {/* 图片下方一个 × */}
-          <div
-            onClick={() => setShowWalletQr(false)}
-            className="mt-4 text-white/70 hover:text-white text-4xl cursor-pointer select-none"
-          >
-            ×
+            {/* 图片下方一个 × */}
+            <div
+              onClick={() => setShowWalletQr(false)}
+              className="mt-4 text-white/70 hover:text-white text-4xl cursor-pointer select-none"
+            >
+              ×
+            </div>
+
           </div>
-
         </div>
-      </div>
-    )}
-  </>
-);
-
-
-
+      )}
 
       {/* ⭐ 主路由 */}
       <Router>
@@ -164,7 +158,7 @@ return (
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/admin2" element={<AdminSimple />} />
 
-          {/* 没匹配默认首页 */}
+          {/* 默认首页 */}
           <Route path="*" element={<Home />} />
         </Routes>
       </Router>
