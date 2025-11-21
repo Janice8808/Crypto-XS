@@ -236,30 +236,30 @@ const stableList = allCoins.slice(0, 30); // 想展示多少条你自己调
 {/* 滚动公告条 */}
 <div className="
   relative overflow-hidden 
-  h-36 
-  px-3 -mt-1 flex items-center
-  bg-gradient-to-b 
+  h-20 px-3 -mt-1 flex items-center
+  bg-gradient-to-b
   from-[#1E1E22]
   via-[#3C3C42]
-  via-[#63636A]
-  to-[#A4A4AA]
+  via-[#7A7A82]
+  to-[#E8E8EC]
 ">
 
   {/* 喇叭固定不动 */}
-  <div className="text-white text-lg mr-2">🔈</div>
+  <div className="text-yellow-400 text-lg mr-2 z-20">🔊</div>
 
-  {/* 滚动文字容器 */}
+  {/* 滚动文字区域 */}
   <div className="relative flex-1 overflow-hidden">
 
     <div
       key={marqueeKey}
-      className="absolute whitespace-nowrap text-white text-sm animate-marquee"
+      className="absolute left-0 whitespace-nowrap text-white text-base animate-marquee-under z-10 drop-shadow-[0_0_4px_rgba(0,0,0,0.6)]"
     >
       Welcome to visit Crypto.com
     </div>
 
   </div>
 </div>
+
 
 
 
