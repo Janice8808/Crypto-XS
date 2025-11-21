@@ -78,7 +78,7 @@ export default function LoginWallet() {
           onClick={loginWithWallet}
           className="px-6 py-3 bg-blue-500 rounded"
         >
-          重新授权登录
+          Reauthorize login
         </button>
       )}
     </div>
