@@ -121,7 +121,11 @@ const Home = () => {
   ];
 
   // 3️⃣ 实时行情
-  const tickers = useOkxTickers(SYMBOLS);
+const tickers = useOkxTickers(SYMBOLS, () => {
+  setRefresh(r => r + 1);
+});
+const [refresh, setRefresh] = useState(0);
+
 
   // ⭐ 热门币
   const btc = tickers["BTC-USDT"] || { price: "--", change: 0 };
@@ -447,7 +451,7 @@ const top3 = [
 
           return (
             <Link
-              key={coin.symbol}
+              key={coin.symbol + refresh}
               to={`/coin/${coin.symbol}-USDT`}
               className="flex items-center px-2 py-2 hover:bg-gray-100 transition"
             >

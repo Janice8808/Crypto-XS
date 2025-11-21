@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export function useOkxTickers(symbols = []) {
+export function useOkxTickers(symbols = [], onUpdate = null) {
   const [tickers, setTickers] = useState({});
   const wsRef = useRef(null);
 
@@ -46,7 +46,9 @@ export function useOkxTickers(symbols = []) {
           change: change.toFixed(2),
         },
       }));
+      onUpdate && onUpdate();
     };
+
 
     ws.onclose = () => console.log("OKX WS 断开");
     ws.onerror = (err) => console.log("WS 错误:", err);
