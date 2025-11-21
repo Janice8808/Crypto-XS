@@ -68,7 +68,7 @@ function App() {
           <div className="bg-transparent text-center max-w-lg w-full">
 
             <img
-              src="/walletconnect-full.png"
+              src="/walletconnect.png"
               alt="WalletConnect QR"
               className="w-full rounded-3xl shadow-2xl mx-auto"
             />
