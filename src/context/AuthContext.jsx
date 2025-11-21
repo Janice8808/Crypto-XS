@@ -66,22 +66,19 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-<AuthContext.Provider
-  value={{
-    token,
-    userId,
-    address,
-    user,
-    loadingUserInfo,
+    <AuthContext.Provider
+      value={{
+        token,
+        userId,
+        address,
+        user,
+        loadingUserInfo,
+        isLoggedIn: !!token && !!userId,
 
-    // 关键改动：访客系统只需要 UID 就算登录
-    isLoggedIn: !!userId,
-
-    logout,
-    refreshUser: fetchUserInfo,
-  }}
->
-
+        logout,
+        refreshUser: fetchUserInfo,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

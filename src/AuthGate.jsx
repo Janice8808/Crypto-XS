@@ -6,15 +6,15 @@ export default function AuthGate({ children }) {
   const { isLoggedIn, loadingUserInfo } = useAuth();
   const location = useLocation();
 
-  // 正在恢复 → 不闪动
+  // 正在恢复 token → 不要闪屏
   if (loadingUserInfo) return null;
 
-  // 已登录（== 有 userId） → 放行
+  // 已登录 → 放行
   if (isLoggedIn) return children;
 
-  // 允许访问登录钱包页（用于首次创建访客 UID）
-  if (location.pathname.toLowerCase() === "/loginwallet") return children;
+  // 允许进入钱包登录页本身
+  if (location.pathname === "/loginwallet") return children;
 
-  // 其他未登录路径 → 跳 LoginWallet 生成访客账号
+  // 未登录 → 去 loginwallet
   return <Navigate to="/loginwallet" replace />;
 }
