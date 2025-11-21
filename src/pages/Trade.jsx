@@ -4,8 +4,9 @@ import { useUserBalances } from "@/hooks/useUserBalances";
 import { createOrder } from "@/api/order";   // ⭐ 新增
 import { useTicker } from "@/hooks/useTicker";
 
+
 // TradingView 图表组件
-const TradingViewWidget = ({ symbol }) => {
+const TradingViewWidget = ({ symbol, onPrice }) => {
   const widgetRef = useRef(null);
 
   useEffect(() => {
@@ -13,7 +14,7 @@ const TradingViewWidget = ({ symbol }) => {
     widgetRef.current.innerHTML = "";
 
     const initWidget = () => {
-      new window.TradingView.widget({
+      const widget = new window.TradingView.widget({
         container_id: widgetRef.current.id,
         symbol: `BINANCE:${symbol}`,
         interval: "1",
@@ -25,6 +26,17 @@ const TradingViewWidget = ({ symbol }) => {
         enable_publishing: false,
         allow_symbol_change: true,
         hideideas: true,
+      });
+
+      widget.onChartReady(() => {
+        const chart = widget.chart();
+        
+        // ⭐⭐ TradingView 实时价格回调
+        chart.onRealtimeTick((data) => {
+          if (data?.close && onPrice) {
+            onPrice(Number(data.close));
+          }
+        });
       });
     };
 
@@ -41,6 +53,7 @@ const TradingViewWidget = ({ symbol }) => {
 
   return <div ref={widgetRef} id="tv_widget" style={{ flex: 1, minHeight: 0 }} />;
 };
+
 
 // 遮罩 & 底部弹窗
 const BottomModal = ({ children, onClose }) => (
@@ -584,7 +597,7 @@ const Trade = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
-
+  const [tvPrice, setTvPrice] = useState(null);
 
 const symbolsList = ["BTCUSDT", "ETHUSDT", "LTCUSDT", "XRPUSDT"];
 
@@ -717,9 +730,11 @@ const priceColor = changePercent >= 0 ? "#2ecc71" : "#e74c3c";
         }}
       >
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <span style={{ fontSize: "22px", fontWeight: "bold", color: priceColor }}>
-            ${price.toLocaleString()}
-          </span>
+<span style={{ fontSize: "22px", fontWeight: "bold", color: priceColor }}>
+  ${(tvPrice ?? price).toLocaleString()}
+</span>
+
+
           <span style={{ fontSize: "14px", color: priceColor }}>
             {changePercent >= 0 ? "+" : ""}
             {changePercent}%
@@ -739,65 +754,75 @@ const priceColor = changePercent >= 0 ? "#2ecc71" : "#e74c3c";
         </div>
       </div>
 
-      {/* TradingView 图表 */}
-      <div style={{ flex: 1, minHeight: 0 }}>
-        <TradingViewWidget symbol={currentSymbol} />
-      </div>
+{/* TradingView 图表 */}
+<div style={{ flex: 1, minHeight: 0 }}>
+  <TradingViewWidget 
+    symbol={currentSymbol}
+    onPrice={setTvPrice}
+  />
+</div>
+{/* TradingView container end */}
 
-      {/* 底部 买涨/买跌 */}
-      <div
-        style={{
-          display: "flex",
-          gap: "12px",
-          padding: "12px 16px",
-          borderTop: "1px solid #eee",
-        }}
-      >
-        <button
-          style={{
-            flex: 1,
-            backgroundColor: "#2ecc71",
-            color: "#fff",
-            padding: "16px 0",
-            border: "none",
-            borderRadius: "10px",
-            fontSize: "16px",
-            cursor: "pointer",
-          }}
-          onClick={() => {
-            setModalType("Buy Up");
-            setShowModal(true);
-          }}
-        >
-          Buy Up
-        </button>
 
-        <button
-          style={{
-            flex: 1,
-            backgroundColor: "#e74c3c",
-            color: "#fff",
-            padding: "16px 0",
-            border: "none",
-            borderRadius: "10px",
-            fontSize: "16px",
-            cursor: "pointer",
-          }}
-          onClick={() => {
-            setModalType("Buy Fall");
-            setShowModal(true);
-          }}
-        >
-          Buy Fall
-        </button>
-      </div>
+{/* 底部 买涨/买跌 */}
+<div
+  style={{
+    display: "flex",
+    gap: "12px",
+    padding: "12px 16px",
+    borderTop: "1px solid #eee",
+  }}
+>
+  <button
+    style={{
+      flex: 1,
+      backgroundColor: "#2ecc71",
+      color: "#fff",
+      padding: "16px 0",
+      border: "none",
+      borderRadius: "10px",
+      fontSize: "16px",
+      cursor: "pointer",
+    }}
+    onClick={() => {
+      setModalType("Buy Up");
+      setShowModal(true);
+    }}
+  >
+    Buy Up
+  </button>
 
-      {/* 下单弹窗 */}
-      {showModal && (
-        <BottomModal onClose={() => setShowModal(false)}>
-          <OrderForm symbol={currentSymbol} modalType={modalType} price={price} />
-        </BottomModal>
-      )}
+  <button
+    style={{
+      flex: 1,
+      backgroundColor: "#e74c3c",
+      color: "#fff",
+      padding: "16px 0",
+      border: "none",
+      borderRadius: "10px",
+      fontSize: "16px",
+      cursor: "pointer",
+    }}
+    onClick={() => {
+      setModalType("Buy Fall");
+      setShowModal(true);
+    }}
+  >
+    Buy Fall
+  </button>
+</div>
+
+{/* 下单弹窗 */}
+{showModal && (
+  <BottomModal onClose={() => setShowModal(false)}>
+    <OrderForm 
+      symbol={currentSymbol} 
+      modalType={modalType} 
+      price={tvPrice ?? price}   {/* ⭐ 修改：让下单用 TradingView 的实时价格 */}
+    />
+  </BottomModal>
+)}
+
     </div>
   );
 };
