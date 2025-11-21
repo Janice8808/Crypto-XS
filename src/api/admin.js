@@ -35,12 +35,17 @@ export function fetchAllUsers() {
 
 // ✔ 3. 调整余额（后台）—— 先用你现有的 /admin/balance/add
 export function adminAdjustBalance({ address, symbol, amount }) {
-  return apiFetch("/admin/balance/add", {
+  const url = amount >= 0
+    ? "/admin/balance/add"
+    : "/admin/balance/sub";
+
+  return apiFetch(url, {
     method: "POST",
     headers: adminHeaders(),
     body: JSON.stringify({ address, symbol, amount }),
   });
 }
+
 // ✅ 建议改成通用透传，支持 remark
 export function adminSetControlMode(data) {
   return apiFetch("/admin/user/control", {
