@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import axios from "axios";
+import { getGuestAddress } from "../utils/guest";   // ⭐ 新增
 
 const AuthContext = createContext(null);
 
@@ -14,14 +15,14 @@ export const AuthProvider = ({ children }) => {
   axios.defaults.baseURL = "https://pankouhoutai.shop";
 
   /* ===========================
-   *  启动时自动恢复 / 创建游客账号
+   *  启动时自动恢复 / 创建游客账号（固定账号版）
    * =========================== */
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     const savedUid = localStorage.getItem("userId");
 
     if (savedToken && savedUid) {
-      // 已有 token → 直接登录
+      // 已有 token → 直接使用旧账号
       setToken(savedToken);
       setUserId(savedUid);
       axios.defaults.headers.common["Authorization"] = "Bearer " + savedToken;
@@ -30,8 +31,10 @@ export const AuthProvider = ({ children }) => {
       return;
     }
 
-    // 没有 token → 自动创建游客账号
-    axios.post("/api/guest-login")
+    // ⭐ 没有 token → 使用固定 guestAddress 登录（不再创建新账号）
+    const guestAddress = getGuestAddress();
+
+    axios.post("/api/guest-login", { address: guestAddress })
       .then(res => {
         const d = res.data?.data;
 
@@ -71,17 +74,15 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
-useEffect(() => {
-  const isAdminPage = window.location.pathname.startsWith("/admin");
-  if (isAdminPage) {
-    // 后台不需要加载用户信息
-    setLoadingUserInfo(false);
-    return;
-  }
+  useEffect(() => {
+    const isAdminPage = window.location.pathname.startsWith("/admin");
+    if (isAdminPage) {
+      setLoadingUserInfo(false);
+      return;
+    }
 
-  if (token) fetchUserInfo();
-}, [token, fetchUserInfo]);
-
+    if (token) fetchUserInfo();
+  }, [token, fetchUserInfo]);
 
   /* ===========================
    *  退出登录
