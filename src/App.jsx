@@ -64,30 +64,44 @@ function App() {
     <>
       {/* ⭐ 电脑端二维码弹窗 */}
 {showWalletQr && (
-  <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center px-4">
-    <div className="bg-white p-8 rounded-2xl shadow-2xl text-center max-w-md w-full">
-      <h2 className="text-2xl font-bold mb-3 text-gray-900">
-        Download Base Wallet
-      </h2>
+  <div className="fixed inset-0 bg-[#0b0f1a]/90 z-50 flex items-center justify-center px-4">
+    <div className="bg-white pt-6 pb-4 px-6 rounded-3xl shadow-2xl text-center max-w-lg w-full relative">
+
+      {/* 顶部 LOGO */}
+      <div className="flex items-center justify-center mb-4">
+        <img
+          src="/walletconnect-logo.png"
+          alt="WalletConnect"
+          className="h-6"
+        />
+      </div>
+
+      {/* 关闭按钮 */}
+      <button
+        onClick={() => setShowWalletQr(false)}
+        className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 text-xl"
+      >
+        ×
+      </button>
+
+      {/* 文案 */}
       <p className="text-gray-600 text-base mb-6">
-        Please scan the QR code below with your mobile device to install the wallet.
+        Scan the QR code below to download Base Wallet
       </p>
 
+      {/* 大二维码 */}
       <img
         src="/wallet-download.png"
         alt="wallet qr"
-        className="w-64 mx-auto mb-6 rounded-xl shadow-lg"
+        className="w-[320px] h-[320px] mx-auto mb-6"
       />
 
-      <button
-        className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-base font-semibold transition"
-        onClick={() => setShowWalletQr(false)}
-      >
-        I already installed the App
-      </button>
+      {/* 底部提示 */}
+      <p className="text-gray-400 text-sm">Copy link: https://www.coinbase.com/wallet/downloads</p>
     </div>
   </div>
 )}
+
 
 
       {/* ⭐ 主路由 */}
