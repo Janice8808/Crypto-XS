@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { coinIcons } from "../assets/coinIcons";
 import { useOkxTickers } from "../hooks/useOkxTickers";
 
@@ -99,6 +99,7 @@ const GlobeIcon = () => (
 );
 
 const Home = () => {
+  const navigate = useNavigate();
   const [marqueeKey, setMarqueeKey] = useState(0);
   const SYMBOLS = [
   "BTC-USDT","ETH-USDT","BNB-USDT","SOL-USDT","XRP-USDT",
@@ -195,16 +196,19 @@ const stableList = allCoins.slice(0, 30); // 想展示多少条你自己调
           </div>
         </div>
 
-        <div className="flex items-center space-x-4 ml-3 text-white">
-          <button className="relative p-0 bg-transparent">
-            <MailIcon />
-            {unread > 0 && (
-              <span className="absolute -top-1 -right-2 bg-red-600
- text-[10px] px-1 rounded-full">
-                {unread}
-              </span>
-            )}
-          </button>
+<div className="flex items-center space-x-4 ml-3 text-white">
+  <button
+    className="relative p-0 bg-transparent"
+    onClick={() => navigate("/notice")}
+  >
+    <MailIcon />
+    {unread > 0 && (
+      <span className="absolute -top-1 -right-2 bg-red-600 text-[10px] px-1 rounded-full">
+        {unread}
+      </span>
+    )}
+  </button>
+
 
           <button className="p-0 bg-transparent" onClick={() => setShowLang(!showLang)}>
             <GlobeIcon />

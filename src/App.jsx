@@ -29,7 +29,7 @@ import Introduction from "./pages/Introduction";
 
 import Pledge from "./pages/Pledge";
 import DeFiRecord from "./pages/DeFiRecord";
-
+import Notice from "./pages/Notice";
 import LoginWallet from "./pages/LoginWallet";
 import AdminPanel from "./pages/AdminPanel";
 
@@ -139,7 +139,7 @@ function App() {
           <Route path="/asset/:symbol" element={<AuthGate><AssetDetail /></AuthGate>} />
           <Route path="/wallet/:symbol/deposit" element={<AuthGate><Deposit /></AuthGate>} />
           <Route path="/wallet/:symbol/withdraw" element={<AuthGate><Withdraw /></AuthGate>} />
-
+          <Route path="/notice" element={<Notice />} />
           <Route path="/deposit1" element={<AuthGate><Deposit1 /></AuthGate>} />
           <Route path="/withdraw1" element={<AuthGate><Withdraw1 /></AuthGate>} />
           <Route path="/buycrypto1" element={<AuthGate><BuyCrypto1 /></AuthGate>} />
