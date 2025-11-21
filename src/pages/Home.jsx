@@ -146,7 +146,83 @@ const bnb = tickers["BNB-USDT"] || { price: "--", change: 0 };
 
   const [currentBanner, setCurrentBanner] = useState(0);
   const [showLang, setShowLang] = useState(false);
-  const [unread] = useState(2);
+  const [unread, setUnread] = useState(0);
+
+useEffect(() => {
+  async function loadUnread() {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const r = await fetch("https://pankouhoutai.shop/api/notice/unread", {
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      const j = await r.json();
+      setUnread(j.unread || 0);
+    } catch (err) {
+      console.error("load unread error", err);
+    }
+  }
+
+  loadUnread();
+
+  // ⭐ 每 10 秒刷新一次未读数
+  const t = setInterval(loadUnread, 10000);
+
+  return () => clearInterval(t);
+}, []);
+
+// ⭐ 前端 WebSocket：接收后台实时通知
+useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  const wsUrl = import.meta.env.PROD
+    ? "wss://pankouhoutai.shop/user-ws"
+    : "ws://localhost:5000/user-ws";
+
+  console.log("📡 User WS connecting:", wsUrl);
+
+  const ws = new WebSocket(wsUrl);
+
+  ws.onopen = () => {
+    console.log("✅ User WebSocket connected");
+
+    // 登录后发送 token 给后端
+    ws.send(JSON.stringify({
+      type: "AUTH",
+      token
+    }));
+  };
+
+  ws.onmessage = (event) => {
+    let msg;
+    try {
+      msg = JSON.parse(event.data);
+    } catch {
+      return;
+    }
+
+    // ⭐ 后端推送新通知
+    if (msg.type === "NEW_NOTICE") {
+      console.log("📩 收到后台通知:", msg.notice);
+
+      // 自动让未读角标 +1
+      setUnread((u) => u + 1);
+    }
+  };
+
+  ws.onerror = (err) => {
+    console.error("❌ User WebSocket error:", err);
+  };
+
+  ws.onclose = () => {
+    console.log("⚠️ User WebSocket disconnected");
+  };
+
+  return () => ws.close();
+}, []);
 
   const images = ["/images/banner1.jpg", "/images/banner2.jpg", "/images/banner3.jpg"];
  

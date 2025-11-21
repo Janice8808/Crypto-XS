@@ -54,3 +54,12 @@ export function adminSetControlMode(data) {
     body: JSON.stringify(data),   // ⭐ 不再手动挑字段，全部发出去
   });
 }
+
+// ✔ 4. 后台发送通知给某个用户
+export function adminSendNotification({ address, title, content }) {
+  return apiFetch("/admin/notice/send", {
+    method: "POST",
+    headers: adminHeaders(),
+    body: JSON.stringify({ address, title, content }),
+  });
+}
