@@ -117,12 +117,15 @@ const Home = () => {
   const tickers = useOkxTickers(SYMBOLS, () => setRefresh(r => r + 1));
   const [refresh, setRefresh] = useState(0);
 
-  const btc = tickers["BTC-USDT"] || { price: "--", change: 0 };
-  const eth = tickers["ETH-USDT"] || { price: "--", change: 0 };
-  const bnb = tickers["BNB-USDT"] || { price: "--", change: 0 };
+const btc = tickers["BTC"] || { price: "--", change: 0 };
+const eth = tickers["ETH"] || { price: "--", change: 0 };
+const bnb = tickers["BNB"] || { price: "--", change: 0 };
+
 
   const stableList = FIXED_LIST.map((id) => {
-    const t = tickers[id] || {};
+const symbol = id.replace("-USDT", "");
+const t = tickers[symbol] || {};
+
     return {
       symbol: id.replace("-USDT", ""),
       price: t.price || "--",
@@ -364,14 +367,15 @@ const Home = () => {
               >
                 <div className="text-gray-600 text-sm">{coin.symbol}</div>
 
-                <div className={`font-bold ${up ? "text-green-500" : "text-red-500"}`}>
-                  ${Number(coin.price).toFixed(1)}
-                </div>
+<div className="font-bold text-gray-600">
+  ${Number(coin.price).toFixed(1)}
+</div>
 
-                <div className={`${up ? "text-green-500" : "text-red-500"}`}>
-                  {up ? "+" : ""}
-                  {coin.change}%
-                </div>
+<div className="text-gray-500">
+  {up ? "+" : ""}
+  {coin.change}%
+</div>
+
               </Link>
             );
           })}
@@ -412,14 +416,19 @@ const Home = () => {
               </div>
 
               <div className="w-1/3 text-right">
-                <span
-                  className={`px-2 py-1 rounded text-white font-semibold ${
-                    up ? "bg-green-500" : "bg-red-500"
-                  }`}
-                >
-                  {up ? "+" : ""}
-                  {coin.change}%
-                </span>
+<span
+  className="rounded text-white font-semibold flex items-center justify-center"
+  style={{
+    width: "60px",   // ⭐ 固定宽
+    height: "30px",  // ⭐ 固定高（3:1.5 比例）
+    backgroundColor: up ? "#22c55e" : "#ef4444",
+    fontSize: "12px",
+  }}
+>
+  {up ? "+" : ""}
+  {coin.change}%
+</span>
+
               </div>
             </Link>
           );
