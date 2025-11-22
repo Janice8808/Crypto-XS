@@ -2,8 +2,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function Withdraw() {
+  const { t } = useTranslation();
   const { symbol } = useParams();
   const navigate = useNavigate();
 
@@ -25,7 +27,6 @@ export default function Withdraw() {
         });
         const data = await res.json();
 
-        // ✅ 智能匹配各种写法
         const upper = (symbol || "").toUpperCase();
         const allKeys = Object.keys(data.balances || {});
         const matchedKey =
@@ -46,79 +47,72 @@ export default function Withdraw() {
   }, [symbol]);
 
   const handleSubmit = async () => {
-  setError("");
-  setSuccess("");
+    setError("");
+    setSuccess("");
 
-  // 简单校验
-  if (!address.trim()) {
-    setError("Please enter withdrawal address");
-    return;
-  }
-  if (!amount || Number(amount) <= 0) {
-    setError("Please enter a valid withdrawal amount");
-    return;
-  }
-  if (Number(amount) > available) {
-    setError("Insufficient balance");
-    return;
-  }
-  if (!password.trim()) {
-    setError("Please enter withdrawal password");
-    return;
-  }
+    if (!address.trim()) {
+      setError(t("Please enter withdrawal address"));
+      return;
+    }
+    if (!amount || Number(amount) <= 0) {
+      setError(t("Please enter a valid withdrawal amount"));
+      return;
+    }
+    if (Number(amount) > available) {
+      setError(t("Insufficient balance"));
+      return;
+    }
+    if (!password.trim()) {
+      setError(t("Please enter withdrawal password"));
+      return;
+    }
 
-  try {
-    setSubmitting(true);
-    const token = localStorage.getItem("token");
+    try {
+      setSubmitting(true);
+      const token = localStorage.getItem("token");
 
-    const res = await fetch("https://pankouhoutai.shop/api/withdraw/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        symbol,
-        network,
-        address,
-        amount: Number(amount),
-        password,
-      }),
-    });
+      const res = await fetch("https://pankouhoutai.shop/api/withdraw/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          symbol,
+          network,
+          address,
+          amount: Number(amount),
+          password,
+        }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
- if (!res.ok) {
-  setError(data.error || data.message || "Withdrawal failed");
-  return;
-}
+      if (!res.ok) {
+        setError(data.error || data.message || t("Withdrawal failed"));
+        return;
+      }
 
+      // 本地同步扣除
+      const used = Number(amount);
+      setAvailable((prev) => Math.max(prev - used, 0));
 
-    // ✅ 后端成功后，本地同步扣除余额
-    const used = Number(amount);
-    setAvailable((prev) => {
-      const next = (prev || 0) - used;
-      return next > 0 ? next : 0;
-    });
+      setAmount("");
+      setPassword("");
 
-    setAmount("");
-    setPassword("");
-
-    setSuccess("Withdrawal submitted successfully");
-
-    // 需要的话也可以跳转
-    // navigate("/record"); // 比如跳到账单页
-  } catch (err) {
-    console.error("Submit withdraw failed:", err);
-    setError("Network error, please try again later");
-  } finally {
-    setSubmitting(false);
-  }
-};
+      setSuccess(t("Withdrawal submitted successfully"));
+    } catch (err) {
+      console.error("Submit withdraw failed:", err);
+      setError(t("Network error, please try again later"));
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 pb-24">
-      {/* 顶部返回栏 */}
+
+      {/* 顶部导航 */}
       <div className="mb-4">
         <button
           onClick={() => navigate(-1)}
@@ -126,23 +120,29 @@ export default function Withdraw() {
         >
           ←
         </button>
+
         <span className="font-semibold text-yellow-500 text-lg block">
-          Withdraw {symbol}
+          {t("Withdraw")} {symbol}
         </span>
       </div>
 
-      {/* 主体卡片 */}
+      {/* 卡片 */}
       <Card className="rounded-2xl shadow-sm">
         <CardContent className="p-5 space-y-5">
-          {/* 币种显示 */}
+
+          {/* 币种 */}
           <div className="flex justify-between items-center bg-gray-100 rounded-lg px-3 py-2">
-            <span className="text-gray-800 font-medium text-base">Currency</span>
-            <span className="text-gray-800 font-medium text-base">{symbol}</span>
+            <span className="text-gray-800 font-medium text-base">
+              {t("Currency")}
+            </span>
+            <span className="text-gray-800 font-medium text-base">
+              {symbol}
+            </span>
           </div>
 
-          {/* 网络选择 */}
+          {/* 网络 */}
           <div>
-            <div className="text-sm text-gray-500 mb-1">Network</div>
+            <div className="text-sm text-gray-500 mb-1">{t("Network")}</div>
             <div className="flex space-x-2">
               {["ERC20", "TRC20"].map((net) => (
                 <button
@@ -160,38 +160,42 @@ export default function Withdraw() {
             </div>
           </div>
 
-          {/* 提币地址 */}
+          {/* 地址 */}
           <div>
-            <div className="text-sm text-gray-500 mb-1">Withdrawal address</div>
+            <div className="text-sm text-gray-500 mb-1">
+              {t("Withdrawal address")}
+            </div>
+
             <div className="flex items-center border rounded-lg focus-within:ring-1 focus-within:ring-yellow-400">
               <input
                 type="text"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder="Enter withdrawal address"
+                placeholder={t("Enter withdrawal address")}
                 className="flex-1 px-3 py-2 text-sm rounded-lg outline-none text-black"
               />
               <button className="px-3 text-gray-400 hover:text-gray-600">📋</button>
             </div>
           </div>
 
-          {/* 提币金额 */}
+          {/* 数量 */}
           <div>
             <div className="flex justify-between text-sm text-gray-500 mb-1">
-              <span>Withdrawal Amount</span>
+              <span>{t("Withdrawal Amount")}</span>
               <span>
-                Available{" "}
+                {t("Available")}:{" "}
                 <span className="text-gray-700 font-medium">
                   {available.toFixed(4)} {symbol}
                 </span>
               </span>
             </div>
+
             <div className="flex border rounded-lg focus-within:ring-1 focus-within:ring-yellow-400">
               <input
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                placeholder="Enter withdrawal quantity"
+                placeholder={t("Enter withdrawal quantity")}
                 className="flex-1 px-3 py-2 text-sm rounded-lg outline-none text-black"
               />
               <span className="px-3 py-2 text-gray-500 text-sm border-l">
@@ -199,63 +203,67 @@ export default function Withdraw() {
               </span>
             </div>
 
-            {/* 一键填充最大值 */}
             <div className="text-right mt-1">
               <button
                 className="text-xs text-yellow-500 font-medium hover:underline"
                 onClick={() => setAmount(available.toString())}
               >
-                MAX
+                {t("MAX")}
               </button>
             </div>
           </div>
 
-          {/* 密码输入 */}
+          {/* 密码 */}
           <div>
-            <div className="text-sm text-gray-500 mb-1">Withdrawal Password</div>
+            <div className="text-sm text-gray-500 mb-1">
+              {t("Withdrawal Password")}
+            </div>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Withdrawal Password"
+              placeholder={t("Withdrawal Password")}
               className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-yellow-400 outline-none text-black"
             />
           </div>
 
-          {/* 提交按钮 */}
+          {/* 按钮 */}
           <Button
-          className="w-full bg-yellow-400 hover:bg-yellow-500 text-white py-3 rounded-lg font-semibold disabled:opacity-50"
-          onClick={handleSubmit}
-          disabled={submitting}
-        >
-          {submitting ? "Processing..." : "Submit"}
-        </Button>
-
+            className="w-full bg-yellow-400 hover:bg-yellow-500 text-white py-3 rounded-lg font-semibold disabled:opacity-50"
+            onClick={handleSubmit}
+            disabled={submitting}
+          >
+            {submitting ? t("Processing...") : t("Submit")}
+          </Button>
         </CardContent>
       </Card>
-{error && (
-  <div className="mt-3 text-sm text-red-500 text-center">
-    {error}
-  </div>
-)}
 
-{success && (
-  <div className="mt-3 text-sm text-green-600 text-center">
-    {success}
-  </div>
-)}
+      {/* 错误提示 */}
+      {error && (
+        <div className="mt-3 text-sm text-red-500 text-center">
+          {error}
+        </div>
+      )}
+
+      {/* 成功提示 */}
+      {success && (
+        <div className="mt-3 text-sm text-green-600 text-center">
+          {success}
+        </div>
+      )}
 
       {/* 底部提示 */}
       <div className="text-sm text-gray-500 mt-3 text-center">
-  Ordinary withdrawal:&nbsp;
-  <span className="font-medium text-gray-700">
-    {Number(amount || 0).toFixed(6)} {symbol}
-  </span>
-  <div className="mt-1 text-xs text-gray-400">
-    Available: {available.toFixed(6)} {symbol}
-  </div>
-</div>
+        {t("Ordinary withdrawal")}:
+        &nbsp;
+        <span className="font-medium text-gray-700">
+          {Number(amount || 0).toFixed(6)} {symbol}
+        </span>
 
+        <div className="mt-1 text-xs text-gray-400">
+          {t("Available")}: {available.toFixed(6)} {symbol}
+        </div>
+      </div>
     </div>
   );
 }

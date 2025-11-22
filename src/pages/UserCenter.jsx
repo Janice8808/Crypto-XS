@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-/* ================= SVG ICONS ================= */
+/* ================= Icons ================= */
 
 const BackIcon = () => (
   <svg width="24" height="24" fill="none" stroke="#666" strokeWidth="1.6" viewBox="0 0 24 24">
@@ -33,7 +33,45 @@ const AnnouncementIcon = () => (
   </svg>
 );
 
-/* ====================================================== */
+/* ===== 其他菜单图标 ===== */
+
+const MailIcon = () => (
+  <svg width="22" height="22" fill="none" stroke="#666" strokeWidth="1.6" viewBox="0 0 24 24">
+    <rect x="3" y="5" width="18" height="14" rx="3" />
+    <path d="M3 5l9 7 9-7" />
+  </svg>
+);
+
+const BankIcon = () => (
+  <svg width="22" height="22" fill="none" stroke="#666" strokeWidth="1.6" viewBox="0 0 24 24">
+    <polygon points="12 3 3 9 21 9" />
+    <rect x="4" y="9" width="16" height="10" />
+  </svg>
+);
+
+const GlobeIcon = () => (
+  <svg width="22" height="22" fill="none" stroke="#666" strokeWidth="1.6" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9" />
+    <path d="M3 12h18" />
+    <path d="M12 3a15 15 0 0 1 0 18" />
+  </svg>
+);
+
+const LockIcon = () => (
+  <svg width="22" height="22" fill="none" stroke="#666" strokeWidth="1.6" viewBox="0 0 24 24">
+    <rect x="5" y="11" width="14" height="10" rx="2" />
+    <path d="M9 11V7a3 3 0 0 1 6 0v4" />
+  </svg>
+);
+
+const MsbIcon = () => (
+  <svg width="22" height="22" fill="none" stroke="#666" strokeWidth="1.6" viewBox="0 0 24 24">
+    <polygon points="12 2 20 7 20 17 12 22 4 17 4 7" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+);
+
+/* =================================================== */
 
 export default function UserCenter() {
   const navigate = useNavigate();
@@ -47,7 +85,7 @@ export default function UserCenter() {
       ? `${address.slice(0, 6)}....${address.slice(-4)}`
       : address || "--";
 
-  // ⭐ 从后台加载 UID
+  /* ============== 加载 UID ============== */
   useEffect(() => {
     fetch("https://pankouhoutai.shop/api/user/balance", {
       headers: {
@@ -61,6 +99,24 @@ export default function UserCenter() {
       .catch(() => {});
   }, []);
 
+  /* ============== 菜单列表 ============== */
+  const menuItems = [
+    { key: "Mail", icon: <MailIcon />, path: "/user/mail" },
+    { key: "Bank card", icon: <BankIcon />, path: "/user/bank" },
+    {
+      key: "Language",
+      icon: <GlobeIcon />,
+      right: localStorage.getItem("language") || "English",
+      path: "/user/language",
+    },
+    {
+      key: "Withdrawal password setting",
+      icon: <LockIcon />,
+      path: "/user/withdrawal-password",
+    },
+    { key: "MSB Certification", icon: <MsbIcon />, path: "/user/msb" },
+  ];
+
   return (
     <div className="min-h-screen bg-white pb-20">
 
@@ -71,7 +127,7 @@ export default function UserCenter() {
         </button>
       </div>
 
-      {/* 用户头像 + 地址 + UID */}
+      {/* 用户信息 */}
       <div className="flex items-center px-5 pb-3">
         <AvatarSvg />
 
@@ -81,7 +137,7 @@ export default function UserCenter() {
         </div>
       </div>
 
-      {/* Online + Announcement */}
+      {/* Online Service + Announcement */}
       <div className="flex gap-3 px-4 mt-2">
         <button
           onClick={() => navigate("/service")}
@@ -99,36 +155,10 @@ export default function UserCenter() {
           <span className="text-sm">{t("Announcement center")}</span>
         </button>
       </div>
-      {/* 列表 */}
+
+      {/* 下方菜单列表 */}
       <div className="mt-4">
-        {[
-          {
-            key: "Mail",
-            icon: <MailIcon />,
-            path: "/user/mail",
-          },
-          {
-            key: "Bank card",
-            icon: <BankIcon />,
-            path: "/user/bank",
-          },
-          {
-            key: "Language",
-            icon: <GlobeIcon />,
-            right: localStorage.getItem("language") || "English",
-            path: "/user/language",
-          },
-          {
-            key: "Withdrawal password setting",
-            icon: <LockIcon />,
-            path: "/user/withdrawal-password",
-          },
-          {
-            key: "MSB Certification",
-            icon: <MsbIcon />,
-            path: "/user/msb",
-          },
-        ].map((item, i) => (
+        {menuItems.map((item, i) => (
           <div
             key={i}
             onClick={() => navigate(item.path)}

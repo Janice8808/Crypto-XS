@@ -5,56 +5,49 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCoins } from "../hooks/useCoins";
 import { useUserBalances } from "@/hooks/useUserBalances";
 import { coinIcons } from "../assets/coinIcons";
+import { useTranslation } from "react-i18next";
 
 export default function Wallet() {
   const navigate = useNavigate();
   const { allCoins } = useCoins();
   const { balances } = useUserBalances();
+  const { t } = useTranslation();
 
   const coinList = Array.isArray(allCoins) ? allCoins : [];
 
-  // ⭐ 先构建价格 Map
+  /* -------------------- ⭐ 构建价格 Map -------------------- */
   const priceMap = {};
   coinList.forEach((c) => {
     const sym = (c.symbol || "").toUpperCase();
     const price = Number(c.price ?? c.current_price ?? 0) || 0;
     if (sym) priceMap[sym] = price;
   });
-  priceMap["USDT"] = 1;
+  priceMap["USDT"] = 1; // 恒定价格
 
-  // ⭐ 日志要放 priceMap 构建之后！
-  console.log("🔥 前端收到的余额 balances =", balances);
-  console.log("🔥 所有价格 priceMap =", priceMap);
-  console.log("🔥 priceMap keys =", Object.keys(priceMap));
+  console.log("🔥 balances =", balances);
+  console.log("🔥 priceMap =", priceMap);
 
-  // ⭐ 计算总资产（修复大小写/空格问题）
+  /* -------------------- ⭐ 计算总资产 -------------------- */
   let totalAsset = 0;
   if (balances && typeof balances === "object") {
-Object.entries(balances).forEach(([sym, amt]) => {
-  const cleanSym = (sym || "").trim().toUpperCase();
-  const amount = Number(amt || 0);
+    Object.entries(balances).forEach(([sym, amt]) => {
+      const cleanSym = (sym || "").trim().toUpperCase();
+      const amount = Number(amt || 0);
 
-  let price = priceMap[cleanSym];
+      let price = priceMap[cleanSym];
 
-  // ⭐ 1) 尝试完全匹配（BTC → BTCUSDT）
-  if (!price) {
-    const found = Object.keys(priceMap).find(
-      (k) =>
-        k.startsWith(cleanSym) && k.endsWith("USDT") // 例：BTCUSDT、ETHUSDT
-    );
-    if (found) {
-      price = priceMap[found];
-    }
+      if (!price) {
+        const found = Object.keys(priceMap).find(
+          (k) => k.startsWith(cleanSym) && k.endsWith("USDT")
+        );
+        if (found) price = priceMap[found];
+      }
+
+      totalAsset += amount * Number(price || 0);
+    });
   }
 
-  // ⭐ 2) fallback，如果还没找到就设为 0
-  price = Number(price || 0);
-
-  totalAsset += amount * price;
-});
-
-  }
-
+  /* -------------------- ⭐ 展示的币种列表 -------------------- */
   const coinsForView = [
     { symbol: "USDT", logo: "/images/USDT.png" },
     ...coinList.slice(0, 24),
@@ -70,6 +63,8 @@ Object.entries(balances).forEach(([sym, amt]) => {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
+
+      {/* -------------------- ⭐ 顶部卡片 -------------------- */}
       <Card className="m-4 rounded-2xl shadow-sm">
         <CardContent className="p-4 space-y-3">
           <div className="text-sm text-gray-600">
@@ -80,7 +75,8 @@ Object.entries(balances).forEach(([sym, amt]) => {
           </div>
 
           <div className="text-gray-600 text-sm">
-            Account total assets conversion <span className="text-[#26a17b]">(USDT)</span>
+            {t("Account total assets conversion")}{" "}
+            <span className="text-[#26a17b]">(USDT)</span>
           </div>
 
           <div className="text-2xl font-semibold text-gray-800">
@@ -92,41 +88,44 @@ Object.entries(balances).forEach(([sym, amt]) => {
               onClick={() => navigate("/deposit1")}
               className="flex-1 mx-1 bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg"
             >
-              Deposit
+              {t("Deposit")}
             </Button>
+
             <Button
               onClick={() => navigate("/withdraw1")}
               className="flex-1 mx-1 bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg"
             >
-              Withdraw
+              {t("Withdraw")}
             </Button>
+
             <Button
               onClick={() => navigate("/buycrypto1")}
               className="flex-1 mx-1 bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg"
             >
-              Buy Crypto
+              {t("Buy Crypto")}
             </Button>
           </div>
         </CardContent>
       </Card>
 
+      {/* -------------------- ⭐ 资产列表 -------------------- */}
       <div className="px-4">
-        <h2 className="text-gray-500 text-sm mb-2 font-medium">Asset list</h2>
+        <h2 className="text-gray-500 text-sm mb-2 font-medium">
+          {t("Asset list")}
+        </h2>
+
         <div className="space-y-2">
           {coinsForView.map((coin) => {
-const sym = (coin.symbol || "").toUpperCase();
+            const sym = (coin.symbol || "").toUpperCase();
 
-// ⭐ 优先找直接匹配，如 BTC / USDT
-let balance = balances && balances[sym];
+            let balance = balances && balances[sym];
 
-// ⭐ 如果没找到，就尝试去掉 USDT 后缀匹配
-if (!balance && sym.endsWith("USDT")) {
-  const base = sym.replace("USDT", "");
-  balance = balances && balances[base];
-}
+            if (!balance && sym.endsWith("USDT")) {
+              const base = sym.replace("USDT", "");
+              balance = balances && balances[base];
+            }
 
-// ⭐ 还没找到就默认 0
-balance = Number(balance || 0);
+            balance = Number(balance || 0);
 
             return (
               <Link
@@ -148,9 +147,8 @@ balance = Number(balance || 0);
                 </div>
 
                 <div className="ml-auto text-right font-mono text-gray-700 text-sm w-28">
-  {balance.toFixed(6)}
-</div>
-
+                  {balance.toFixed(6)}
+                </div>
 
                 <ArrowRight className="w-4 h-4 text-gray-400" />
               </Link>
