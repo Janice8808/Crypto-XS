@@ -75,15 +75,15 @@ button:focus-visible {
 
 @keyframes marquee-to-horn {
   0% {
-    transform: translateX(120%);      /* 从右侧屏幕外进入 */
+    transform: translateX(120%);   /* 从右边完全进入 */
   }
   100% {
-    transform: translateX(-20%);      /* 刚好滑到喇叭后面“被挡住” */
+    transform: translateX(-26px);  /* 刚好滑到喇叭后面，完全被遮住 */
   }
 }
 
 .animate-marquee-to-horn {
-  animation: marquee-to-horn 6s linear infinite;
+  animation: marquee-to-horn 8s linear infinite;
 }
 
 

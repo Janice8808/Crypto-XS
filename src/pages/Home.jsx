@@ -349,8 +349,8 @@ const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
   style={{
     top: "50%",
     transform: "translateY(-50%)",
-    pointerEvents: "none",
     left: "0",
+    pointerEvents: "none",
   }}
 >
   {t("Welcome")} Crypto.com
