@@ -126,3 +126,16 @@ button:focus-visible {
   animation: marquee-under 8s linear infinite;
 }
 
+/* === 从左侧屏幕外 → 滑入 → 滑到右侧屏幕外 === */
+@keyframes marquee-left-to-right {
+  0% {
+    transform: translateX(-120%); /* 从左屏幕外 */
+  }
+  100% {
+    transform: translateX(120%); /* 滑到右屏幕外 */
+  }
+}
+
+.animate-left-to-right {
+  animation: marquee-left-to-right 12s linear infinite;
+}
