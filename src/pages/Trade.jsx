@@ -42,8 +42,6 @@ const TradingViewWidget = ({ symbol, onPrice }) => {
       await loadTradingView();
       if (!isMounted || !containerRef.current) return;
 
-    containerRef.current.innerHTML = `<div id="${widgetId.current}" style="width:100%;height:100%"></div>`;
-
 
       tvWidgetRef.current = new window.TradingView.widget({
         container_id: widgetId.current,
@@ -81,8 +79,10 @@ const TradingViewWidget = ({ symbol, onPrice }) => {
   return (
 <div
   ref={containerRef}
+  id={widgetId.current}
   style={{ width: "100%", height: "100%" }}
 ></div>
+
 
   );
 };
