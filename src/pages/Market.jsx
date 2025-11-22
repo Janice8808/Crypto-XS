@@ -56,24 +56,26 @@ export default function Market() {
             </span>
 
             {/* 最新价 */}
-            <span
-              className={`w-1/3 text-right text-base font-semibold ${
-                isUp ? "text-green-500" : "text-red-500"
-              }`}
-            >
-              ${coin.price}
-            </span>
+<span className="w-1/3 text-right text-base font-semibold text-gray-700">
+  ${coin.price}
+</span>
+
 
             {/* 涨跌幅 */}
             <span className="w-1/3 flex justify-end">
-              <span
-                className={`text-white px-2 py-1 text-sm rounded ${
-                  isUp ? "bg-green-500" : "bg-red-500"
-                }`}
-              >
-                {isUp ? "+" : ""}
-                {coin.change}%
-              </span>
+<span
+  className={`text-white text-sm rounded flex items-center justify-center`}
+  style={{
+    width: "60px",
+    height: "24px",
+    backgroundColor: isUp ? "#22c55e" : "#ef4444",
+    fontWeight: 600,
+  }}
+>
+  {isUp ? "+" : ""}
+  {coin.change}%
+</span>
+
             </span>
           </Link>
         );
