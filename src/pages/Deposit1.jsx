@@ -53,10 +53,10 @@ export default function Deposit1() {
 <div
   key={coin.name}
   onClick={() => navigate(`/wallet/${coin.name}/deposit`)}
-  className="flex flex-col items-center justify-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer transition active:bg-gray-100"
+  className="flex items-center justify-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer transition active:bg-gray-100"
 >
-  <img src={coin.icon} alt={coin.name} className="w-8 h-8 mb-1" />
-  <span className="font-medium text-gray-800 text-sm text-center">{coin.name}</span>
+  <img src={coin.icon} alt={coin.name} className="w-7 h-7 mr-2" />
+  <span className="font-medium text-gray-800 text-sm">{coin.name}</span>
 </div>
 
           ))}
