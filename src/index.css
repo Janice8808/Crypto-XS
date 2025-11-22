@@ -73,17 +73,16 @@ button:focus-visible {
 }
 
 
-@keyframes marquee-LR {
+@keyframes marquee-RTL {
   0% {
-    transform: translateX(100%);  /* 从最右侧外面 */
+    transform: translateX(120%);   /* 完全在右边屏幕外 */
   }
   100% {
-    transform: translateX(-100%); /* 滑到最左侧外面 */
+    transform: translateX(-120%);  /* 完全滑到左边屏幕外 */
   }
 }
 
-.animate-marquee-LR {
-  animation: marquee-LR 10s linear infinite;
+.animate-marquee-RTL {
+  animation: marquee-RTL 12s linear infinite;
 }
-
 
