@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchWithdrawList } from "@/api/user";
+import { useTranslation } from "react-i18next";
 
 export default function DeFiRecord() {
   const nav = useNavigate();
+  const { t } = useTranslation();
+
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -45,24 +48,24 @@ export default function DeFiRecord() {
           </svg>
         </button>
 
-        <span className="text-lg font-medium">Record</span>
+        <span className="text-lg font-medium">{t("Record")}</span>
       </div>
 
       {/* 表头 */}
       <div className="flex justify-between px-4 py-3 text-gray-600 text-sm border-b">
-        <span>Symbol</span>
-        <span>Time</span>
+        <span>{t("Symbol")}</span>
+        <span>{t("Time")}</span>
       </div>
 
       {/* 加载中 */}
       {loading && (
-        <div className="text-center text-gray-400 mt-10">loading...</div>
+        <div className="text-center text-gray-400 mt-10">{t("Loading")}...</div>
       )}
 
       {/* 无记录 */}
       {!loading && records.length === 0 && (
         <div className="text-center text-gray-400 mt-10">
-          There is no currency withdrawal record at the moment
+          {t("No withdrawal record")}
         </div>
       )}
 
