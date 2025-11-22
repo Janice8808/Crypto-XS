@@ -110,18 +110,57 @@ const Home = () => {
     "MATIC-USDT","TON-USDT","ICP-USDT","APT-USDT","NEAR-USDT",
     "SAND-USDT","MANA-USDT","ARB-USDT","OP-USDT","SUI-USDT"
   ];
+// ====== 快速首屏：读取本地缓存 ======
+const cache = JSON.parse(localStorage.getItem("tickers") || "{}");
+const [initial, setInitial] = useState(cache); // 启动立即显示缓存
 
+// ====== WebSocket 实时行情 ======
+const wsTickers = useOkxTickers(SYMBOLS);
 
-  // 实时行情
-  const tickers = useOkxTickers(SYMBOLS);
-  const list = Object.values(tickers);
+// ====== REST API 快速补充 ======
+useEffect(() => {
+  async function loadInitial() {
+    try {
+      const res = await fetch(
+        "https://www.okx.com/api/v5/market/tickers?instType=SPOT"
+      );
+      const json = await res.json();
 
-const btc = tickers["BTC"] || { price: "--", change: 0 };
-const eth = tickers["ETH"] || { price: "--", change: 0 };
-const bnb = tickers["BNB"] || { price: "--", change: 0 };
+      const result = {};
+      json.data.forEach((t) => {
+        if (t.instId.endsWith("-USDT")) {
+          const sym = t.instId.replace("-USDT", "");
+          result[sym] = {
+            symbol: sym,
+            price: Number(t.last),
+            change: Number(t.change24h),
+          };
+        }
+      });
 
+      // 保存到缓存
+      localStorage.setItem("tickers", JSON.stringify(result));
+      setInitial(result);
+    } catch (err) {
+      console.warn("REST 首屏行情失败:", err);
+    }
+  }
 
+  loadInitial();
+}, []);
 
+// ====== 三层融合（缓存 → REST → WS） ======
+const mergedTickers = {
+  ...initial,
+  ...wsTickers, // WebSocket 永远优先
+};
+
+const list = Object.values(mergedTickers);
+
+// 顶部 3 个币
+const btc = mergedTickers["BTC"] || { price: "--", change: 0 };
+const eth = mergedTickers["ETH"] || { price: "--", change: 0 };
+const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
 
   const address = localStorage.getItem("address") || "";
   const maskedAddress = maskAddress(address);
