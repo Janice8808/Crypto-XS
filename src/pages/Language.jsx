@@ -30,7 +30,7 @@ export default function Language() {
     // 2. 调用后台接口保存用户语言
     const token = localStorage.getItem("token");
     if (token) {
-      await fetch("/api/language", {
+      await fetch("https://pankouhoutai.shop/api/language", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
