@@ -27,49 +27,51 @@ export default function Market() {
         <span className="w-1/3 text-right">24h</span>
       </div>
 
-      {list.map((coin) => {
-        const isUp = coin.change >= 0;
+{list.map((coin) => {
+  const isUp = coin.change >= 0;
 
-        return (
-          <Link
-            key={coin.symbol}
-            to={`/coin/${coin.symbol}USDT`}
-            className="flex items-center px-1 py-2 hover:bg-gray-100 border-b transition"
-          >
-            {/* 左侧：图标 + 名称 */}
-            <span className="w-1/3 flex items-center text-gray-700 text-sm">
-              <img
-                src={coinIcons[coin.symbol] || "/images/default.png"}
-                alt={coin.symbol}
-                className="w-5 h-5 rounded-full mr-2"
-              />
-              {coin.symbol}/USDT
-            </span>
+  return (
+    <Link
+      key={coin.symbol}
+      to={`/coin/${coin.symbol}USDT`}
+      className="flex items-center px-1 py-3 hover:bg-gray-100 border-b transition"
+      // ⭐ py-3 → 每行高度更大，呼吸感加大
+    >
+      {/* 左侧：图标 + 名称 */}
+      <span className="w-1/3 flex items-center text-gray-700 text-sm">
+        <img
+          src={coinIcons[coin.symbol] || "/images/default.png"}
+          alt={coin.symbol}
+          className="w-5 h-5 rounded-full mr-2"
+        />
+        {coin.symbol}/USDT
+      </span>
 
-            {/* 最新价 */}
-            <span className="w-1/3 text-right text-sm text-gray-700">
-              ${coin.price}
-            </span>
+      {/* 最新价 */}
+      <span className="w-1/3 text-right text-sm text-gray-700">
+        ${coin.price}
+      </span>
 
-            {/* 涨跌幅 */}
-            <span className="w-1/3 flex justify-end">
-              <span
-                className="text-white rounded flex items-center justify-center text-xs"
-                style={{
-                  width: "54px",
-                  height: "22px",
-                  backgroundColor: isUp ? "#22c55e" : "#ef4444",
-                  fontWeight: 600,
-                  marginTop: "-2px",     // ⭐ 上提一点，更居中
-                }}
-              >
-                {isUp ? "+" : ""}
-                {coin.change}%
-              </span>
-            </span>
-          </Link>
-        );
-      })}
+      {/* 涨跌幅 */}
+      <span className="w-1/3 flex justify-end">
+        <span
+          className="text-white rounded flex items-center justify-center text-xs"
+          style={{
+            width: "60px",
+            height: "26px",   // ⭐ 从 22px → 26px，框变更高、更好看
+            backgroundColor: isUp ? "#22c55e" : "#ef4444",
+            fontWeight: 600,
+            marginTop: "-1px", // ⭐ 稍微上提一点视觉更居中
+          }}
+        >
+          {isUp ? "+" : ""}
+          {coin.change}%
+        </span>
+      </span>
+    </Link>
+  );
+})}
+
     </div>
   );
 }
