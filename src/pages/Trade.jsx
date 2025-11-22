@@ -7,46 +7,72 @@ import { useTranslation } from "react-i18next";
 
 /* ===================== TradingView 图表 ===================== */
 const TradingViewWidget = ({ symbol, onPrice }) => {
-  const widgetRef = useRef(null);
+  const containerRef = useRef(null);
+  const tvWidgetRef = useRef(null);
 
   useEffect(() => {
-    if (!widgetRef.current) return;
-    widgetRef.current.innerHTML = "";
+    let isMounted = true;
 
-    const initWidget = () => {
-      const widget = new window.TradingView.widget({
-        container_id: widgetRef.current.id,
+    const loadTradingView = () => {
+      return new Promise((resolve) => {
+        if (window.TradingView) return resolve();
+
+        const script = document.createElement("script");
+        script.src = "https://s3.tradingview.com/tv.js";
+        script.onload = () => resolve();
+        document.body.appendChild(script);
+      });
+    };
+
+    const initWidget = async () => {
+      await loadTradingView();
+      if (!isMounted || !containerRef.current) return;
+
+      containerRef.current.innerHTML = ""; // 清空容器
+
+      tvWidgetRef.current = new window.TradingView.widget({
+        container_id: containerRef.current.id,
         symbol: `BINANCE:${symbol}`,
         interval: "1",
         timezone: "Etc/UTC",
         theme: "light",
         style: "1",
         locale: "en",
-        toolbar_bg: "#f1f3f6",
+        hide_toolbar: false,
         enable_publishing: false,
-        allow_symbol_change: true,
-        hideideas: true,
+        allow_symbol_change: false,
+        autosize: true,
       });
 
-      widget.onChartReady(() => {
-        const chart = widget.chart();
+      tvWidgetRef.current.onChartReady(() => {
+        const chart = tvWidgetRef.current.chart();
         chart.onRealtimeTick((data) => {
           if (data?.close && onPrice) onPrice(Number(data.close));
         });
       });
     };
 
-    if (!window.TradingView) {
-      const script = document.createElement("script");
-      script.src = "https://s3.tradingview.com/tv.js";
-      script.async = true;
-      script.onload = initWidget;
-      document.body.appendChild(script);
-    } else initWidget();
+    initWidget();
+
+    return () => {
+      isMounted = false;
+
+      if (tvWidgetRef.current) {
+        tvWidgetRef.current.remove();
+        tvWidgetRef.current = null;
+      }
+    };
   }, [symbol]);
 
-  return <div ref={widgetRef} id="tv_widget" style={{ flex: 1, minHeight: 0 }} />;
+  return (
+    <div
+      ref={containerRef}
+      id="tv_widget"
+      style={{ width: "100%", height: "100%" }}
+    ></div>
+  );
 };
+
 
 /* ===================== 遮罩弹层 ===================== */
 const BottomModal = ({ children, onClose }) => (
