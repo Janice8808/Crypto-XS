@@ -338,7 +338,7 @@ const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
       {/* 滚动公告 */}
       <div className="
         relative overflow-hidden 
-        h-20 px-3 flex items-center
+        h-12 px-3 flex items-center
         bg-gradient-to-b
         from-[#1E1E22]
         via-[#3C3C42]
@@ -369,7 +369,7 @@ const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
                 item.key === "User Center" ? "/user" :
                 item.key === "MSb" ? "/user/msb" :
                 item.key === "Introduction" ? "/intro" :
-                item.key === "Currency" ? "/coin-detail" :
+                item.key === "Currency" ? "/coin/BTCUSDT" :
                 item.key === "Deposit" ? "/deposit1" :
                 item.key === "DeFi" ? "/defi" :
                 item.key === "Futures" ? "/trade" :
