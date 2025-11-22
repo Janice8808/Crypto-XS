@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCoins } from "../hooks/useCoins";
 import { fetchUserBalance } from "@/api/user";
+import { useTranslation } from "react-i18next";   // ⭐新增
 
 export default function CoinDetail() {
+  const { t } = useTranslation();   // ⭐新增
   const { symbol } = useParams();
   const navigate = useNavigate();
   const { allCoins } = useCoins();
@@ -15,11 +17,10 @@ export default function CoinDetail() {
 
   const upperSymbol = (symbol || "").toUpperCase();
 
-  // 🧩 从后端加载当前用户资产
   useEffect(() => {
     async function load() {
       try {
-        const data = await fetchUserBalance(); // { balances, userId }
+        const data = await fetchUserBalance();
         setBalances(data.balances || {});
       } catch (e) {
         console.error("Load user balance failed:", e);
@@ -30,7 +31,6 @@ export default function CoinDetail() {
     load();
   }, []);
 
-  // 🪙 匹配当前币的行情信息
   const coinInfo = useMemo(() => {
     if (upperSymbol === "USDT") {
       return {
@@ -67,19 +67,19 @@ export default function CoinDetail() {
     };
   }, [allCoins, upperSymbol]);
 
-  // 💰 当前币余额和换算
-const availableRaw =
-  balances?.[upperSymbol] ??
-  balances?.[upperSymbol.replace("USDT", "")] ??
-  0;
-const available = parseFloat(availableRaw) || 0;
+
+  const availableRaw =
+    balances?.[upperSymbol] ??
+    balances?.[upperSymbol.replace("USDT", "")] ??
+    0;
+  const available = parseFloat(availableRaw) || 0;
   const frozen = 0;
   const equivalent = available * (Number(coinInfo.price) || 0);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-white p-4 pb-20 flex items-center justify-center">
-        <div className="text-gray-600">Loading...</div>
+        <div className="text-gray-600">{t("Loading")}</div>
       </div>
     );
   }
@@ -118,27 +118,27 @@ const available = parseFloat(availableRaw) || 0;
               </div>
               <div className="text-xs text-gray-700">{coinInfo.name}</div>
               <div className="text-xs text-gray-700">
-                Price:{" "}
+                {t("Price")}:{" "}
                 <span className="font-medium">
                   {coinInfo.price
                     ? `$${coinInfo.price.toFixed(4)}`
-                    : "Unavailable"}
+                    : t("Unavailable")}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="text-sm text-gray-700 mt-2">Available</div>
+          <div className="text-sm text-gray-700 mt-2">{t("Available")}</div>
           <div className="text-lg font-medium text-gray-900">
             {available.toFixed(4)}
           </div>
 
-          <div className="text-sm text-gray-700 mt-1">Frozen</div>
+          <div className="text-sm text-gray-700 mt-1">{t("Frozen")}</div>
           <div className="text-lg font-medium text-gray-900">
             {frozen.toFixed(4)}
           </div>
 
-          <div className="text-sm text-gray-700 mt-1">Equivalent (USDT)</div>
+          <div className="text-sm text-gray-700 mt-1">{t("Equivalent (USDT)")}</div>
           <div className="text-lg font-medium text-gray-900">
             {equivalent.toFixed(2)}
           </div>
@@ -147,7 +147,7 @@ const available = parseFloat(availableRaw) || 0;
 
       {/* 财务记录标题 */}
       <div className="text-center text-gray-700 font-medium text-base mb-2">
-        Financial records
+        {t("Financial records")}
       </div>
 
       {/* 暂无记录 */}
@@ -156,7 +156,7 @@ const available = parseFloat(availableRaw) || 0;
         style={{ backgroundColor: "#d4d4d8", borderColor: "#d1d5db" }}
       >
         <CardContent className="text-center text-gray-500">
-          Temporarily no data
+          {t("Temporarily no data")}
         </CardContent>
       </Card>
 
@@ -166,13 +166,13 @@ const available = parseFloat(availableRaw) || 0;
           className="flex-1 mx-2 bg-yellow-400 hover:bg-yellow-500 text-white font-medium"
           onClick={() => navigate(`/wallet/${upperSymbol}/deposit`)}
         >
-          Deposit
+          {t("Deposit")}
         </Button>
         <Button
           className="flex-1 mx-2 bg-yellow-400 hover:bg-yellow-500 text-white font-medium"
           onClick={() => navigate(`/wallet/${upperSymbol}/withdraw`)}
         >
-          Withdraw
+          {t("Withdraw")}
         </Button>
       </div>
     </div>

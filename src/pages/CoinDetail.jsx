@@ -3,21 +3,21 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchUserBalance } from "@/api/user";
 import { apiFetch } from "@/api/http";
+import { useTranslation } from "react-i18next";
 
 // ====== OKX WebSocket 地址 ======
 const OKX_WS = "wss://ws.okx.com:8443/ws/v5/public";
 
-
 export default function CoinDetail() {
-  const { symbol } = useParams(); // 例如 btcusdt
+  const { t } = useTranslation();          // ⭐ 多语言
+  const { symbol } = useParams();
   const navigate = useNavigate();
   const upperSymbol = (symbol || "BTCUSDT").toUpperCase();
 
-  const [side, setSide] = useState("buy"); // buy / sell
-  const [orderType, setOrderType] = useState("limit"); // limit / market
-
-  const [price, setPrice] = useState(""); // 价格输入框
-  const [qty, setQty] = useState(""); // 数量输入框
+  const [side, setSide] = useState("buy");
+  const [orderType, setOrderType] = useState("limit");
+  const [price, setPrice] = useState("");
+  const [qty, setQty] = useState("");
 
   const [availableUsdt, setAvailableUsdt] = useState(0);
   const [lastPrice, setLastPrice] = useState(null);
@@ -26,77 +26,70 @@ export default function CoinDetail() {
   const [submitting, setSubmitting] = useState(false);
   const [submitMsg, setSubmitMsg] = useState("");
 
-  // ====== OKX Ticker（实时最新价/24h） ======
-useEffect(() => {
-  const instId = upperSymbol.replace("USDT", "-USDT");
-  const ws = new WebSocket(OKX_WS);
+  // ====== 实时 ticker ======
+  useEffect(() => {
+    const instId = upperSymbol.replace("USDT", "-USDT");
+    const ws = new WebSocket(OKX_WS);
 
-  ws.onopen = () => {
-    ws.send(
-      JSON.stringify({
-        op: "subscribe",
-        args: [{ channel: "tickers", instId }]
-      })
-    );
-  };
+    ws.onopen = () => {
+      ws.send(
+        JSON.stringify({
+          op: "subscribe",
+          args: [{ channel: "tickers", instId }]
+        })
+      );
+    };
 
-  ws.onmessage = (evt) => {
-    const msg = JSON.parse(evt.data);
-    if (!msg.data) return;
+    ws.onmessage = (evt) => {
+      const msg = JSON.parse(evt.data);
+      if (!msg.data) return;
 
-    const d = msg.data[0]; 
-    setLastPrice(Number(d.last));
-    const open = Number(d.open24h);
-    const pct = ((d.last - open) / open) * 100;
-    setChangePct(pct);
-  };
+      const d = msg.data[0];
+      setLastPrice(Number(d.last));
+      const open = Number(d.open24h);
+      const pct = ((d.last - open) / open) * 100;
+      setChangePct(pct);
+    };
 
-  return () => ws.close();
-}, [upperSymbol]);
+    return () => ws.close();
+  }, [upperSymbol]);
 
-  // ===== 顶部点击左侧四横杠，返回市场列表 =====
-  const handleBack = () => {
-    navigate("/markets");
-  };
+  // ===== 盘口 books5 =====
+  const [orderBook, setOrderBook] = useState({ asks: [], bids: [] });
 
-// ===== 模拟盘口（每秒波动） =====
-const [orderBook, setOrderBook] = useState({ asks: [], bids: [] });
+  useEffect(() => {
+    const instId = upperSymbol.replace("USDT", "-USDT");
+    const ws = new WebSocket(OKX_WS);
 
-// ====== OKX 盘口（books5）=====
-useEffect(() => {
-  const instId = upperSymbol.replace("USDT", "-USDT");
-  const ws = new WebSocket(OKX_WS);
+    ws.onopen = () => {
+      ws.send(
+        JSON.stringify({
+          op: "subscribe",
+          args: [{ channel: "books5", instId }]
+        })
+      );
+    };
 
-  ws.onopen = () => {
-    ws.send(
-      JSON.stringify({
-        op: "subscribe",
-        args: [{ channel: "books5", instId }]
-      })
-    );
-  };
+    ws.onmessage = (evt) => {
+      const msg = JSON.parse(evt.data);
+      if (!msg.data) return;
 
-  ws.onmessage = (evt) => {
-    const msg = JSON.parse(evt.data);
-    if (!msg.data) return;
+      const d = msg.data[0];
 
-    const d = msg.data[0];
+      setOrderBook({
+        asks: d.asks.map(([p, qty]) => ({
+          price: Number(p).toFixed(2),
+          qty: Number(qty).toFixed(4),
+        })),
+        bids: d.bids.map(([p, qty]) => ({
+          price: Number(p).toFixed(2),
+          qty: Number(qty).toFixed(4),
+        })),
+      });
+    };
 
-    setOrderBook({
-      asks: d.asks.map(([p, qty]) => ({
-        price: Number(p).toFixed(2),
-        qty: Number(qty).toFixed(4),
-      })),
-      bids: d.bids.map(([p, qty]) => ({
-        price: Number(p).toFixed(2),
-        qty: Number(qty).toFixed(4),
-      })),
-    });
-  };
-
-  return () => ws.close();
-}, [upperSymbol]);
-
+    return () => ws.close();
+  }, [upperSymbol]);
 
   // ===== 获取用户可用余额 =====
   useEffect(() => {
@@ -105,14 +98,10 @@ useEffect(() => {
         const res = await fetchUserBalance();
         const usdt = res?.balances?.USDT ?? 0;
         setAvailableUsdt(Number(usdt));
-      } catch (_) {
-        // 未登录就不显示余额
-      }
+      } catch (_) {}
     }
     loadBalance();
   }, []);
-
-
 
   // ===== 快捷百分比按钮 =====
   const handlePercentClick = (percent) => {
@@ -128,31 +117,31 @@ useEffect(() => {
   const handleSubmit = async () => {
     setSubmitMsg("");
     if (!qty || Number(qty) <= 0) {
-      setSubmitMsg("请输入数量");
+      setSubmitMsg(t("Enter Quantity"));
       return;
     }
 
     try {
       setSubmitting(true);
-      await apiFetch("/api/order/create", {
-  method: "POST",
-  body: JSON.stringify({
-    symbol: upperSymbol,
-    amount: Number(qty)
-  }),
-});
 
-      setSubmitMsg("下单成功");
-      // 下单成功后清空数量
+      await apiFetch("/api/order/create", {
+        method: "POST",
+        body: JSON.stringify({
+          symbol: upperSymbol,
+          amount: Number(qty)
+        }),
+      });
+
+      setSubmitMsg(t("Order Success"));
       setQty("");
     } catch (err) {
-      setSubmitMsg(err.message || "下单失败，请检查是否已登录");
+      setSubmitMsg(err.message || t("Order Failed"));
     } finally {
       setSubmitting(false);
     }
   };
 
-  // ===== UI 样式 =====
+  // ===== 样式 =====
   const containerStyle = {
     minHeight: "100vh",
     backgroundColor: "#f5f5f5",
@@ -185,79 +174,27 @@ useEffect(() => {
     color: "#999",
   };
 
-  const smallButtonBase = {
-    borderRadius: 4,
-    border: "1px solid #ddd",
-    padding: "4px 8px",
-    fontSize: 12,
-    backgroundColor: "#ffffff",
-    cursor: "pointer",
-  };
-
-  const inputWrapperStyle = {
-    border: "1px solid #e5e5e5",
-    borderRadius: 6,
-    display: "flex",
-    alignItems: "center",
-    padding: "0 8px",
-    backgroundColor: "#ffffff",
-    height: 34,
-  };
-
-  const inputStyle = {
-    border: "none",
-    outline: "none",
-    flex: 1,
-    fontSize: 13,
-  };
-
   return (
     <div style={containerStyle}>
-      {/* 顶部导航栏 */}
+      
+      {/* ===== 顶部导航 ===== */}
       <div style={topBarStyle}>
-        {/* 左侧四条横杠图标 */}
         <div
-          onClick={handleBack}
+          onClick={() => navigate("/markets")}
           style={{ padding: 8, marginRight: 8, cursor: "pointer" }}
         >
-          <div
-            style={{
-              width: 18,
-              height: 2,
-              backgroundColor: "#333",
-              marginBottom: 3,
-            }}
-          />
-          <div
-            style={{
-              width: 18,
-              height: 2,
-              backgroundColor: "#333",
-              marginBottom: 3,
-            }}
-          />
-          <div
-            style={{
-              width: 12,
-              height: 2,
-              backgroundColor: "#333",
-              marginBottom: 3,
-            }}
-          />
+          <div style={{ width: 18, height: 2, backgroundColor: "#333", marginBottom: 3 }} />
+          <div style={{ width: 18, height: 2, backgroundColor: "#333", marginBottom: 3 }} />
+          <div style={{ width: 12, height: 2, backgroundColor: "#333", marginBottom: 3 }} />
           <div style={{ width: 12, height: 2, backgroundColor: "#333" }} />
         </div>
-        {/* 中间币对名称 */}
-        <div style={{ flex: 1, textAlign: "left" }}>
-          <div
-            style={{
-              fontSize: 16,
-              fontWeight: 600,
-              color: "#222",
-            }}
-          >
-            {upperSymbol.replace(/USDT$/,"/USDT")}
 
+        {/* 币对标题 */}
+        <div style={{ flex: 1, textAlign: "left" }}>
+          <div style={{ fontSize: 16, fontWeight: 600, color: "#222" }}>
+            {upperSymbol.replace(/USDT$/, "/USDT")}
           </div>
+
           {lastPrice && (
             <div
               style={{
@@ -269,7 +206,8 @@ useEffect(() => {
             </div>
           )}
         </div>
-        {/* 右侧小图标占位 */}
+
+        {/* 占位图标 */}
         <div
           style={{
             width: 24,
@@ -287,18 +225,13 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* 主体卡片：左侧下单、右侧盘口 */}
+      {/* ===== 主体区：左下单 + 右盘口 ===== */}
       <div style={cardStyle}>
-        {/* 左侧：下单区域 */}
+        
+        {/* ===== 左侧：下单 ===== */}
         <div>
-          {/* 买卖切换 */}
-          <div
-            style={{
-              display: "flex",
-              gap: 8,
-              marginBottom: 8,
-            }}
-          >
+          {/* 买卖 */}
+          <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
             <button
               onClick={() => setSide("buy")}
               style={{
@@ -312,8 +245,9 @@ useEffect(() => {
                 backgroundColor: side === "buy" ? "#16a34a" : "#e5f9ed",
               }}
             >
-              Buy
+              {t("Buy")}
             </button>
+
             <button
               onClick={() => setSide("sell")}
               style={{
@@ -327,57 +261,66 @@ useEffect(() => {
                 backgroundColor: side === "sell" ? "#dc2626" : "#fee2e2",
               }}
             >
-              Sell
+              {t("Sell")}
             </button>
           </div>
 
-          {/* 限价 / 市价 */}
-          <div
-            style={{
-              display: "flex",
-              gap: 16,
-              fontSize: 13,
-              marginBottom: 8,
-            }}
-          >
+          {/* 限价/市价 */}
+          <div style={{ display: "flex", gap: 16, fontSize: 13, marginBottom: 8 }}>
             <button
               onClick={() => setOrderType("limit")}
               style={{
                 border: "none",
                 background: "transparent",
-                color:
-                  orderType === "limit" ? "#22c55e" : "#666",
+                color: orderType === "limit" ? "#22c55e" : "#666",
                 fontWeight: orderType === "limit" ? 600 : 400,
                 cursor: "pointer",
               }}
             >
-              limit order
+              {t("Limit Order")}
             </button>
+
             <button
               onClick={() => setOrderType("market")}
               style={{
                 border: "none",
                 background: "transparent",
-                color:
-                  orderType === "market" ? "#22c55e" : "#666",
+                color: orderType === "market" ? "#22c55e" : "#666",
                 fontWeight: orderType === "market" ? 600 : 400,
                 cursor: "pointer",
               }}
             >
-              market order
+              {t("Market Order")}
             </button>
           </div>
 
-          {/* 价格输入 */}
+          {/* 价格输入（限价） */}
           {orderType === "limit" && (
             <div style={{ marginBottom: 8 }}>
-              <div style={inputWrapperStyle}>
+              <div
+                style={{
+                  border: "1px solid #e5e5e5",
+                  borderRadius: 6,
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "0 8px",
+                  backgroundColor: "#ffffff",
+                  height: 34,
+                }}
+              >
                 <input
-                  style={inputStyle}
+                  style={{
+                    border: "none",
+                    outline: "none",
+                    flex: 1,
+                    fontSize: 13,
+                  }}
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
-                  placeholder="Price"
+                  placeholder={t("Price")}
                 />
+
+                {/* - 按钮 */}
                 <button
                   type="button"
                   onClick={() =>
@@ -386,14 +329,17 @@ useEffect(() => {
                     )
                   }
                   style={{
-                    ...smallButtonBase,
-                    marginRight: 4,
                     border: "none",
+                    background: "transparent",
                     color: "#555",
+                    padding: "0 6px",
+                    fontSize: 14,
                   }}
                 >
                   -
                 </button>
+
+                {/* + 按钮 */}
                 <button
                   type="button"
                   onClick={() =>
@@ -402,10 +348,12 @@ useEffect(() => {
                     )
                   }
                   style={{
-    ...smallButtonBase,
-    border: "none",
-    color: "#555",   // ⭐ 加这一行
-  }}
+                    border: "none",
+                    background: "transparent",
+                    color: "#555",
+                    padding: "0 6px",
+                    fontSize: 14,
+                  }}
                 >
                   +
                 </button>
@@ -415,13 +363,29 @@ useEffect(() => {
 
           {/* 数量输入 */}
           <div style={{ marginBottom: 8 }}>
-            <div style={inputWrapperStyle}>
+            <div
+              style={{
+                border: "1px solid #e5e5e5",
+                borderRadius: 6,
+                display: "flex",
+                alignItems: "center",
+                padding: "0 8px",
+                backgroundColor: "#ffffff",
+                height: 34,
+              }}
+            >
               <input
-                style={inputStyle}
+                style={{
+                  border: "none",
+                  outline: "none",
+                  flex: 1,
+                  fontSize: 13,
+                }}
                 value={qty}
                 onChange={(e) => setQty(e.target.value)}
-                placeholder="Enter quantity"
+                placeholder={t("Enter Quantity")}
               />
+
               <button
                 type="button"
                 onClick={() =>
@@ -433,14 +397,16 @@ useEffect(() => {
                   )
                 }
                 style={{
-                  ...smallButtonBase,
-                  marginRight: 4,
                   border: "none",
+                  background: "transparent",
                   color: "#555",
+                  padding: "0 6px",
+                  fontSize: 14,
                 }}
               >
                 -
               </button>
+
               <button
                 type="button"
                 onClick={() =>
@@ -449,10 +415,12 @@ useEffect(() => {
                   )
                 }
                 style={{
-    ...smallButtonBase,
-    border: "none",
-    color: "#555",   // ⭐ 加这一行
-  }}
+                  border: "none",
+                  background: "transparent",
+                  color: "#555",
+                  padding: "0 6px",
+                  fontSize: 14,
+                }}
               >
                 +
               </button>
@@ -460,14 +428,7 @@ useEffect(() => {
           </div>
 
           {/* 百分比按钮 */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: 8,
-              marginTop: 4,
-            }}
-          >
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, marginTop: 4 }}>
             {[25, 50, 75, 100].map((p) => (
               <button
                 key={p}
@@ -491,26 +452,34 @@ useEffect(() => {
           </div>
 
           {/* 可用余额 */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              fontSize: 12,
-              marginBottom: 6,
-            }}
-          >
-            <span style={labelStyle}>Available</span>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 6 }}>
+            <span style={labelStyle}>{t("Available")}</span>
             <span style={{ fontSize: 12, color: "#111" }}>
               {availableUsdt.toFixed(4)} USDT
             </span>
           </div>
 
-          {/* Turnover 输入 */}
+          {/* Turnover 成交额 */}
           <div style={{ marginBottom: 10 }}>
-            <div style={inputWrapperStyle}>
+            <div
+              style={{
+                border: "1px solid #e5e5e5",
+                borderRadius: 6,
+                display: "flex",
+                alignItems: "center",
+                padding: "0 8px",
+                backgroundColor: "#ffffff",
+                height: 34,
+              }}
+            >
               <input
-                style={inputStyle}
-                placeholder="Turnover"
+                style={{
+                  border: "none",
+                  outline: "none",
+                  flex: 1,
+                  fontSize: 13,
+                }}
+                placeholder={t("Turnover")}
                 readOnly
                 value={
                   price && qty
@@ -522,7 +491,7 @@ useEffect(() => {
             </div>
           </div>
 
-          {/* 绿色按钮（未登录时可以写 Login，这里统一“Place Order”） */}
+          {/* 下单按钮 */}
           <button
             type="button"
             onClick={handleSubmit}
@@ -541,7 +510,11 @@ useEffect(() => {
               opacity: submitting ? 0.7 : 1,
             }}
           >
-            {submitting ? "Submitting..." : side === "buy" ? "Buy" : "Sell"}
+            {submitting
+              ? t("Submitting")
+              : side === "buy"
+              ? t("Buy")
+              : t("Sell")}
           </button>
 
           {submitMsg && (
@@ -549,9 +522,7 @@ useEffect(() => {
               style={{
                 marginTop: 6,
                 fontSize: 12,
-                color: submitMsg.includes("成功")
-                  ? "#16a34a"
-                  : "#dc2626",
+                color: submitMsg.includes("成功") ? "#16a34a" : "#dc2626",
               }}
             >
               {submitMsg}
@@ -559,27 +530,14 @@ useEffect(() => {
           )}
         </div>
 
-        {/* 右侧：盘口列表 */}
-        <div
-          style={{
-            paddingLeft: 8,
-            borderLeft: "1px solid #f1f1f1",
-            fontSize: 12,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              color: "#999",
-              marginBottom: 4,
-            }}
-          >
-            <span>Price</span>
-            <span>Quantity</span>
+        {/* ===== 右侧：盘口 ===== */}
+        <div style={{ paddingLeft: 8, borderLeft: "1px solid #f1f1f1", fontSize: 12 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", color: "#999", marginBottom: 4 }}>
+            <span>{t("Price")}</span>
+            <span>{t("Quantity")}</span>
           </div>
 
-          {/* 卖盘（红色） */}
+          {/* 卖盘 */}
           {orderBook.asks.map((row, idx) => (
             <div
               key={"ask" + idx}
@@ -595,15 +553,9 @@ useEffect(() => {
             </div>
           ))}
 
-          {/* 分割线 */}
-          <div
-            style={{
-              borderTop: "1px dashed #eee",
-              margin: "4px 0",
-            }}
-          />
+          <div style={{ borderTop: "1px dashed #eee", margin: "4px 0" }} />
 
-          {/* 买盘（绿色） */}
+          {/* 买盘 */}
           {orderBook.bids.map((row, idx) => (
             <div
               key={"bid" + idx}
@@ -632,69 +584,20 @@ useEffect(() => {
           minHeight: 240,
         }}
       >
-        {/* 顶部：limit order + 图标 */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 14,
-          }}
-        >
-          <div
-            style={{
-              fontSize: 14,
-              fontWeight: 600,
-              color: "#888",
-            }}
-          >
-            limit order
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "#888" }}>
+            {t("Limit Order")}
           </div>
 
-          <div
-            style={{
-              width: 20,
-              height: 20,
-              cursor: "pointer",
-            }}
-          >
-            {/* 三条横线图标 */}
-            <div
-              style={{
-                width: "100%",
-                height: 2,
-                backgroundColor: "#aaa",
-                marginBottom: 4,
-              }}
-            ></div>
-            <div
-              style={{
-                width: "70%",
-                height: 2,
-                backgroundColor: "#aaa",
-                marginBottom: 4,
-              }}
-            ></div>
-            <div
-              style={{
-                width: "55%",
-                height: 2,
-                backgroundColor: "#aaa",
-              }}
-            ></div>
+          <div style={{ width: 20, height: 20, cursor: "pointer" }}>
+            <div style={{ width: "100%", height: 2, backgroundColor: "#aaa", marginBottom: 4 }}></div>
+            <div style={{ width: "70%", height: 2, backgroundColor: "#aaa", marginBottom: 4 }}></div>
+            <div style={{ width: "55%", height: 2, backgroundColor: "#aaa" }}></div>
           </div>
         </div>
 
         {/* 空状态 */}
-        <div
-          style={{
-            marginTop: 40,
-            textAlign: "center",
-            color: "#bbb",
-            fontSize: 13,
-          }}
-        >
-          {/* 空图标（浅灰） */}
+        <div style={{ marginTop: 40, textAlign: "center", color: "#bbb", fontSize: 13 }}>
           <div style={{ marginBottom: 10 }}>
             <div
               style={{
@@ -704,45 +607,17 @@ useEffect(() => {
                 opacity: 0.25,
                 borderRadius: 4,
                 border: "1.5px solid #ccc",
-                borderStyle: "solid",
                 borderColor: "#ddd",
                 position: "relative",
               }}
             >
-              <div
-                style={{
-                  width: "70%",
-                  height: 2,
-                  backgroundColor: "#ccc",
-                  position: "absolute",
-                  top: 12,
-                  left: "15%",
-                }}
-              ></div>
-              <div
-                style={{
-                  width: "50%",
-                  height: 2,
-                  backgroundColor: "#ccc",
-                  position: "absolute",
-                  top: 20,
-                  left: "15%",
-                }}
-              ></div>
-              <div
-                style={{
-                  width: "65%",
-                  height: 2,
-                  backgroundColor: "#ccc",
-                  position: "absolute",
-                  top: 28,
-                  left: "15%",
-                }}
-              ></div>
+              <div style={{ width: "70%", height: 2, backgroundColor: "#ccc", position: "absolute", top: 12, left: "15%" }} />
+              <div style={{ width: "50%", height: 2, backgroundColor: "#ccc", position: "absolute", top: 20, left: "15%" }} />
+              <div style={{ width: "65%", height: 2, backgroundColor: "#ccc", position: "absolute", top: 28, left: "15%" }} />
             </div>
           </div>
 
-          No delegated order
+          {t("No Order")}
         </div>
       </div>
     </div>

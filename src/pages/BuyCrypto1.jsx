@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 export default function BuyCrypto1() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
@@ -14,7 +16,9 @@ export default function BuyCrypto1() {
         >
           ←
         </button>
-        <h1 className="text-gray-800 font-semibold text-lg">Buy Crypto</h1>
+        <h1 className="text-gray-800 font-semibold text-lg">
+          {t("Buy Crypto")}
+        </h1>
       </div>
 
       {/* 币种选择框 */}
@@ -23,7 +27,10 @@ export default function BuyCrypto1() {
           onClick={() => navigate("/wallet")}
           className="flex justify-between items-center px-4 py-4 border-b cursor-pointer hover:bg-gray-100"
         >
-          <span className="font-semibold text-gray-800">Money</span>
+          <span className="font-semibold text-gray-800">
+            {t("Money")}
+          </span>
+
           <div className="flex items-center space-x-2">
             <span className="text-gray-700 font-semibold">USDT</span>
             <span className="text-gray-500 text-lg">›</span>
@@ -35,9 +42,9 @@ export default function BuyCrypto1() {
       <div className="fixed bottom-0 left-0 right-0 bg-gray-50 border-t py-4 px-4">
         <Button
           className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-medium py-3 rounded-lg"
-          onClick={() => alert("Submit order")}
+          onClick={() => alert(t("Submit order"))}
         >
-          Submit
+          {t("Submit")}
         </Button>
       </div>
     </div>
