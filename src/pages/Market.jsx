@@ -12,7 +12,7 @@ const SYMBOLS = [
 ];
 
 export default function Market() {
-  const tickers = useOkxTickers(SYMBOLS);
+  const tickers = useOkxTickers();  // ⭐ 不传 symbols
   const list = Object.values(tickers); 
 
   return (
