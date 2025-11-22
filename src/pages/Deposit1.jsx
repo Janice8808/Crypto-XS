@@ -50,13 +50,13 @@ export default function Deposit1() {
 
         <div className="grid grid-cols-2 gap-3 mt-3">
           {rechargeCoins.map((coin) => (
-            <div
+<div
   key={coin.name}
   onClick={() => navigate(`/wallet/${coin.name}/deposit`)}
   className="flex flex-col items-center justify-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer transition active:bg-gray-100"
 >
   <img src={coin.icon} alt={coin.name} className="w-8 h-8 mb-1" />
-  <span className="font-medium text-gray-800 text-sm">{coin.name}</span>
+  <span className="font-medium text-gray-800 text-sm text-center">{coin.name}</span>
 </div>
 
           ))}
