@@ -114,24 +114,16 @@ const Home = () => {
   const FIXED_LIST = [...SYMBOLS];
 
   // 实时行情
-  const tickers = useOkxTickers(SYMBOLS, () => setRefresh(r => r + 1));
+  const tickers = useOkxTickers(SYMBOLS);
   const [refresh, setRefresh] = useState(0);
+  const list = Object.values(tickers);
 
 const btc = tickers["BTC"] || { price: "--", change: 0 };
 const eth = tickers["ETH"] || { price: "--", change: 0 };
 const bnb = tickers["BNB"] || { price: "--", change: 0 };
 
 
-  const stableList = FIXED_LIST.map((id) => {
-const symbol = id.replace("-USDT", "");
-const t = tickers[symbol] || {};
 
-    return {
-      symbol: id.replace("-USDT", ""),
-      price: t.price || "--",
-      change: t.change || 0,
-    };
-  });
 
   const address = localStorage.getItem("address") || "";
   const maskedAddress = maskAddress(address);
@@ -357,7 +349,7 @@ const t = tickers[symbol] || {};
 
     return (
       <Link
-        key={coin.symbol + refresh}
+        key={coin.symbol}
         to={`/coin/${coin.base}-USDT`}
         className="text-center py-2"
       >
@@ -393,7 +385,7 @@ const t = tickers[symbol] || {};
           <span className="w-1/3 text-right">{t("24h")}</span>
         </div>
 
-{stableList.map((coin) => {
+{list.map((coin) => {
   const up = coin.change >= 0;
 
   return (
