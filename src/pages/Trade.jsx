@@ -647,11 +647,12 @@ const Trade = () => {
           </div>
         </div>
 
-        <div>
-          <div>{t("Low")}</div>
-          <div>{t("High")}</div>
-          <div>{t("24h Amount")}</div>
-        </div>
+<div style={{ color: "#888" }}>
+  <div>{t("Low")}</div>
+  <div>{t("High")}</div>
+  <div>{t("24h Amount")}</div>
+</div>
+
 
         <div style={{ textAlign: "right" }}>
           <div>{low}</div>
