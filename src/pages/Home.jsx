@@ -174,6 +174,14 @@ const [refresh, setRefresh] = useState(0);
   const [currentBanner, setCurrentBanner] = useState(0);
   const [showLang, setShowLang] = useState(false);
   const [unread, setUnread] = useState(0);
+useEffect(() => {
+  function handle() {
+    setUnread(0); // 红点消失
+  }
+
+  window.addEventListener("notice-read", handle);
+  return () => window.removeEventListener("notice-read", handle);
+}, []);
 
 useEffect(() => {
   async function loadUnread() {
@@ -309,7 +317,8 @@ const top3 = [
   </button>
 
 
-          <button className="p-0 bg-transparent" onClick={() => setShowLang(!showLang)}>
+          <button className="p-0 bg-transparent" 
+          onClick={() => navigate("/user/language")}>
             <GlobeIcon />
           </button>
         </div>

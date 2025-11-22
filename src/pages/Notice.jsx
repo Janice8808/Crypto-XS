@@ -8,7 +8,7 @@ export default function Notice() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function load() {
+    async function loadAndMark() {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -17,20 +17,30 @@ export default function Notice() {
           return;
         }
 
+        // 1️⃣ 读取通知列表
         const r = await fetch("https://pankouhoutai.shop/api/notice/list", {
           headers: { Authorization: "Bearer " + token }
         });
-
         const j = await r.json();
         setList(j);
+
+        // 2️⃣ 读取后标记已读
+        await fetch("https://pankouhoutai.shop/api/notice/read", {
+          method: "POST",
+          headers: { Authorization: "Bearer " + token }
+        });
+
+        // 3️⃣ 通知首页 unread=0
+        window.dispatchEvent(new Event("notice-read"));
+
       } catch (err) {
-        console.log("notice list error:", err);
+        console.log("notice error:", err);
       } finally {
         setLoading(false);
       }
     }
 
-    load();
+    loadAndMark();
   }, []);
 
   return (
@@ -62,19 +72,20 @@ export default function Notice() {
 
       {/* 内容区域 */}
       <div className="flex-1 overflow-y-auto px-4 py-3">
+
         {/* 加载中 */}
         {loading && (
           <div className="text-center text-gray-400 mt-10">Loading...</div>
         )}
 
-        {/* 无记录 */}
+        {/* 无通知 */}
         {!loading && list.length === 0 && (
           <div className="flex items-center justify-center h-full text-gray-400 text-sm">
             No notification record
           </div>
         )}
 
-        {/* 有记录 */}
+        {/* 有通知 */}
         {!loading && list.length > 0 && (
           <div className="space-y-3">
             {list.map((n, idx) => (
@@ -93,6 +104,7 @@ export default function Notice() {
             ))}
           </div>
         )}
+
       </div>
     </div>
   );
