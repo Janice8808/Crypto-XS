@@ -73,16 +73,22 @@ button:focus-visible {
 }
 
 
-@keyframes marquee-RTL {
+@keyframes marquee-eaten {
   0% {
-    transform: translateX(300%) translateY(-50%);
+    transform: translateX(120%);   /* 从右侧屏幕外进入 */
+    opacity: 1;
+  }
+  70% {
+    transform: translateX(0%);     /* 跑到喇叭这里 */
+    opacity: 1;
   }
   100% {
-    transform: translateX(-300%) translateY(-50%);
+    transform: translateX(-20%);   /* 轻微碰一下喇叭左侧 */
+    opacity: 0;                    /* 被“吃掉”消失 */
   }
 }
 
-.animate-marquee-RTL {
-  animation: marquee-RTL 10s linear infinite;
+.animate-eaten {
+  animation: marquee-eaten 6s linear infinite;
 }
 
