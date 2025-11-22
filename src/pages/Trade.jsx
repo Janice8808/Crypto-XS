@@ -545,80 +545,91 @@ const Trade = () => {
 
   return (
     <div style={{ width: "100%", height: "100vh", display: "flex", flexDirection: "column" }}>
-      {/* 顶部 */}
+{/* 顶部 */}
+<div
+  style={{
+    height: "44px",
+    padding: "0 0", // ⭐ 去掉左右 padding，避免挤压返回键
+    borderBottom: "1px solid #eee",
+    display: "flex",
+    alignItems: "center",
+  }}
+>
+  {/* ⭐ 左侧返回键 - 绝对贴左 */}
+  <button
+    onClick={() => window.history.back()}
+    style={{
+      background: "none",
+      border: "none",
+      fontSize: 20,
+      color: "#666",
+      width: "45px",        // ⭐ 固定宽度用于撑开左右空间
+      textAlign: "left",    // ⭐ 完全贴左
+      paddingLeft: "12px",  // ⭐ 稍微留点呼吸感
+    }}
+  >
+    ←
+  </button>
+
+  {/* ⭐ 中间区域 - 居中对齐 */}
+  <div
+    style={{
+      flex: 1,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: 8,
+      position: "relative",
+    }}
+  >
+    <button
+      onClick={() => setShowMenu(!showMenu)}
+      style={{
+        background: "none",
+        border: "none",
+        fontSize: 18,
+        color: "#666",
+        padding: 0,
+      }}
+    >
+      ☰
+    </button>
+
+    <span style={{ color: "#555", fontWeight: 600 }}>
+      {currentSymbol.replace("USDT", "/USDT")}
+    </span>
+
+    {showMenu && (
       <div
         style={{
-          padding: "6px 12px",
-          borderBottom: "1px solid #eee",
-          display: "flex",
-          alignItems: "center",
+          position: "absolute",
+          top: 34,
+          background: "#fff",
+          border: "1px solid #ccc",
+          borderRadius: 6,
+          zIndex: 10,
         }}
       >
-        <button
-          onClick={() => window.history.back()}
-          style={{
-            background: "none",
-            border: "none",
-            fontSize: 18,
-            color: "#666",
-          }}
-        >
-          ←
-        </button>
-
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-            gap: 6,
-            position: "relative",
-          }}
-        >
-          <button
-            onClick={() => setShowMenu(!showMenu)}
+        {symbolsList.map((s) => (
+          <div
+            key={s}
+            onClick={() => handleSymbolChange(s)}
             style={{
-              background: "none",
-              border: "none",
-              fontSize: 18,
-              color: "#666",
+              padding: "10px 14px",
+              cursor: "pointer",
             }}
           >
-            ☰
-          </button>
-
- <span style={{ color: "#555", fontWeight: 600 }}>
-  {currentSymbol.replace("USDT", "/USDT")}
-</span>
-
-
-          {showMenu && (
-            <div
-              style={{
-                position: "absolute",
-                top: 30,
-                background: "#fff",
-                border: "1px solid #ccc",
-                borderRadius: 6,
-                zIndex: 10,
-              }}
-            >
-              {symbolsList.map((s) => (
-                <div
-                  key={s}
-                  onClick={() => handleSymbolChange(s)}
-                  style={{
-                    padding: "10px 14px",
-                    cursor: "pointer",
-                  }}
-                >
-                  {s}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+            {s}
+          </div>
+        ))}
       </div>
+    )}
+  </div>
+
+  {/* ⭐ 右侧占位（保持中间真正居中） */}
+  <div style={{ width: "45px" }}></div>
+</div>
+
 
       {/* 行情条 */}
       <div
