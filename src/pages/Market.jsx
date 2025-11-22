@@ -33,7 +33,7 @@ export default function Market() {
   return (
     <Link
       key={coin.symbol}
-      to={`/coin/${coin.symbol}USDT`}
+      to={`/coin/${coin.symbol}-USDT`}
       className="flex items-center px-1 py-3 hover:bg-gray-100 border-b transition"
       // ⭐ py-3 → 每行高度更大，呼吸感加大
     >
