@@ -9,15 +9,29 @@ import { useTranslation } from "react-i18next";
 const TradingViewWidget = ({ symbol, onPrice }) => {
   const containerRef = useRef(null);
   const tvWidgetRef = useRef(null);
+  const widgetId = useRef(`tv_widget_${symbol}_${Date.now()}`);
 
   useEffect(() => {
     let isMounted = true;
 
     const loadTradingView = () => {
       return new Promise((resolve) => {
-        if (window.TradingView) return resolve();
+        // ✔ TradingView 已加载 & widget 模块已可用
+        if (window.TradingView && window.TradingView.widget) {
+          return resolve();
+        }
+
+        // ✔ 避免重复加载
+        if (document.getElementById("tv_script")) {
+          const check = () => {
+            if (window.TradingView?.widget) resolve();
+            else setTimeout(check, 50);
+          };
+          return check();
+        }
 
         const script = document.createElement("script");
+        script.id = "tv_script";
         script.src = "https://s3.tradingview.com/tv.js";
         script.onload = () => resolve();
         document.body.appendChild(script);
@@ -28,10 +42,11 @@ const TradingViewWidget = ({ symbol, onPrice }) => {
       await loadTradingView();
       if (!isMounted || !containerRef.current) return;
 
-      containerRef.current.innerHTML = ""; // 清空容器
+    containerRef.current.innerHTML = `<div id="${widgetId.current}" style="width:100%;height:100%"></div>`;
+
 
       tvWidgetRef.current = new window.TradingView.widget({
-        container_id: containerRef.current.id,
+        container_id: widgetId.current,
         symbol: `BINANCE:${symbol}`,
         interval: "1",
         timezone: "Etc/UTC",
@@ -56,7 +71,6 @@ const TradingViewWidget = ({ symbol, onPrice }) => {
 
     return () => {
       isMounted = false;
-
       if (tvWidgetRef.current) {
         tvWidgetRef.current.remove();
         tvWidgetRef.current = null;
@@ -65,13 +79,14 @@ const TradingViewWidget = ({ symbol, onPrice }) => {
   }, [symbol]);
 
   return (
-    <div
-      ref={containerRef}
-      id="tv_widget"
-      style={{ width: "100%", height: "100%" }}
-    ></div>
+<div
+  ref={containerRef}
+  style={{ width: "100%", height: "100%" }}
+></div>
+
   );
 };
+
 
 
 /* ===================== 遮罩弹层 ===================== */
