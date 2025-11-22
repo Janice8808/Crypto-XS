@@ -72,70 +72,18 @@ button:focus-visible {
   }
 }
 
-/* === 自定义滚动文字动画 === */
-@keyframes scrollText {
+
+/* 公告从左→右，完整穿过整个屏幕 */
+@keyframes marquee-LR {
   0% {
-    transform: translateX(100%);
+    transform: translateX(-100%);  /* 从左侧屏幕外完全开始 */
   }
   100% {
-    transform: translateX(-100%);
+    transform: translateX(100%);   /* 完整滑到右侧屏幕外 */
   }
 }
 
-.animate-scroll {
-  animation: scrollText 18s linear infinite;
+.animate-marquee-LR {
+  animation: marquee-LR 10s linear infinite;
 }
 
-/* 鼠标悬停暂停滚动（可选） */
-.animate-scroll:hover {
-  animation-play-state: paused;
-}
-
-@keyframes marqueeMove {
-  0% {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  10% {
-    transform: translateX(0%);
-    opacity: 1;
-  }
-  80% {
-    transform: translateX(100%);
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(120%);
-    opacity: 0;
-  }
-}
-
-.animate-marquee {
-  animation: marqueeMove 4s linear infinite;
-}
-@keyframes marquee-under {
-  0% {
-    transform: translateX(120%);   /* 从完全在右侧外面开始 */
-  }
-  100% {
-    transform: translateX(-120%);  /* 完全滑出左侧 */
-  }
-}
-
-.animate-marquee-under {
-  animation: marquee-under 8s linear infinite;
-}
-
-/* === 从左侧屏幕外 → 滑入 → 滑到右侧屏幕外 === */
-@keyframes marquee-left-to-right {
-  0% {
-    transform: translateX(-120%); /* 从左屏幕外 */
-  }
-  100% {
-    transform: translateX(120%); /* 滑到右屏幕外 */
-  }
-}
-
-.animate-left-to-right {
-  animation: marquee-left-to-right 12s linear infinite;
-}
