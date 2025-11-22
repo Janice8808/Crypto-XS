@@ -349,25 +349,19 @@ const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
 >
   <div className="text-yellow-400 text-lg mr-2">🔊</div>
 
-  {/* 负责裁剪的容器 */}
-  <div className="relative flex-1 overflow-hidden h-full">
-
-    {/* 滚动文字 */}
+  <div className="flex-1 overflow-hidden relative h-full">
     <div
       key={marqueeKey}
-      className="whitespace-nowrap text-white text-base animate-marquee-LR"
+      className="animate-marquee-LR absolute whitespace-nowrap text-white text-base"
       style={{
-        position: "absolute",
         top: "50%",
-        left: "0",
         transform: "translateY(-50%)",
-        whiteSpace: "nowrap",
         pointerEvents: "none",
+        whiteSpace: "nowrap",
       }}
     >
       {t("Welcome")} Crypto.com
     </div>
-
   </div>
 </div>
 
