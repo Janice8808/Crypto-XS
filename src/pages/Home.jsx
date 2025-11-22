@@ -102,20 +102,10 @@ const Home = () => {
   const { t } = useTranslation();
   const [marqueeKey, setMarqueeKey] = useState(0);
 
-  // 币种订阅
-  const SYMBOLS = [
-    "BTC-USDT","ETH-USDT","BNB-USDT","SOL-USDT","XRP-USDT",
-    "DOGE-USDT","ADA-USDT","TRX-USDT","AVAX-USDT","DOT-USDT",
-    "LTC-USDT","LINK-USDT","ATOM-USDT","FIL-USDT","BCH-USDT",
-    "MATIC-USDT","TON-USDT","ICP-USDT","APT-USDT","NEAR-USDT",
-    "SAND-USDT","MANA-USDT","ARB-USDT","OP-USDT","SUI-USDT"
-  ];
-
 
   // 实时行情
-  const tickers = useOkxTickers(SYMBOLS);
-  const list = Object.values(tickers);
-
+const tickers = useOkxTickers(); 
+const list = Object.values(tickers);
 const btc = tickers["BTC"] || { price: "--", change: 0 };
 const eth = tickers["ETH"] || { price: "--", change: 0 };
 const bnb = tickers["BNB"] || { price: "--", change: 0 };
