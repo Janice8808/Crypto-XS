@@ -2,12 +2,13 @@ import { useParams, useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { useTranslation } from "react-i18next"
 
 export default function Deposit() {
+  const { t } = useTranslation()
   const { symbol } = useParams()
   const navigate = useNavigate()
   const [network, setNetwork] = useState("")
-
   const [amount, setAmount] = useState("")
   const [voucher, setVoucher] = useState(null)
 
@@ -59,7 +60,6 @@ export default function Deposit() {
     },
   }
 
-  // 当前币种信息
   const current = depositInfo[symbol] || depositInfo.USDT
   const activeNetwork = network || current.networks[0]
   const depositAddress = current.addresses[activeNetwork]
@@ -70,11 +70,12 @@ export default function Deposit() {
   }
 
   const handleSubmit = () => {
-    alert(`Deposit ${amount} ${symbol} via ${activeNetwork}`)
+    alert(`${t("Deposit")} ${amount} ${symbol} ${t("via")} ${activeNetwork}`)
   }
 
   return (
     <div className="min-h-screen bg-white p-4 pb-24">
+
       {/* 返回 */}
       <div className="flex items-center mb-3">
         <button onClick={() => navigate(-1)} className="text-gray-500 text-lg mr-2">
@@ -82,23 +83,24 @@ export default function Deposit() {
         </button>
       </div>
 
-      {/* 页面标题 */}
-      <h1 className="text-xl font-semibold text-gray-800 mb-3">Deposit</h1>
+      {/* 标题 */}
+      <h1 className="text-xl font-semibold text-gray-800 mb-3">{t("Deposit")}</h1>
 
-      {/* 币种框 */}
+      {/* 币种 */}
       <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
         <CardContent className="p-4 flex justify-between items-center">
-          <span className="text-gray-600 font-medium">Currency</span>
+          <span className="text-gray-600 font-medium">{t("Currency")}</span>
           <span className="font-semibold text-gray-900">{symbol}</span>
         </CardContent>
       </Card>
 
-      {/* 网络 + 地址 + 二维码 + 复制 */}
+      {/* 网络 + 地址 + 二维码 */}
       <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
         <CardContent className="p-5 space-y-5">
-          {/* 网络切换 */}
+
+          {/* 网络选择 */}
           <div>
-            <div className="text-gray-600 font-medium mb-2">Network</div>
+            <div className="text-gray-600 font-medium mb-2">{t("Network")}</div>
             <div className="flex gap-3">
               {current.networks.map((n) => (
                 <Button
@@ -116,31 +118,39 @@ export default function Deposit() {
 
           {/* 地址与二维码 */}
           <div className="text-center">
-            <div className="text-gray-600 font-medium mb-2">Deposit address</div>
+            <div className="text-gray-600 font-medium mb-2">{t("Deposit address")}</div>
+
             <div className="flex justify-center mb-3">
               <img src={current.qr} alt="QR" className="w-40 h-40" />
             </div>
+
             <div className="text-gray-800 text-sm bg-gray-50 border border-gray-200 rounded-lg py-2 px-2 break-all">
               {depositAddress}
             </div>
+
             <div className="flex justify-center">
               <Button
                 className="mt-3 bg-green-600 text-white font-semibold rounded-lg px-10"
                 onClick={() => navigator.clipboard.writeText(depositAddress)}
               >
-                Copy
+                {t("Copy")}
               </Button>
             </div>
           </div>
+
         </CardContent>
       </Card>
 
-      {/* 上传 + 金额 + 提示 */}
+      {/* 上传凭证 + 金额 + 提示 */}
       <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
         <CardContent className="p-5 space-y-5">
+
           {/* 上传凭证 */}
           <div>
-            <div className="text-gray-600 font-medium mb-2">Upload transfer voucher</div>
+            <div className="text-gray-600 font-medium mb-2">
+              {t("Upload transfer voucher")}
+            </div>
+
             <label className="w-full h-44 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-200 transition">
               {voucher ? (
                 <img src={voucher} alt="voucher" className="w-full h-full object-cover rounded-lg" />
@@ -153,12 +163,15 @@ export default function Deposit() {
 
           {/* 转账金额 */}
           <div>
-            <label className="text-gray-600 text-sm font-medium">Transfer amount</label>
+            <label className="text-gray-600 text-sm font-medium">
+              {t("Transfer amount")}
+            </label>
+
             <input
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              placeholder="Please enter the transfer amount"
+              placeholder={t("Please enter the transfer amount")}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-gray-50"
             />
           </div>
@@ -166,13 +179,14 @@ export default function Deposit() {
           {/* 提示 */}
           <div className="text-xs text-gray-500 leading-relaxed mt-2">
             <p className="text-red-500 font-medium mb-1">
-              Minimum recharge amount: 100.00 {symbol}. Recharge less than the minimum amount will not
-              be credited and cannot be returned.
+              {t("Minimum recharge amount")}: 100.00 {symbol}.  
+              {t("Recharge less than the minimum amount will not be credited")}
             </p>
-            <p>Please select the correct network; otherwise, assets cannot be retrieved.</p>
-            <p>Your deposit address rarely changes. If it does, we’ll notify you via announcement or email.</p>
-            <p>Ensure your device and browser are secure to prevent data leaks.</p>
+            <p>{t("Select correct network tip")}</p>
+            <p>{t("Address rarely changes tip")}</p>
+            <p>{t("Ensure device secure tip")}</p>
           </div>
+
         </CardContent>
       </Card>
 
@@ -182,9 +196,10 @@ export default function Deposit() {
           className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold rounded-lg py-3"
           onClick={handleSubmit}
         >
-          Submit
+          {t("Submit")}
         </Button>
       </div>
+
     </div>
   )
 }

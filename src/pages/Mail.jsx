@@ -1,15 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 export default function Mail() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
     if (!email.trim()) {
-      alert("Please enter your email address");
+      alert(t("Please fill in all fields"));
       return;
     }
 
@@ -26,14 +29,14 @@ export default function Mail() {
       const data = await res.json();
 
       if (res.ok) {
-        alert(data.message || "Mail submitted successfully!");
-        navigate(-1); // 提交成功后返回上一页
+        alert(data.message || t("Submit order"));
+        navigate(-1);
       } else {
-        alert(data.error || "Failed to submit mail");
+        alert(data.error || t("Network error, please try again later"));
       }
     } catch (err) {
       console.error("提交失败:", err);
-      alert("Network error, please try again later");
+      alert(t("Network error, please try again later"));
     } finally {
       setLoading(false);
     }
@@ -49,17 +52,23 @@ export default function Mail() {
         >
           ←
         </button>
-        <h1 className="text-lg font-semibold text-gray-800">Mail</h1>
+
+        <h1 className="text-lg font-semibold text-gray-800">
+          {t("Mail")}
+        </h1>
       </div>
 
       {/* 内容区 */}
       <div className="p-5">
-        <label className="text-gray-700 font-medium mb-2 block">Mail</label>
+        <label className="text-gray-700 font-medium mb-2 block">
+          {t("Mail")}
+        </label>
+
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Mail"
+          placeholder={t("Mail")}
           className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-6 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-gray-50"
         />
 
@@ -70,7 +79,7 @@ export default function Mail() {
             loading ? "opacity-70 cursor-not-allowed" : ""
           }`}
         >
-          {loading ? "Submitting..." : "Submit"}
+          {loading ? t("Submitting") : t("Submit")}
         </Button>
       </div>
     </div>

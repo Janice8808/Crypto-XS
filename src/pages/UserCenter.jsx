@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 /* ================= SVG ICONS ================= */
 
@@ -32,47 +33,12 @@ const AnnouncementIcon = () => (
   </svg>
 );
 
-const MailIcon = () => (
-  <svg width="20" height="20" fill="none" stroke="#6B7280" strokeWidth="1.6" viewBox="0 0 24 24">
-    <rect x="3" y="6" width="18" height="12" rx="2" />
-    <path d="M3 7l9 6 9-6" />
-  </svg>
-);
-
-const BankIcon = () => (
-  <svg width="20" height="20" fill="none" stroke="#6B7280" strokeWidth="1.6" viewBox="0 0 24 24">
-    <path d="M2 9l10-6 10 6v2H2z" />
-    <path d="M4 11v7h16v-7" />
-  </svg>
-);
-
-const GlobeIcon = () => (
-  <svg width="20" height="20" fill="none" stroke="#6B7280" strokeWidth="1.6" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="9" />
-    <path d="M3 12h18" />
-    <path d="M12 3a15 15 0 0 1 0 18" />
-    <path d="M12 3a15 15 0 0 0 0 18" />
-  </svg>
-);
-
-const LockIcon = () => (
-  <svg width="20" height="20" fill="none" stroke="#6B7280" strokeWidth="1.6" viewBox="0 0 24 24">
-    <rect x="4" y="11" width="16" height="9" rx="2" />
-    <path d="M8 11V9a4 4 0 0 1 8 0v2" />
-  </svg>
-);
-
-const MsbIcon = () => (
-  <svg width="20" height="20" fill="none" stroke="#6B7280" strokeWidth="1.6" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="8" />
-    <path d="M12 8v4l2 2" />
-  </svg>
-);
-
 /* ====================================================== */
 
 export default function UserCenter() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const [uid, setUid] = useState("--");
 
   const address = localStorage.getItem("address") || "";
@@ -81,7 +47,7 @@ export default function UserCenter() {
       ? `${address.slice(0, 6)}....${address.slice(-4)}`
       : address || "--";
 
-  // ⭐ 从 /api/user/balance 读取真实 UID
+  // ⭐ 从后台加载 UID
   useEffect(() => {
     fetch("https://pankouhoutai.shop/api/user/balance", {
       headers: {
@@ -122,7 +88,7 @@ export default function UserCenter() {
           className="flex-1 flex items-center gap-2 bg-[#F5F6FA] rounded-xl py-3 px-4 text-gray-600"
         >
           <HeadsetIcon />
-          <span className="text-sm">Online Service</span>
+          <span className="text-sm">{t("Online Service")}</span>
         </button>
 
         <button
@@ -130,18 +96,38 @@ export default function UserCenter() {
           className="flex-1 flex items-center gap-2 bg-[#F5F6FA] rounded-xl py-3 px-4 text-gray-600"
         >
           <AnnouncementIcon />
-          <span className="text-sm">Announcement center</span>
+          <span className="text-sm">{t("Announcement center")}</span>
         </button>
       </div>
-
       {/* 列表 */}
       <div className="mt-4">
         {[
-          { name: "Mail", icon: <MailIcon />, path: "/user/mail" },
-          { name: "Bank card", icon: <BankIcon />, path: "/user/bank" },
-          { name: "Language", icon: <GlobeIcon />, right: "English", path: "/user/language" },
-          { name: "Withdrawal password setting", icon: <LockIcon />, path: "/user/withdrawal-password" },
-          { name: "MSB Certification", icon: <MsbIcon />, path: "/user/msb" },
+          {
+            key: "Mail",
+            icon: <MailIcon />,
+            path: "/user/mail",
+          },
+          {
+            key: "Bank card",
+            icon: <BankIcon />,
+            path: "/user/bank",
+          },
+          {
+            key: "Language",
+            icon: <GlobeIcon />,
+            right: localStorage.getItem("language") || "English",
+            path: "/user/language",
+          },
+          {
+            key: "Withdrawal password setting",
+            icon: <LockIcon />,
+            path: "/user/withdrawal-password",
+          },
+          {
+            key: "MSB Certification",
+            icon: <MsbIcon />,
+            path: "/user/msb",
+          },
         ].map((item, i) => (
           <div
             key={i}
@@ -150,18 +136,21 @@ export default function UserCenter() {
           >
             <div className="flex items-center gap-3 text-gray-700">
               {item.icon}
-              <span className="text-sm">{item.name}</span>
+              <span className="text-sm">{t(item.key)}</span>
             </div>
 
             <div className="flex items-center gap-2">
               {item.right && (
-                <span className="text-gray-500 text-sm">{item.right}</span>
+                <span className="text-gray-500 text-sm">
+                  {t(item.right) || item.right}
+                </span>
               )}
               <span className="text-gray-400 text-xl">›</span>
             </div>
           </div>
         ))}
       </div>
+
     </div>
   );
 }

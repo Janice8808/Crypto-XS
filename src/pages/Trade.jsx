@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { apiFetch } from "@/api/http";
 import { useUserBalances } from "@/hooks/useUserBalances";
-import { createOrder } from "@/api/order";   // ⭐ 新增
+import { createOrder } from "@/api/order";
 import { useTicker } from "@/hooks/useTicker";
+import { useTranslation } from "react-i18next";
 
-
-// TradingView 图表组件
+/* ===================== TradingView 图表 ===================== */
 const TradingViewWidget = ({ symbol, onPrice }) => {
   const widgetRef = useRef(null);
 
@@ -30,12 +30,8 @@ const TradingViewWidget = ({ symbol, onPrice }) => {
 
       widget.onChartReady(() => {
         const chart = widget.chart();
-        
-        // ⭐⭐ TradingView 实时价格回调
         chart.onRealtimeTick((data) => {
-          if (data?.close && onPrice) {
-            onPrice(Number(data.close));
-          }
+          if (data?.close && onPrice) onPrice(Number(data.close));
         });
       });
     };
@@ -46,66 +42,55 @@ const TradingViewWidget = ({ symbol, onPrice }) => {
       script.async = true;
       script.onload = initWidget;
       document.body.appendChild(script);
-    } else {
-      initWidget();
-    }
+    } else initWidget();
   }, [symbol]);
 
   return <div ref={widgetRef} id="tv_widget" style={{ flex: 1, minHeight: 0 }} />;
 };
 
-
-// 遮罩 & 底部弹窗
+/* ===================== 遮罩弹层 ===================== */
 const BottomModal = ({ children, onClose }) => (
   <div
+    onClick={onClose}
     style={{
       position: "fixed",
       top: 0,
       left: 0,
       width: "100%",
       height: "100%",
-      zIndex: 9999,
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "flex-end",
       backgroundColor: "rgba(0,0,0,0.3)",
+      display: "flex",
+      justifyContent: "flex-end",
+      flexDirection: "column",
+      zIndex: 9999,
     }}
-    onClick={onClose}
   >
     <div
+      onClick={(e) => e.stopPropagation()}
       style={{
         height: "80%",
         backgroundColor: "#fff",
         borderTopLeftRadius: "16px",
         borderTopRightRadius: "16px",
-        boxShadow: "0 -2px 10px rgba(0,0,0,0.2)",
-        display: "flex",
-        flexDirection: "column",
+        padding: "20px",
         overflowY: "auto",
-        padding: "20px 20px 10px 20px",
+        boxShadow: "0 -2px 10px rgba(0,0,0,0.15)",
       }}
-      onClick={(e) => e.stopPropagation()}
     >
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "10px" }}>
-        <button
-          onClick={onClose}
-          style={{
-            fontSize: "18px",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <button onClick={onClose} style={{ fontSize: 20, background: "none", border: "none" }}>
           ✕
         </button>
       </div>
-      <div style={{ flex: 1, minHeight: 0 }}>{children}</div>
+      {children}
     </div>
   </div>
 );
 
-// 下单弹窗组件
+/* ===================== 下单弹窗 ===================== */
 const OrderForm = ({ symbol, modalType, price, onClose }) => {
+  const { t } = useTranslation();
+
   const [customAmount, setCustomAmount] = useState("");
   const [localBalance, setLocalBalance] = useState(0);
   const [selectedPeriod, setSelectedPeriod] = useState(null);
@@ -114,7 +99,6 @@ const OrderForm = ({ symbol, modalType, price, onClose }) => {
   const [timeLeft, setTimeLeft] = useState(0);
 
   const { balances: userBalances, controlMode } = useUserBalances();
-
   const buyPrice = price;
 
   const periods = [
@@ -125,7 +109,7 @@ const OrderForm = ({ symbol, modalType, price, onClose }) => {
     { time: 360, percent: 0.7 },
   ];
 
-  // 同步后台余额
+  /* ====== 同步后台余额 ====== */
   useEffect(() => {
     const usdt = Number(
       userBalances?.USDT ??
@@ -137,64 +121,54 @@ const OrderForm = ({ symbol, modalType, price, onClose }) => {
     setLocalBalance(usdt);
   }, [userBalances]);
 
-  // 确认下单
-const handleConfirm = async () => {
-  if (!selectedPeriod || !customAmount) {
-    alert("Please select a period and enter amount");
-    return;
-  }
-
-  const amount = parseFloat(customAmount);
-  if (isNaN(amount) || amount <= 0) {
-    alert("Invalid amount");
-    return;
-  }
-
-  if (localBalance < amount) {
-    alert("Insufficient balance");
-    return;
-  }
-
-  // 前端立即扣款（UI）
-  setLocalBalance((prev) => prev - amount);
-
-  try {
-    const data = await createOrder({
-      symbol,
-      amount,
-      direction: modalType === "Buy Up" ? "LONG" : "SHORT",
-    });
-
-    // 后端下单失败
-    if (!data || data.error) {
-      setLocalBalance((prev) => prev + amount);
-      alert(data?.error || "Order failed");
+  /* ====== 确认下单 ====== */
+  const handleConfirm = async () => {
+    if (!selectedPeriod || !customAmount) {
+      alert(t("Please fill in all fields"));
       return;
     }
 
-    // ⭐ 正确定义 p
-    const p = periods.find((x) => x.time === selectedPeriod);
+    const amount = Number(customAmount);
+    if (isNaN(amount) || amount <= 0) {
+      alert(t("Invalid amount"));
+      return;
+    }
+    if (localBalance < amount) {
+      alert(t("Insufficient balance"));
+      return;
+    }
 
-    // ⭐ 正确设置 countdown（只设置一次）
-    setCountdown({
-      ...p,
-      amount,
-      startPrice: buyPrice,
-      orderId: data.order.id,   // ⭐ 很关键！
-    });
+    // UI 先扣：效果更真实
+    setLocalBalance((v) => v - amount);
 
-    // 正确开启倒计时
-    setTimeLeft(p.time);
+    try {
+      const data = await createOrder({
+        symbol,
+        amount,
+        direction: modalType === "Buy Up" ? "LONG" : "SHORT",
+      });
 
-  } catch (err) {
-    // 网络失败恢复扣款
-    setLocalBalance((prev) => prev + amount);
-    alert("Network error");
-  }
-};
+      if (!data || data.error) {
+        setLocalBalance((v) => v + amount);
+        alert(data.error || t("Order Failed"));
+        return;
+      }
 
+      const p = periods.find((x) => x.time === selectedPeriod);
 
-  // 倒计时逻辑
+      setCountdown({
+        ...p,
+        amount,
+        startPrice: buyPrice,
+        orderId: data.order.id,
+      });
+      setTimeLeft(p.time);
+    } catch {
+      setLocalBalance((v) => v + amount);
+      alert(t("Network error, please try again later"));
+    }
+  };
+  /* ===================== 倒计时 ===================== */
   useEffect(() => {
     if (!countdown || timeLeft <= 0) return;
 
@@ -206,83 +180,62 @@ const handleConfirm = async () => {
     return () => clearTimeout(timer);
   }, [timeLeft, countdown]);
 
-// 完成结算
-const handleFinish = async () => {
-  const { amount, percent, startPrice, orderId } = countdown;
+  const handleFinish = async () => {
+    const { amount, percent, startPrice, orderId } = countdown;
 
-  const amt = Number(amount);
-  const pct = Number(percent);
+    const isWin =
+      controlMode === "win"
+        ? true
+        : controlMode === "lose"
+        ? false
+        : Math.random() > 0.5;
 
-  let isWin;
-  if (controlMode === "win") isWin = true;
-  else if (controlMode === "lose") isWin = false;
-  else isWin = Math.random() > 0.5;
+    const profit = isWin ? amount * percent : -amount;
+    const closePrice = startPrice + (Math.random() * 100 - 50);
 
-  const profit = isWin ? amt * pct : -amt;
-  const closePrice = startPrice + (Math.random() * 100 - 50);
+    try {
+      const res = await apiFetch("/api/order/settle", {
+        method: "POST",
+        body: JSON.stringify({
+          orderId,
+          isWin,
+          percent,
+        }),
+      });
 
-  try {
-    const res = await apiFetch("/api/order/settle", {
-      method: "POST",
-      body: JSON.stringify({
-        orderId,
-        isWin,
-        percent: pct,
-      }),
+      const realBalance = Number(res?.balances?.USDT);
+      if (!isNaN(realBalance)) setLocalBalance(realBalance);
+    } catch (err) {
+      console.error("settle failed", err);
+    }
+
+    setCountdown(null);
+
+    setResult({
+      isWin,
+      profit,
+      amount,
+      startPrice,
+      closePrice,
+      percent,
+      cycle: selectedPeriod,
+      type: modalType,
     });
+  };
 
-    
-const real = Number(res?.balances?.USDT);
-
-if (isNaN(real)) {
-  console.error("后端返回余额不是数字：", res?.balances?.USDT);
-  setLocalBalance(0);
-} else {
-  setLocalBalance(real);
-}
-
-
-
-  } catch (err) {
-    console.error("结算失败:", err);
-  }
-
-  // 清除倒计时
-  setCountdown(null);
-
-  // ⭐ 前端仅用于展示，不参与余额逻辑
-  setResult({
-    isWin,
-    profit,
-    amount: amt,
-    startPrice,
-    closePrice,
-    percent: pct,
-    type: modalType,
-    cycle: selectedPeriod,
-  });
-};
-
-
-  // 倒计时界面
+  /* ===================== 倒计时界面 UI ===================== */
   if (countdown) {
     const progress = ((countdown.time - timeLeft) / countdown.time) * 100;
-    const arcColor = modalType === "Buy Fall" ? "#e74c3c" : "#26a17b";
+    const arcColor =
+      modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71";
 
     return (
-      <div style={{ textAlign: "center", padding: "10px" }}>
-        <h2
-          style={{
-            fontWeight: "bold",
-            fontSize: "18px",
-            marginBottom: "10px",
-            color: "#555",
-          }}
-        >
+      <div style={{ textAlign: "center", padding: 10 }}>
+        <h2 style={{ fontWeight: "bold", fontSize: 18, color: "#555" }}>
           {symbol}
         </h2>
 
-        {/* 圆圈倒计时 */}
+        {/* 圆形倒计时 */}
         <div
           style={{
             position: "relative",
@@ -292,25 +245,24 @@ if (isNaN(real)) {
             background: `conic-gradient(${arcColor} ${
               progress * 3.6
             }deg, #ddd 0deg)`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
             margin: "20px auto",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <div
             style={{
               position: "absolute",
-              background: "#fff",
-              borderRadius: "50%",
               width: 120,
               height: 120,
+              borderRadius: "50%",
+              background: "#fff",
               display: "flex",
-              alignItems: "center",
               justifyContent: "center",
-              fontSize: "36px",
+              alignItems: "center",
+              fontSize: 36,
               fontWeight: "bold",
-              color: "#555",
             }}
           >
             {timeLeft}
@@ -320,52 +272,60 @@ if (isNaN(real)) {
         {/* 信息框 */}
         <div
           style={{
-            border: "1px solid #ccc",
-            borderRadius: "8px",
-            padding: "12px",
-            marginTop: "10px",
-            textAlign: "left",
-            fontSize: "14px",
-            lineHeight: "1.8",
             width: "90%",
-            marginLeft: "auto",
-            marginRight: "auto",
+            margin: "0 auto",
+            border: "1px solid #ccc",
+            padding: 12,
+            borderRadius: 8,
+            fontSize: 14,
             color: "#555",
           }}
         >
           <div>
-            close a position{" "}
+            {t("Closing unit price")}
             <span style={{ float: "right" }}>
-              {(countdown.startPrice + (Math.random() * 200 - 100)).toFixed(2)}
+              {(
+                countdown.startPrice +
+                (Math.random() * 200 - 100)
+              ).toFixed(2)}
             </span>
           </div>
+
           <div>
-            Cycle <span style={{ float: "right" }}>{countdown.time}</span>
+            {t("Cycle")}
+            <span style={{ float: "right" }}>{countdown.time}s</span>
           </div>
+
           <div>
-            Type{" "}
+            {t("Type")}
             <span
               style={{
                 float: "right",
-                color: modalType === "Buy Fall" ? "#e74c3c" : "#26a17b",
                 fontWeight: "bold",
+                color:
+                  modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71",
               }}
             >
-              {modalType}
+              {t(modalType)}
             </span>
           </div>
+
           <div>
-            Money{" "}
-            <span style={{ float: "right" }}>{countdown.amount.toFixed(2)}</span>
+            {t("Money")}
+            <span style={{ float: "right" }}>
+              {countdown.amount.toFixed(2)}
+            </span>
           </div>
+
           <div>
-            buy{" "}
+            {t("Buy price")}
             <span style={{ float: "right" }}>
               {countdown.startPrice.toFixed(2)}
             </span>
           </div>
+
           <div>
-            Expected{" "}
+            {t("Expected")}
             <span style={{ float: "right" }}>
               {(countdown.amount * countdown.percent).toFixed(2)}
             </span>
@@ -373,53 +333,45 @@ if (isNaN(real)) {
         </div>
 
         <button
-          style={{
-            backgroundColor: "#26a17b",
-            color: "#fff",
-            border: "none",
-            borderRadius: "8px",
-            padding: "12px 0",
-            marginTop: "20px",
-            width: "90%",
-            fontSize: "16px",
-            fontWeight: "bold",
-          }}
           disabled
+          style={{
+            width: "90%",
+            backgroundColor: "#2ecc71",
+            color: "#fff",
+            marginTop: 20,
+            padding: 12,
+            borderRadius: 8,
+            border: "none",
+            fontSize: 16,
+          }}
         >
-          continue
+          {t("Loading")}
         </button>
       </div>
     );
   }
 
-  // 结算结果
+  /* ===================== 结算界面 ===================== */
   if (result) {
-    const isWin = result.profit > 0;
+    const isWin = result.isWin;
 
     return (
-      <div style={{ textAlign: "center", padding: "10px" }}>
-        <h2
-          style={{
-            fontWeight: "bold",
-            fontSize: "18px",
-            marginBottom: "10px",
-            color: "#555",
-          }}
-        >
+      <div style={{ textAlign: "center", padding: 10 }}>
+        <h2 style={{ fontSize: 18, fontWeight: "bold", color: "#555" }}>
           {symbol}
         </h2>
 
         <div
           style={{
-            border: `1px solid ${isWin ? "#26a17b" : "#e74c3c"}`,
-            borderRadius: "8px",
-            padding: "25px 0",
-            margin: "20px auto",
             width: "90%",
-            color: isWin ? "#26a17b" : "#e74c3c",
-            fontSize: "22px",
+            margin: "20px auto",
+            padding: "25px 0",
+            borderRadius: 8,
+            border: `1px solid ${isWin ? "#2ecc71" : "#e74c3c"}`,
+            background: "#fff",
+            color: isWin ? "#2ecc71" : "#e74c3c",
+            fontSize: 22,
             fontWeight: "bold",
-            backgroundColor: "#fff",
           }}
         >
           {isWin ? "+" : "-"}
@@ -428,47 +380,49 @@ if (isNaN(real)) {
 
         <div
           style={{
-            border: "1px solid #ccc",
-            borderRadius: "8px",
-            padding: "12px",
-            textAlign: "left",
-            fontSize: "14px",
-            lineHeight: "1.8",
             width: "90%",
             margin: "0 auto",
+            border: "1px solid #ccc",
+            borderRadius: 8,
+            padding: 12,
+            fontSize: 14,
             color: "#555",
           }}
         >
           <div>
-            Closing unit price{" "}
+            {t("Closing unit price")}
             <span style={{ float: "right" }}>
               {result.closePrice.toFixed(2)}
             </span>
           </div>
+
           <div>
-            Cycle{" "}
-            <span style={{ float: "right" }}>{result.cycle}</span>
+            {t("Cycle")}
+            <span style={{ float: "right" }}>{result.cycle}s</span>
           </div>
+
           <div>
-            Type{" "}
+            {t("Type")}
             <span
               style={{
                 float: "right",
-                color: modalType === "Buy Fall" ? "#e74c3c" : "#26a17b",
                 fontWeight: "bold",
+                color: result.type === "Buy Fall" ? "#e74c3c" : "#2ecc71",
               }}
             >
-              {modalType}
+              {t(result.type)}
             </span>
           </div>
+
           <div>
-            Money{" "}
+            {t("Money")}
             <span style={{ float: "right" }}>
               {result.amount.toFixed(2)}
             </span>
           </div>
+
           <div>
-            buy{" "}
+            {t("Buy price")}
             <span style={{ float: "right" }}>
               {result.startPrice.toFixed(2)}
             </span>
@@ -477,66 +431,45 @@ if (isNaN(real)) {
 
         <button
           style={{
-            backgroundColor: "#26a17b",
+            backgroundColor: "#2ecc71",
             color: "#fff",
-            border: "none",
-            borderRadius: "8px",
             padding: "12px 0",
-            marginTop: "20px",
             width: "90%",
-            fontSize: "16px",
-            fontWeight: "bold",
+            borderRadius: 8,
+            marginTop: 20,
+            border: "none",
+            fontSize: 16,
           }}
           onClick={() => window.location.reload()}
         >
-          continue
+          {t("Continue")}
         </button>
       </div>
     );
   }
 
-  // 初始下单界面
+  /* ===================== 初始下单界面 ===================== */
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "20px",
-        minHeight: 0,
-      }}
-    >
-      <div style={{ fontSize: "12px", color: "#999" }}>Selection Period</div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      <div style={{ fontSize: 12, color: "#888" }}>{t("Selection Period")}</div>
 
-      <div
-        style={{
-          display: "flex",
-          gap: "12px",
-          overflowX: "auto",
-          paddingBottom: "8px",
-        }}
-      >
+      <div style={{ display: "flex", gap: 12, overflowX: "auto" }}>
         {periods.map((p) => {
           const isSelected = selectedPeriod === p.time;
-
           return (
             <div
               key={p.time}
               onClick={() => setSelectedPeriod(p.time)}
               style={{
-                minWidth: "70px",
-                flex: "0 0 auto",
-                backgroundColor: isSelected ? "#f1c40f" : "#2ecc71",
-                borderRadius: "10px",
+                minWidth: 70,
                 padding: "10px 0",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                color: "#fff",
-                fontSize: "12px",
+                backgroundColor: isSelected ? "#f1c40f" : "#2ecc71",
+                borderRadius: 10,
                 textAlign: "center",
+                color: "#fff",
                 cursor: "pointer",
                 transform: isSelected ? "scale(1.05)" : "scale(1)",
-                transition: "all 0.2s ease",
+                transition: "0.2s",
               }}
             >
               <div>{p.time}s</div>
@@ -546,112 +479,88 @@ if (isNaN(real)) {
         })}
       </div>
 
-      <div style={{ fontSize: "12px", color: "#999" }}>Custom amount</div>
+      <div style={{ fontSize: 12, color: "#888" }}>{t("Custom amount")}</div>
 
       <input
         type="number"
-        placeholder="Please enter amount"
+        placeholder={t("Please enter amount")}
         value={customAmount}
         onChange={(e) => setCustomAmount(e.target.value)}
         style={{
-          width: "100%",
-          padding: "12px",
-          borderRadius: "8px",
           border: "1px solid #ccc",
-          color: "#2ecc71",
-          fontSize: "14px",
+          padding: 12,
+          borderRadius: 8,
+          width: "100%",
+          fontSize: 14,
         }}
       />
 
-      <div style={{ fontSize: "12px", color: "#999" }}>
-        Balance:{" "}
+      <div style={{ fontSize: 12, color: "#666" }}>
+        {t("Balance")}:{" "}
         <span style={{ color: "#2ecc71", fontWeight: "bold" }}>
           {localBalance.toFixed(4)} USDT
         </span>
       </div>
 
       <button
+        disabled={!selectedPeriod}
+        onClick={handleConfirm}
         style={{
           marginTop: "auto",
           backgroundColor: "#f1c40f",
           color: "#fff",
-          padding: "14px",
-          borderRadius: "10px",
+          padding: 14,
+          borderRadius: 10,
           border: "none",
-          fontSize: "16px",
-          cursor: "pointer",
+          fontSize: 16,
           opacity: selectedPeriod ? 1 : 0.6,
         }}
-        disabled={!selectedPeriod}
-        onClick={handleConfirm}
       >
-        Confirm Order
+        {t("Confirm Order")}
       </button>
     </div>
   );
 };
 
-// =================== 主交易页面 ===================
+/* ===================== 主交易页面 ===================== */
 const Trade = () => {
+  const { t } = useTranslation();
   const [currentSymbol, setCurrentSymbol] = useState("BTCUSDT");
   const [showMenu, setShowMenu] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const [tvPrice, setTvPrice] = useState(null);
 
-const symbolsList = ["BTCUSDT", "ETHUSDT", "LTCUSDT", "XRPUSDT"];
+  const symbolsList = ["BTCUSDT", "ETHUSDT", "LTCUSDT", "XRPUSDT"];
 
-const handleSymbolChange = (symbol) => {
-  setCurrentSymbol(symbol);
-  setShowMenu(false);
-};
+  const handleSymbolChange = (symbol) => {
+    setCurrentSymbol(symbol);
+    setShowMenu(false);
+  };
 
-// ⭐ 使用前端直接连接 Binance 的实时行情 Hook
-const {
-  price,
-  changePercent,
-  low,
-  high,
-  amount24h,
-} = useTicker(currentSymbol);
+  const { price, changePercent, low, high, amount24h } =
+    useTicker(currentSymbol);
 
-// ⭐ changePercent 在这里才有值，所以 priceColor 要写在这里
-const priceColor = changePercent >= 0 ? "#2ecc71" : "#e74c3c";
-
-
+  const priceColor = changePercent >= 0 ? "#2ecc71" : "#e74c3c";
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        backgroundColor: "#fff",
-        overflow: "hidden",
-      }}
-    >
-      {/* 顶部导航 */}
+    <div style={{ width: "100%", height: "100vh", display: "flex", flexDirection: "column" }}>
+      {/* 顶部 */}
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
           padding: "12px 16px",
           borderBottom: "1px solid #eee",
-          color: "#666",
-          position: "relative",
+          display: "flex",
+          alignItems: "center",
         }}
       >
         <button
           onClick={() => window.history.back()}
           style={{
-            fontSize: "18px",
-            color: "#666",
             background: "none",
             border: "none",
-            cursor: "pointer",
-            padding: 0,
+            fontSize: 18,
+            color: "#666",
           }}
         >
           ←
@@ -659,23 +568,20 @@ const priceColor = changePercent >= 0 ? "#2ecc71" : "#e74c3c";
 
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
             flex: 1,
-            gap: "5px",
+            display: "flex",
+            justifyContent: "center",
+            gap: 6,
             position: "relative",
           }}
         >
           <button
             onClick={() => setShowMenu(!showMenu)}
             style={{
-              fontSize: "18px",
-              color: "#666",
               background: "none",
               border: "none",
-              cursor: "pointer",
-              padding: 0,
+              fontSize: 18,
+              color: "#666",
             }}
           >
             ☰
@@ -687,145 +593,122 @@ const priceColor = changePercent >= 0 ? "#2ecc71" : "#e74c3c";
             <div
               style={{
                 position: "absolute",
-                top: "30px",
-                backgroundColor: "#fff",
+                top: 30,
+                background: "#fff",
                 border: "1px solid #ccc",
-                borderRadius: "6px",
-                boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                borderRadius: 6,
                 zIndex: 10,
               }}
             >
-              {symbolsList.map((symbol) => (
+              {symbolsList.map((s) => (
                 <div
-                  key={symbol}
-                  onClick={() => handleSymbolChange(symbol)}
+                  key={s}
+                  onClick={() => handleSymbolChange(s)}
                   style={{
                     padding: "10px 14px",
                     cursor: "pointer",
-                    borderBottom: "1px solid #eee",
-                    color: "#666",
                   }}
                 >
-                  {symbol}
+                  {s}
                 </div>
               ))}
             </div>
           )}
         </div>
-
-        <div style={{ width: "24px" }} />
       </div>
 
       {/* 行情条 */}
       <div
         style={{
+          padding: 12,
+          borderBottom: "1px solid #eee",
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
-          padding: "12px",
-          borderBottom: "1px solid #eee",
-          fontSize: "14px",
-          color: "#666",
-          backgroundColor: "#fafafa",
+          fontSize: 14,
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column" }}>
-<span style={{ fontSize: "22px", fontWeight: "bold", color: priceColor }}>
-  ${(tvPrice ?? price).toLocaleString()}
-</span>
+        <div>
+          <div
+            style={{
+              fontSize: 22,
+              fontWeight: "bold",
+              color: priceColor,
+            }}
+          >
+            ${(tvPrice ?? price).toLocaleString()}
+          </div>
 
-
-          <span style={{ fontSize: "14px", color: priceColor }}>
+          <div style={{ color: priceColor }}>
             {changePercent >= 0 ? "+" : ""}
             {changePercent}%
-          </span>
+          </div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-          <span>Low</span>
-          <span>High</span>
-          <span>24h Amount</span>
+        <div>
+          <div>{t("Low")}</div>
+          <div>{t("High")}</div>
+          <div>{t("24h Amount")}</div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-          <span>{low}</span>
-          <span>{high}</span>
-          <span>{amount24h}</span>
+        <div style={{ textAlign: "right" }}>
+          <div>{low}</div>
+          <div>{high}</div>
+          <div>{amount24h}</div>
         </div>
       </div>
 
-{/* TradingView 图表 */}
-<div style={{ flex: 1, minHeight: 0 }}>
-  <TradingViewWidget 
-    symbol={currentSymbol}
-    onPrice={setTvPrice}
-  />
-</div>
-{/* TradingView container end */}
+      <div style={{ flex: 1 }}>
+        <TradingViewWidget symbol={currentSymbol} onPrice={setTvPrice} />
+      </div>
 
+      {/* 底部按钮 */}
+      <div style={{ padding: 16, display: "flex", gap: 12 }}>
+        <button
+          style={{
+            flex: 1,
+            backgroundColor: "#2ecc71",
+            color: "#fff",
+            padding: 16,
+            borderRadius: 10,
+            border: "none",
+            fontSize: 16,
+          }}
+          onClick={() => {
+            setModalType("Buy Up");
+            setShowModal(true);
+          }}
+        >
+          {t("Buy Up")}
+        </button>
 
-{/* 底部 买涨/买跌 */}
-<div
-  style={{
-    display: "flex",
-    gap: "12px",
-    padding: "12px 16px",
-    borderTop: "1px solid #eee",
-  }}
->
-  <button
-    style={{
-      flex: 1,
-      backgroundColor: "#2ecc71",
-      color: "#fff",
-      padding: "16px 0",
-      border: "none",
-      borderRadius: "10px",
-      fontSize: "16px",
-      cursor: "pointer",
-    }}
-    onClick={() => {
-      setModalType("Buy Up");
-      setShowModal(true);
-    }}
-  >
-    Buy Up
-  </button>
+        <button
+          style={{
+            flex: 1,
+            backgroundColor: "#e74c3c",
+            color: "#fff",
+            padding: 16,
+            borderRadius: 10,
+            border: "none",
+            fontSize: 16,
+          }}
+          onClick={() => {
+            setModalType("Buy Fall");
+            setShowModal(true);
+          }}
+        >
+          {t("Buy Fall")}
+        </button>
+      </div>
 
-  <button
-    style={{
-      flex: 1,
-      backgroundColor: "#e74c3c",
-      color: "#fff",
-      padding: "16px 0",
-      border: "none",
-      borderRadius: "10px",
-      fontSize: "16px",
-      cursor: "pointer",
-    }}
-    onClick={() => {
-      setModalType("Buy Fall");
-      setShowModal(true);
-    }}
-  >
-    Buy Fall
-  </button>
-</div>
-
-{/* 下单弹窗 */}
-{showModal && (
-  <BottomModal onClose={() => setShowModal(false)}>
-    {/* ⭐ TradingView 价格传参在这里 */}
-    <OrderForm 
-      symbol={currentSymbol}
-      modalType={modalType}
-      price={tvPrice ?? price}
-    />
-  </BottomModal>
-)}
-
-
-
+      {showModal && (
+        <BottomModal onClose={() => setShowModal(false)}>
+          <OrderForm
+            symbol={currentSymbol}
+            modalType={modalType}
+            price={tvPrice ?? price}
+          />
+        </BottomModal>
+      )}
     </div>
   );
 };

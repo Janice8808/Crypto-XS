@@ -1,8 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function Introduction() {
   const nav = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <div className="w-full min-h-screen bg-white text-black">
@@ -16,13 +18,13 @@ export default function Introduction() {
         </button>
 
         <span className="text-gray-600 text-sm truncate">
-          
+          {t("Introduction")}
         </span>
       </div>
 
       {/* ===== 标题（橙色） ===== */}
       <div className="px-4 mt-2 text-[#FBB040] font-semibold text-lg">
-        The world's first social trading platform
+        {t("Intro title")}
       </div>
 
       {/* ===== 主图 banner ===== */}
@@ -36,31 +38,13 @@ export default function Introduction() {
       {/* ===== 文本内容 ===== */}
       <div className="px-4 mt-6 leading-relaxed text-[15px] text-gray-800">
 
-        <p className="mb-6">
-          The world's first social trading platform
-        </p>
+        <p className="mb-6">{t("Intro p1")}</p>
 
-        <p className="mb-6">
-          Crypto.com was founded in 2016 and is registered in Singapore.
-          Its operational headquarters is located in Dubai. It has operation
-          centers in many countries and regions such as the United States and Europe,
-          and its business scope covers the world.
-        </p>
+        <p className="mb-6">{t("Intro p2")}</p>
 
-        <p className="mb-6">
-          The platform has more than 50 million registered users worldwide,
-          more than 3 million monthly active users, and more than 80 million
-          user traffic in the ecosystem.
-        </p>
+        <p className="mb-6">{t("Intro p3")}</p>
 
-        <p className="mb-6">
-          Crypto.com is a comprehensive trading platform that supports 800+
-          high-quality currencies and 1000+ trading pairs. It has a rich variety
-          of transactions such as currency trading, leveraged trading, OTC trading,
-          contract trading, and credit card currency purchases. Provide users with
-          the safest, most efficient, and most professional digital asset investment
-          services.
-        </p>
+        <p className="mb-6">{t("Intro p4")}</p>
 
       </div>
 

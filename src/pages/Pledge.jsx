@@ -1,7 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
-/** 币种小图标（SVG），尽量贴近你截图样式 */
+/** 币种小图标（SVG） */
 const CoinIcon = ({ symbol }) => {
   switch (symbol) {
     case "BTC":
@@ -62,15 +63,16 @@ const CoinIcon = ({ symbol }) => {
 
 export default function Pledge() {
   const nav = useNavigate();
+  const { t } = useTranslation();
 
   const data = [
-    { symbol: "BTC",  rate: "5%",   min: "10000.00 USDT", days: [10, 30, 90] },
-    { symbol: "ETH",  rate: "2%",   min: "3000.00 USDT",  days: [10, 30, 90] },
-    { symbol: "USDT", rate: "1%",   min: "1000.00 USDT",  days: [10, 30, 90] },
-    { symbol: "USDC", rate: "1%",   min: "1000.00 USDT",  days: [10, 30, 90] },
-    { symbol: "TRX",  rate: "0.5%", min: "500.00 USDT",   days: [10, 30, 90] },
-    { symbol: "XMR",  rate: "0.5%", min: "500.00 USDT",   days: [10, 90, 180] },
-    { symbol: "DASH", rate: "0.5%", min: "500.00 USDT",   days: [10, 90, 180] },
+    { symbol: "BTC", rate: "5%", min: "10000.00 USDT", days: [10, 30, 90] },
+    { symbol: "ETH", rate: "2%", min: "3000.00 USDT", days: [10, 30, 90] },
+    { symbol: "USDT", rate: "1%", min: "1000.00 USDT", days: [10, 30, 90] },
+    { symbol: "USDC", rate: "1%", min: "1000.00 USDT", days: [10, 30, 90] },
+    { symbol: "TRX", rate: "0.5%", min: "500.00 USDT", days: [10, 30, 90] },
+    { symbol: "XMR", rate: "0.5%", min: "500.00 USDT", days: [10, 90, 180] },
+    { symbol: "DASH", rate: "0.5%", min: "500.00 USDT", days: [10, 90, 180] },
   ];
 
   return (
@@ -91,43 +93,44 @@ export default function Pledge() {
           </svg>
         </button>
 
-        <span className="text-lg font-medium">Pledge</span>
+        <span className="text-lg font-medium">{t("Pledge")}</span>
       </div>
 
-      {/* 顶部文字说明 */}
+      {/* 顶部提示 */}
       <div className="px-4 py-4 text-sm text-[#C9C9F5] leading-6 bg-white">
-        · 0 Fee <br />
-        · Risk is low <br />
-        · Higher income than living financial management
+        · {t("Zero Fee")} <br />
+        · {t("Low risk")} <br />
+        · {t("Higher return")}
       </div>
 
-      {/* Tab 区域：Lock 只是高亮，Record 负责跳转 */}
+      {/* Tab 区域 */}
       <div className="flex items-center bg-[#0E1330] text-white text-sm mt-2">
-        {/* 当前页：Lock income（高亮、不跳转） */}
         <div className="flex-1 text-center py-3 text-[#FFCC33] border-b-2 border-[#FFCC33]">
-          Lock income
+          {t("Lock income")}
         </div>
 
-        {/* Record：点击跳转到独立记录页 */}
         <div
           className="flex-1 text-center py-3 cursor-pointer"
           onClick={() => nav("/defi-record")}
         >
-          Record
+          {t("Record")}
         </div>
       </div>
 
-      {/* Lock income 内容（一直显示） */}
+      {/* Lock 内容 */}
       <div className="px-3 py-4">
-        <div className="text-xl font-semibold text-gray-800">Lock income</div>
+        <div className="text-xl font-semibold text-gray-800">
+          {t("Lock income")}
+        </div>
+
         <div className="text-gray-500 text-sm mt-1 mb-4">
-          After recharge, you can enjoy a stable high return
+          {t("Higher return")}
         </div>
 
         {data.map((item, index) => (
           <div key={index} className="bg-white rounded-lg p-4 mb-4 shadow">
 
-            {/* 币种标题行 */}
+            {/* 币种标题 */}
             <div className="flex items-center mb-3">
               <CoinIcon symbol={item.symbol} />
               <span className="ml-2 font-semibold text-gray-800">
@@ -137,18 +140,20 @@ export default function Pledge() {
 
             {/* 日利率 */}
             <div className="flex justify-between text-gray-500 text-sm mb-2">
-              <span>Daily interest rate</span>
+              <span>{t("Daily interest rate")}</span>
               <span className="text-[#4B6BFD]">{item.rate}</span>
             </div>
 
             {/* 起投数量 */}
             <div className="flex justify-between text-gray-500 text-sm mb-3">
-              <span>Minimum starting quantity</span>
+              <span>{t("Minimum starting quantity")}</span>
               <span className="text-gray-700 font-medium">{item.min}</span>
             </div>
 
             {/* 天数选择 */}
-            <div className="text-gray-500 text-sm mb-2">Dialogue (Sky)</div>
+            <div className="text-gray-500 text-sm mb-2">
+              {t("Lock days")}
+            </div>
 
             <div className="flex gap-3 mb-4">
               {item.days.map((d, i) => (
@@ -167,7 +172,7 @@ export default function Pledge() {
 
             {/* 按钮 */}
             <button className="w-full bg-[#FFC940] py-3 rounded-lg text-white text-sm font-medium">
-              Lock up immediately
+              {t("Lock now")}
             </button>
           </div>
         ))}
