@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { coinIcons } from "../assets/coinIcons";
 import { useOkxTickers } from "../hooks/useOkxTickers";
-
 
 // ============ 地址遮挡函数 ============
 const maskAddress = (addr) => {
@@ -12,7 +12,6 @@ const maskAddress = (addr) => {
 };
 
 /* ---------------- SVG ICONS ---------------- */
-
 const iconUser = (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
     stroke="#444" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -100,9 +99,10 @@ const GlobeIcon = () => (
 
 const Home = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [marqueeKey, setMarqueeKey] = useState(0);
 
-  // 1️⃣ 币种订阅列表（给 WebSocket 用）
+  // 币种订阅
   const SYMBOLS = [
     "BTC-USDT","ETH-USDT","BNB-USDT","SOL-USDT","XRP-USDT",
     "DOGE-USDT","ADA-USDT","TRX-USDT","AVAX-USDT","DOT-USDT",
@@ -111,32 +111,20 @@ const Home = () => {
     "SAND-USDT","MANA-USDT","ARB-USDT","OP-USDT","SUI-USDT"
   ];
 
-  // 2️⃣ 固定展示顺序（页面用这个）
-  const FIXED_LIST = [
-    "BTC-USDT","ETH-USDT","BNB-USDT","SOL-USDT","XRP-USDT",
-    "DOGE-USDT","ADA-USDT","TRX-USDT","AVAX-USDT","DOT-USDT",
-    "LTC-USDT","LINK-USDT","ATOM-USDT","FIL-USDT","BCH-USDT",
-    "MATIC-USDT","TON-USDT","ICP-USDT","APT-USDT","NEAR-USDT",
-    "SAND-USDT","MANA-USDT","ARB-USDT","OP-USDT","SUI-USDT"
-  ];
+  const FIXED_LIST = [...SYMBOLS];
 
-  // 3️⃣ 实时行情
-const tickers = useOkxTickers(SYMBOLS, () => {
-  setRefresh(r => r + 1);
-});
-const [refresh, setRefresh] = useState(0);
+  // 实时行情
+  const tickers = useOkxTickers(SYMBOLS, () => setRefresh(r => r + 1));
+  const [refresh, setRefresh] = useState(0);
 
-
-  // ⭐ 热门币
   const btc = tickers["BTC-USDT"] || { price: "--", change: 0 };
   const eth = tickers["ETH-USDT"] || { price: "--", change: 0 };
   const bnb = tickers["BNB-USDT"] || { price: "--", change: 0 };
 
-  // 4️⃣ 用固定列表 + 实时 tickers 生成稳定列表（只写一次！）
   const stableList = FIXED_LIST.map((id) => {
     const t = tickers[id] || {};
     return {
-      symbol: id.replace("-USDT", ""), // e.g. "BTC"
+      symbol: id.replace("-USDT", ""),
       price: t.price || "--",
       change: t.change || 0,
     };
@@ -146,10 +134,7 @@ const [refresh, setRefresh] = useState(0);
   const maskedAddress = maskAddress(address);
   const [uid, setUid] = useState("--");
 
-  // ⬇️ 你后面的 useEffect、features、banner、WebSocket 等，继续保持不动即可
-  // ...
-
-
+  // 获取用户ID
   useEffect(() => {
     fetch("https://pankouhoutai.shop/api/user/balance", {
       headers: { Authorization: "Bearer " + localStorage.getItem("token") },
@@ -160,116 +145,22 @@ const [refresh, setRefresh] = useState(0);
       });
   }, []);
 
+  // 多语言 features
   const features = [
-    { name: "User center", icon: iconUser },
-    { name: "MSb", icon: iconMSB },
-    { name: "introduction", icon: iconIntro },
-    { name: "Currency", icon: iconCurrency },
-    { name: "Deposit", icon: iconDeposit },
-    { name: "DeFi", icon: iconDefi },
-    { name: "Futures", icon: iconFutures },
-    { name: "Withdraw", icon: iconWithdraw },
+    { key: "User Center", icon: iconUser },
+    { key: "MSb", icon: iconMSB },
+    { key: "Introduction", icon: iconIntro },
+    { key: "Currency", icon: iconCurrency },
+    { key: "Deposit", icon: iconDeposit },
+    { key: "DeFi", icon: iconDefi },
+    { key: "Futures", icon: iconFutures },
+    { key: "Withdraw", icon: iconWithdraw },
   ];
 
-  const [currentBanner, setCurrentBanner] = useState(0);
-  const [showLang, setShowLang] = useState(false);
-  const [unread, setUnread] = useState(0);
-useEffect(() => {
-  function handle() {
-    setUnread(0); // 红点消失
-  }
-
-  window.addEventListener("notice-read", handle);
-  return () => window.removeEventListener("notice-read", handle);
-}, []);
-
-useEffect(() => {
-  async function loadUnread() {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-
-      const r = await fetch("https://pankouhoutai.shop/api/notice/unread", {
-        headers: { Authorization: "Bearer " + token }
-      });
-
-      const j = await r.json();
-      setUnread(j.unread || 0);
-    } catch (err) {
-      console.error("load unread error", err);
-    }
-  }
-
-  loadUnread();
-
-  // ⭐ 每 10 秒刷新一次未读数
-  const t = setInterval(loadUnread, 10000);
-
-  return () => clearInterval(t);
-}, []);
-
-// ⭐ 前端 WebSocket：接收后台实时通知
-useEffect(() => {
-  const token = localStorage.getItem("token");
-  if (!token) return;
-
-  const wsUrl = import.meta.env.PROD
-    ? "wss://pankouhoutai.shop/user-ws"
-    : "ws://localhost:5000/user-ws";
-
-  console.log("📡 User WS connecting:", wsUrl);
-
-  const ws = new WebSocket(wsUrl);
-
-  ws.onopen = () => {
-    console.log("✅ User WebSocket connected");
-
-    // 登录后发送 token 给后端
-    ws.send(JSON.stringify({
-      type: "AUTH",
-      token
-    }));
-  };
-
-  ws.onmessage = (event) => {
-    let msg;
-    try {
-      msg = JSON.parse(event.data);
-    } catch {
-      return;
-    }
-
-    // ⭐ 后端推送新通知
-    if (msg.type === "NEW_NOTICE") {
-      console.log("📩 收到后台通知:", msg.notice);
-
-      // 自动让未读角标 +1
-      setUnread((u) => u + 1);
-    }
-  };
-
-  ws.onerror = (err) => {
-    console.error("❌ User WebSocket error:", err);
-  };
-
-  ws.onclose = () => {
-    console.log("⚠️ User WebSocket disconnected");
-  };
-
-  return () => ws.close();
-}, []);
-
   const images = ["/images/banner1.jpg", "/images/banner2.jpg", "/images/banner3.jpg"];
- 
-  // ========= 2️⃣ ⭐ 定时器放这里 ⭐ =========
-useEffect(() => {
-  const timer = setInterval(() => {
-    setMarqueeKey(k => k + 1);
-  }, 4000);  // 跟动画时间一致
+  const [currentBanner, setCurrentBanner] = useState(0);
 
-  return () => clearInterval(timer);
-}, []);
-
+  // banner轮播
   useEffect(() => {
     const t = setInterval(() => {
       setCurrentBanner((p) => (p + 1) % images.length);
@@ -277,13 +168,77 @@ useEffect(() => {
     return () => clearInterval(t);
   }, []);
 
-  const HOT_SYMBOLS = ["BTC", "ETH", "BNB"];
+  // marquee 滚动
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setMarqueeKey(k => k + 1);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
 
-const top3 = [
-  { base: "BTC", symbol: "BTC/USDT", price: btc.price, change: btc.change },
-  { base: "ETH", symbol: "ETH/USDT", price: eth.price, change: eth.change },
-  { base: "BNB", symbol: "BNB/USDT", price: bnb.price, change: bnb.change },
-];
+  // 未读通知
+  const [unread, setUnread] = useState(0);
+
+  useEffect(() => {
+    function handle() {
+      setUnread(0);
+    }
+    window.addEventListener("notice-read", handle);
+    return () => window.removeEventListener("notice-read", handle);
+  }, []);
+
+  useEffect(() => {
+    async function loadUnread() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const r = await fetch("https://pankouhoutai.shop/api/notice/unread", {
+          headers: { Authorization: "Bearer " + token }
+        });
+
+        const j = await r.json();
+        setUnread(j.unread || 0);
+      } catch {}
+    }
+
+    loadUnread();
+    const t = setInterval(loadUnread, 10000);
+    return () => clearInterval(t);
+  }, []);
+
+  // WebSocket 用户通知
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const wsUrl = import.meta.env.PROD
+      ? "wss://pankouhoutai.shop/user-ws"
+      : "ws://localhost:5000/user-ws";
+
+    const ws = new WebSocket(wsUrl);
+
+    ws.onopen = () => {
+      ws.send(JSON.stringify({ type: "AUTH", token }));
+    };
+
+    ws.onmessage = (event) => {
+      let msg;
+      try { msg = JSON.parse(event.data); } catch { return; }
+
+      if (msg.type === "NEW_NOTICE") {
+        setUnread(u => u + 1);
+      }
+    };
+
+    return () => ws.close();
+  }, []);
+
+  const top3 = [
+    { base: "BTC", symbol: "BTC/USDT", price: btc.price, change: btc.change },
+    { base: "ETH", symbol: "ETH/USDT", price: eth.price, change: eth.change },
+    { base: "BNB", symbol: "BNB/USDT", price: bnb.price, change: bnb.change },
+  ];
 
 
   return (
@@ -303,110 +258,89 @@ const top3 = [
           </div>
         </div>
 
-<div className="flex items-center space-x-4 ml-3 text-white">
-  <button
-    className="relative p-0 bg-transparent"
-    onClick={() => navigate("/notice")}
-  >
-    <MailIcon />
-    {unread > 0 && (
-      <span className="absolute -top-1 -right-2 bg-red-600 text-[10px] px-1 rounded-full">
-        {unread}
-      </span>
-    )}
-  </button>
+        <div className="flex items-center space-x-4 ml-3 text-white">
+          <button className="relative p-0 bg-transparent" onClick={() => navigate("/notice")}>
+            <MailIcon />
+            {unread > 0 && (
+              <span className="absolute -top-1 -right-2 bg-red-600 text-[10px] px-1 rounded-full">
+                {unread}
+              </span>
+            )}
+          </button>
 
-
-          <button className="p-0 bg-transparent" 
-          onClick={() => navigate("/user/language")}>
+          <button className="p-0 bg-transparent" onClick={() => navigate("/user/language")}>
             <GlobeIcon />
           </button>
         </div>
       </div>
 
-      {showLang && (
-        <div className="absolute right-4 top-16 bg-white rounded shadow w-28 text-black">
-          <div className="px-3 py-2 hover:bg-gray-100 cursor-pointer">English</div>
-          <div className="px-3 py-2 hover:bg-gray-100 cursor-pointer">中文</div>
+      {/* Banner */}
+      <div className="w-full relative bg-gray-800 overflow-hidden">
+        {images.map((src, idx) => (
+          <img
+            key={idx}
+            src={src}
+            className={`w-full h-auto transition-opacity duration-700 ${
+              idx === currentBanner ? "opacity-100" : "opacity-0"
+            }`}
+            style={{ display: idx === currentBanner ? "block" : "none" }}
+          />
+        ))}
+      </div>
+
+      {/* 滚动公告 */}
+      <div className="
+        relative overflow-hidden 
+        h-20 px-3 -mt-1 flex items-center
+        bg-gradient-to-b
+        from-[#1E1E22]
+        via-[#3C3C42]
+        via-[#7A7A82]
+        to-[#E8E8EC]
+      ">
+        <div className="text-yellow-400 text-lg mr-2 z-20 relative top-1">🔊</div>
+
+        <div className="relative flex-1 overflow-hidden min-h-[24px]">
+          <div
+            key={marqueeKey}
+            className="
+              absolute left-0 
+              top-[20%] -translate-y-1/2
+              whitespace-nowrap 
+              text-white text-base
+              animate-marquee-under z-50
+            "
+          >
+            {t("Welcome")} Crypto.com
+          </div>
         </div>
-      )}
-
-<div className="w-full relative bg-gray-800 overflow-hidden">
-  {images.map((src, idx) => (
-    <img
-      key={idx}
-      src={src}
-      className={`w-full h-auto transition-opacity duration-700 ${
-        idx === currentBanner ? "opacity-100" : "opacity-0"
-      }`}
-      style={{ display: idx === currentBanner ? "block" : "none" }}
-    />
-  ))}
-</div>
-
-
-{/* 滚动公告条 */}
-<div className="
-  relative overflow-hidden 
-  h-20 px-3 -mt-1 flex items-center
-  bg-gradient-to-b
-  from-[#1E1E22]
-  via-[#3C3C42]
-  via-[#7A7A82]
-  to-[#E8E8EC]
-">
-
-  {/* 喇叭固定不动 */}
-  <div className="text-yellow-400 text-lg mr-2 z-20 relative top-1">🔊</div>
-
-{/* 滚动文字区域 */}
-<div className="relative flex-1 overflow-hidden min-h-[24px]">
-
-  <div
-    key={marqueeKey}
-    className="
-      absolute left-0 
-      top-[20%] -translate-y-1/2
-      whitespace-nowrap 
-      text-white text-base
-      animate-marquee-under z-50
-    "
-  >
-    Welcome to visit Crypto.com
-  </div>
-
-</div>
-
-
-</div>
-
-
-
-
+      </div>
+      {/* 功能区 */}
       <div className="-mt-6 bg-white mx-2 rounded-xl p-4 shadow relative z-5">
 
         <div className="grid grid-cols-4 gap-4 mb-5">
           {features.map((item) => (
             <Link
-              key={item.name}
+              key={item.key}
               to={
-                item.name === "User center" ? "/user" :
-                item.name === "MSb" ? "/user/msb" :
-                item.name === "introduction" ? "/intro" :
-                item.name === "Currency" ? "/coin-detail" :
-                item.name === "Deposit" ? "/deposit1" :
-                item.name === "DeFi" ? "/defi" :
-                item.name === "Futures" ? "/trade" :
+                item.key === "User Center" ? "/user" :
+                item.key === "MSb" ? "/user/msb" :
+                item.key === "Introduction" ? "/intro" :
+                item.key === "Currency" ? "/coin-detail" :
+                item.key === "Deposit" ? "/deposit1" :
+                item.key === "DeFi" ? "/defi" :
+                item.key === "Futures" ? "/trade" :
                 "/wallet/USDT/withdraw"
               }
               className="flex flex-col items-center text-gray-700 text-xs"
             >
               <div className="mb-1">{item.icon}</div>
-              {item.name}
+              {t(item.key)}
             </Link>
           ))}
         </div>
 
+        {/* 两个广告图 */}
         <div className="flex gap-2 mb-6 px-1">
           <div className="w-1/3">
             <img src="/images/online.jpg" className="w-full h-[70px] rounded-lg object-fill" />
@@ -417,42 +351,43 @@ const top3 = [
           </div>
         </div>
 
-<div className="grid grid-cols-3 gap-4">
-  {top3.map((coin) => {
-    const up = coin.change >= 0;
+        {/* 热门 Top3 当前价格 */}
+        <div className="grid grid-cols-3 gap-4">
+          {top3.map((coin) => {
+            const up = coin.change >= 0;
 
-    return (
-      <Link
-        key={coin.symbol + refresh}
-        to={`/coin/${coin.base}-USDT`}   // ⭐ 跳转用 "-"
-        className="text-center py-2"
-      >
-        <div className="text-gray-600 text-sm">{coin.symbol}</div>  {/* ⭐ 显示用 "/" */}
+            return (
+              <Link
+                key={coin.symbol + refresh}
+                to={`/coin/${coin.base}-USDT`}
+                className="text-center py-2"
+              >
+                <div className="text-gray-600 text-sm">{coin.symbol}</div>
 
-        <div className={`font-bold ${up ? "text-green-500" : "text-red-500"}`}>
-          ${Number(coin.price).toFixed(1)}
+                <div className={`font-bold ${up ? "text-green-500" : "text-red-500"}`}>
+                  ${Number(coin.price).toFixed(1)}
+                </div>
+
+                <div className={`${up ? "text-green-500" : "text-red-500"}`}>
+                  {up ? "+" : ""}
+                  {coin.change}%
+                </div>
+              </Link>
+            );
+          })}
         </div>
-
-        <div className={`${up ? "text-green-500" : "text-red-500"}`}>
-          {up ? "+" : ""}
-          {coin.change}%
-        </div>
-      </Link>
-    );
-  })}
-</div>
-
-
       </div>
 
-      {/* 实时行情 */}
+      {/* 实时行情 Popular list */}
       <div className="mt-4 bg-white rounded-lg shadow mx-2 p-2">
-        <div className="px-2 py-1 font-semibold text-gray-500">Popular list</div>
+        <div className="px-2 py-1 font-semibold text-gray-500">
+          {t("Popular list")}
+        </div>
 
         <div className="flex items-center px-2 py-2 border-b font-semibold text-gray-500">
-          <span className="w-1/3">Symbol</span>
-          <span className="w-1/3 text-center">Latest Price</span>
-          <span className="w-1/3 text-right">24h</span>
+          <span className="w-1/3">{t("Symbol")}</span>
+          <span className="w-1/3 text-center">{t("Latest Price")}</span>
+          <span className="w-1/3 text-right">{t("24h")}</span>
         </div>
 
         {stableList.map((coin) => {
@@ -465,7 +400,10 @@ const top3 = [
               className="flex items-center px-2 py-2 hover:bg-gray-100 transition"
             >
               <div className="w-1/3 flex items-center">
-                <img src={coinIcons[coin.symbol] || "/images/default.png"} className="w-6 h-6 rounded-full mr-2" />
+                <img
+                  src={coinIcons[coin.symbol] || "/images/default.png"}
+                  className="w-6 h-6 rounded-full mr-2"
+                />
                 <span className="text-gray-600">{coin.symbol}</span>
               </div>
 
@@ -487,7 +425,6 @@ const top3 = [
           );
         })}
       </div>
-
     </div>
   );
 };
