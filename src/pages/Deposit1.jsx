@@ -51,13 +51,14 @@ export default function Deposit1() {
         <div className="grid grid-cols-2 gap-3 mt-3">
           {rechargeCoins.map((coin) => (
             <div
-              key={coin.name}
-              onClick={() => navigate(`/wallet/${coin.name}/deposit`)}
-              className="flex items-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer transition"
-            >
-              <img src={coin.icon} alt={coin.name} className="w-6 h-6 mr-2" />
-              <span className="font-medium text-gray-800">{coin.name}</span>
-            </div>
+  key={coin.name}
+  onClick={() => navigate(`/wallet/${coin.name}/deposit`)}
+  className="flex flex-col items-center justify-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer transition active:bg-gray-100"
+>
+  <img src={coin.icon} alt={coin.name} className="w-8 h-8 mb-1" />
+  <span className="font-medium text-gray-800 text-sm">{coin.name}</span>
+</div>
+
           ))}
         </div>
       </div>
@@ -70,13 +71,14 @@ export default function Deposit1() {
 
         <div className="grid grid-cols-2 gap-3 mt-3">
           {buyPlatforms.map((p) => (
-            <div
-              key={p.name}
-              onClick={() => window.open(p.url, "_blank")}
-              className="flex items-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer justify-center transition"
-            >
-              <img src={p.icon} alt={p.name} className="h-10 object-contain" />
-            </div>
+<div
+  key={p.name}
+  onClick={() => window.open(p.url, "_blank")}
+  className="flex items-center justify-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer transition active:bg-gray-100"
+>
+  <img src={p.icon} alt={p.name} className="h-10 object-contain" />
+</div>
+
           ))}
         </div>
       </div>
