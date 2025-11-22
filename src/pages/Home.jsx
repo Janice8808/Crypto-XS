@@ -432,6 +432,7 @@ const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
           <span className="w-1/3 text-right">{t("24h")}</span>
         </div>
 {list.map((coin) => {
+  if (!coin) return null;
   const up = coin.change >= 0;
 
   return (
@@ -440,33 +441,18 @@ const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
       to={`/coin/${coin.symbol}-USDT`}
       className="flex items-center px-2 py-3 hover:bg-gray-100 transition"
     >
-      {/* 左侧图标 + 名称 */}
       <div className="w-1/3 flex items-center">
-        {(() => {
-          const src =
-            coinIcons[coin.symbol] ||
-            `https://static.okx.com/cdn/assets/imgs/coins/${coin.symbol}.png`;
-
-          return (
-            <img
-              src={src}
-              onError={(e) => {
-                e.target.src = "/images/default.png"; // fallback
-              }}
-              className="w-6 h-6 rounded-full mr-2"
-            />
-          );
-        })()}
-
+        <img
+          src={coinIcons[coin.symbol] || "/images/default.png"}
+          className="w-6 h-6 rounded-full mr-2"
+        />
         <span className="text-gray-600 text-sm">{coin.symbol}</span>
       </div>
 
-      {/* 最新价 */}
       <div className="w-1/3 text-center text-gray-600 text-sm">
         ${Number(coin.price).toFixed(1)}
       </div>
 
-      {/* 涨幅 */}
       <div className="w-1/3 flex justify-end items-center">
         <span
           className="rounded text-white font-semibold flex items-center justify-center"
@@ -484,7 +470,6 @@ const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
     </Link>
   );
 })}
-
 
 
       </div>
