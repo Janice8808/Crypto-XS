@@ -46,7 +46,7 @@ const commonKeys = {
   "Please fill in all fields": "Please fill in all fields",
   "Network error, please try again later": "Network error, please try again later",
 
-  /* ===== CoinDetail 新增文案（英文基准） ===== */
+  /* CoinDetail */
   "Buy": "Buy",
   "Sell": "Sell",
   "Limit Order": "Limit Order",
@@ -57,6 +57,11 @@ const commonKeys = {
   "Turnover": "Turnover",
   "Submitting": "Submitting...",
   "No Order": "No delegated order",
+
+  /* Record 页新增 */
+  "Record": "Record",
+  "Time": "Time",
+  "No withdrawal record": "There is no currency withdrawal record at the moment"
 };
 
 /* ------------------ 多语言翻译资源库 ------------------ */
@@ -69,7 +74,6 @@ const resources = {
   "Français": {
     translation: {
       ...commonKeys,
-
       "Loading": "Chargement",
       "Price": "Prix",
       "Unavailable": "Indisponible",
@@ -111,6 +115,11 @@ const resources = {
       "Turnover": "Montant",
       "Submitting": "Envoi...",
       "No Order": "Aucun ordre en attente",
+
+      /* Record */
+      "Record": "Enregistrement",
+      "Time": "Heure",
+      "No withdrawal record": "Aucun enregistrement de retrait"
     }
   },
 
@@ -118,7 +127,6 @@ const resources = {
   "Deutsch": {
     translation: {
       ...commonKeys,
-
       "Loading": "Laden",
       "Price": "Preis",
       "Unavailable": "Nicht verfügbar",
@@ -147,7 +155,8 @@ const resources = {
       "24h": "24h",
 
       "Please fill in all fields": "Bitte alle Felder ausfüllen",
-      "Network error, please try again later": "Netzwerkfehler, bitte später erneut versuchen",
+      "Network error, please try again later":
+        "Netzwerkfehler, bitte später erneut versuchen",
 
       /* CoinDetail */
       "Buy": "Kaufen",
@@ -160,6 +169,11 @@ const resources = {
       "Turnover": "Umsatz",
       "Submitting": "Wird gesendet...",
       "No Order": "Keine offenen Orders",
+
+      /* Record */
+      "Record": "Aufzeichnung",
+      "Time": "Zeit",
+      "No withdrawal record": "Keine Abhebungsaufzeichnungen"
     }
   },
 
@@ -167,7 +181,6 @@ const resources = {
   "Italiano": {
     translation: {
       ...commonKeys,
-
       "Loading": "Caricamento",
       "Price": "Prezzo",
       "Unavailable": "Non disponibile",
@@ -196,7 +209,8 @@ const resources = {
       "24h": "24h",
 
       "Please fill in all fields": "Compila tutti i campi",
-      "Network error, please try again later": "Errore di rete, riprova più tardi",
+      "Network error, please try again later":
+        "Errore di rete, riprova più tardi",
 
       /* CoinDetail */
       "Buy": "Compra",
@@ -209,9 +223,13 @@ const resources = {
       "Turnover": "Controvalore",
       "Submitting": "Invio in corso...",
       "No Order": "Nessun ordine in delega",
+
+      /* Record */
+      "Record": "Record",
+      "Time": "Ora",
+      "No withdrawal record": "Nessun record di prelievo"
     }
   },
-
   /* ========== Korean ========== */
   "한국어": {
     translation: {
@@ -258,6 +276,11 @@ const resources = {
       "Turnover": "거래대금",
       "Submitting": "전송 중...",
       "No Order": "위탁 주문 없음",
+
+      /* Record */
+      "Record": "기록",
+      "Time": "시간",
+      "No withdrawal record": "출금 기록이 없습니다"
     }
   },
 
@@ -307,6 +330,11 @@ const resources = {
       "Turnover": "取引額",
       "Submitting": "送信中...",
       "No Order": "委託注文はありません",
+
+      /* Record */
+      "Record": "記録",
+      "Time": "時間",
+      "No withdrawal record": "出金記録はありません"
     }
   },
 
@@ -314,7 +342,6 @@ const resources = {
   "中文繁体": {
     translation: {
       ...commonKeys,
-
       "Loading": "載入中",
       "Price": "價格",
       "Unavailable": "不可用",
@@ -356,6 +383,11 @@ const resources = {
       "Turnover": "成交額",
       "Submitting": "提交中...",
       "No Order": "暫無委託訂單",
+
+      /* Record */
+      "Record": "紀錄",
+      "Time": "時間",
+      "No withdrawal record": "目前沒有提幣紀錄"
     }
   },
 
@@ -363,7 +395,6 @@ const resources = {
   "中文简体": {
     translation: {
       ...commonKeys,
-
       "Loading": "加载中",
       "Price": "价格",
       "Unavailable": "不可用",
@@ -405,6 +436,11 @@ const resources = {
       "Turnover": "成交额",
       "Submitting": "提交中...",
       "No Order": "暂无委托订单",
+
+      /* Record */
+      "Record": "记录",
+      "Time": "时间",
+      "No withdrawal record": "暂无提币记录"
     }
   },
 
@@ -412,7 +448,6 @@ const resources = {
   "ภาษาไทย": {
     translation: {
       ...commonKeys,
-
       "Loading": "กำลังโหลด",
       "Price": "ราคา",
       "Unavailable": "ไม่พร้อมใช้งาน",
@@ -454,6 +489,11 @@ const resources = {
       "Turnover": "มูลค่ารวม",
       "Submitting": "กำลังส่ง...",
       "No Order": "ยังไม่มีออเดอร์",
+
+      /* Record */
+      "Record": "ประวัติ",
+      "Time": "เวลา",
+      "No withdrawal record": "ไม่มีประวัติการถอน"
     }
   },
 
@@ -503,6 +543,11 @@ const resources = {
       "Turnover": "Giá trị giao dịch",
       "Submitting": "Đang gửi...",
       "No Order": "Không có lệnh ủy thác",
+
+      /* Record */
+      "Record": "Lịch sử",
+      "Time": "Thời gian",
+      "No withdrawal record": "Không có lịch sử rút tiền"
     }
   },
 
@@ -510,7 +555,6 @@ const resources = {
   "español": {
     translation: {
       ...commonKeys,
-
       "Loading": "Cargando",
       "Price": "Precio",
       "Unavailable": "No disponible",
@@ -552,6 +596,11 @@ const resources = {
       "Turnover": "Volumen",
       "Submitting": "Enviando...",
       "No Order": "No hay órdenes delegadas",
+
+      /* Record */
+      "Record": "Registro",
+      "Time": "Hora",
+      "No withdrawal record": "No hay historial de retiro"
     }
   },
 
@@ -559,7 +608,6 @@ const resources = {
   "Türkçe": {
     translation: {
       ...commonKeys,
-
       "Loading": "Yükleniyor",
       "Price": "Fiyat",
       "Unavailable": "Kullanılamıyor",
@@ -601,6 +649,11 @@ const resources = {
       "Turnover": "Hacim",
       "Submitting": "Gönderiliyor...",
       "No Order": "Açık emir yok",
+
+      /* Record */
+      "Record": "Kayıt",
+      "Time": "Zaman",
+      "No withdrawal record": "Henüz para çekme kaydı yok"
     }
   },
 };
