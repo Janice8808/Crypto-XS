@@ -345,16 +345,16 @@ const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
 
   <div className="relative flex-1 h-full">
 <div
-  className="absolute whitespace-nowrap text-white text-base animate-eaten"
+  className="absolute whitespace-nowrap text-white text-base animate-marquee-to-horn"
   style={{
     top: "50%",
     transform: "translateY(-50%)",
     pointerEvents: "none",
+    left: "0",
   }}
 >
   {t("Welcome")} Crypto.com
 </div>
-
 
   </div>
 </div>
