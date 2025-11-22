@@ -9,85 +9,74 @@ import { useTranslation } from "react-i18next";
 const TradingViewWidget = ({ symbol, onPrice }) => {
   const containerRef = useRef(null);
   const tvWidgetRef = useRef(null);
-  const widgetId = useRef(`tv_widget_${symbol}_${Date.now()}`);
+  const widgetId = useRef(`tv_${symbol}_${Date.now()}`);
 
   useEffect(() => {
-    let isMounted = true;
+    let mounted = true;
 
-    const loadTradingView = () => {
-      return new Promise((resolve) => {
-        // ✔ TradingView 已加载 & widget 模块已可用
-        if (window.TradingView && window.TradingView.widget) {
-          return resolve();
-        }
+    const loadTV = () =>
+      new Promise((resolve) => {
+        if (window.TradingView?.widget) return resolve();
 
-        // ✔ 避免重复加载
         if (document.getElementById("tv_script")) {
-          const check = () => {
-            if (window.TradingView?.widget) resolve();
-            else setTimeout(check, 50);
-          };
-          return check();
+          const wait = () =>
+            window.TradingView?.widget ? resolve() : setTimeout(wait, 50);
+          return wait();
         }
 
         const script = document.createElement("script");
         script.id = "tv_script";
         script.src = "https://s3.tradingview.com/tv.js";
-        script.onload = () => resolve();
+        script.onload = resolve;
         document.body.appendChild(script);
       });
-    };
 
-    const initWidget = async () => {
-      await loadTradingView();
-      if (!isMounted || !containerRef.current) return;
-
+    const init = async () => {
+      await loadTV();
+      if (!mounted || !containerRef.current) return;
 
       tvWidgetRef.current = new window.TradingView.widget({
         container_id: widgetId.current,
         symbol: `BINANCE:${symbol}`,
         interval: "1",
         timezone: "Etc/UTC",
-        theme: "light",
         style: "1",
         locale: "en",
+        theme: "light",
         hide_toolbar: false,
-        enable_publishing: false,
-        allow_symbol_change: false,
         autosize: true,
       });
 
       tvWidgetRef.current.onChartReady(() => {
         const chart = tvWidgetRef.current.chart();
-        chart.onRealtimeTick((data) => {
-          if (data?.close && onPrice) onPrice(Number(data.close));
+        chart.onRealtimeTick((d) => {
+          if (d?.close && onPrice) onPrice(+d.close);
         });
       });
     };
 
-    initWidget();
+    init();
 
     return () => {
-      isMounted = false;
-      if (tvWidgetRef.current) {
-        tvWidgetRef.current.remove();
-        tvWidgetRef.current = null;
+      mounted = false;
+      if (tvWidgetRef.current?.remove) {
+        try {
+          tvWidgetRef.current.remove();
+        } catch {}
       }
+      tvWidgetRef.current = null;
     };
   }, [symbol]);
 
   return (
-<div
-  ref={containerRef}
-  id={widgetId.current}
-  style={{ width: "100%", height: "100%" }}
-></div>
-
-
+    <div ref={containerRef} style={{ width: "100%", height: "100%" }}>
+      <div
+        id={widgetId.current}
+        style={{ width: "100%", height: "100%" }}
+      ></div>
+    </div>
   );
 };
-
-
 
 /* ===================== 遮罩弹层 ===================== */
 const BottomModal = ({ children, onClose }) => (
