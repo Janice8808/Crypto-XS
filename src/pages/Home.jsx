@@ -130,11 +130,21 @@ useEffect(() => {
       json.data.forEach((t) => {
         if (t.instId.endsWith("-USDT")) {
           const sym = t.instId.replace("-USDT", "");
-          result[sym] = {
-            symbol: sym,
-            price: Number(t.last),
-            change: Number(t.change24h),
-          };
+// 如果没有 change24h（REST），用 open24h 计算涨跌
+const last = Number(t.last);
+const open = Number(t.open24h);
+
+let change = 0;
+if (open > 0) {
+  change = ((last - open) / open * 100).toFixed(2);
+}
+
+result[sym] = {
+  symbol: sym,
+  price: last,
+  change: change,
+};
+
         }
       });
 
