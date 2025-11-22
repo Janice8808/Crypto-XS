@@ -349,14 +349,17 @@ const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
 >
   <div className="text-yellow-400 text-lg mr-2">🔊</div>
 
-  <div className="relative flex-1 overflow-hidden">
+  {/* 这个容器要负责裁剪，但不能影响文字垂直居中 */}
+  <div className="relative flex-1 overflow-hidden h-full">
     <div
       key={marqueeKey}
       className="whitespace-nowrap text-white text-base animate-marquee-LR"
       style={{
         position: "absolute",
         top: "50%",
+        left: "-100%",             // 重要！初始位置要在左边屏幕外
         transform: "translateY(-50%)",
+        whiteSpace: "nowrap",
         pointerEvents: "none",
       }}
     >
@@ -364,6 +367,7 @@ const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
     </div>
   </div>
 </div>
+
 
       {/* 功能区 */}
       <div className="mt-2 bg-white mx-2 rounded-xl p-4 shadow relative z-20">

@@ -73,17 +73,16 @@ button:focus-visible {
 }
 
 
-/* 公告从左→右，完整穿过整个屏幕 */
-@keyframes marquee-LR {
+@keyframes marquee-left-to-right {
   0% {
-    transform: translateX(-100%);  /* 从左侧屏幕外完全开始 */
+    transform: translateX(-100%); /* 从左屏幕外完全开始 */
   }
   100% {
-    transform: translateX(100%);   /* 完整滑到右侧屏幕外 */
+    transform: translateX(100%);  /* 滑到右屏幕外完全消失 */
   }
 }
 
 .animate-marquee-LR {
-  animation: marquee-LR 10s linear infinite;
+  animation: marquee-left-to-right 10s linear infinite;
 }
 
