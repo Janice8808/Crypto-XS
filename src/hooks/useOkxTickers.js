@@ -40,6 +40,8 @@ export function useOkxTickers(symbols = [], onUpdate = null) {
       const inst = msg.arg?.instId;
       if (!inst) return;
 
+      const symbol = inst.split("-")[0].toUpperCase(); // ⭐ 修复关键！
+
       // ============= Tick 数据 =============
       if (msg.arg.channel === "tickers") {
         const d = msg.data[0];
@@ -49,8 +51,9 @@ export function useOkxTickers(symbols = [], onUpdate = null) {
 
         setTickers((prev) => ({
           ...prev,
-          [inst]: {
-            ...(prev[inst] || {}),
+          [symbol]: {
+            ...(prev[symbol] || {}),
+            symbol,        // ⭐ 写入 symbol
             price: last,
             change: Number(change.toFixed(2)),
           },
@@ -59,17 +62,17 @@ export function useOkxTickers(symbols = [], onUpdate = null) {
 
       // ============= K 线数据 =============
       if (msg.arg.channel === "candle24h") {
-        const k = msg.data[0]; // 数组
-        const open = Number(k[1]);
+        const k = msg.data[0];
+
         const high = Number(k[2]);
         const low = Number(k[3]);
-        const close = Number(k[4]);
         const vol = Number(k[5]);
 
         setTickers((prev) => ({
           ...prev,
-          [inst]: {
-            ...(prev[inst] || {}),
+          [symbol]: {
+            ...(prev[symbol] || {}),
+            symbol,        // ⭐ 写入 symbol
             high,
             low,
             amount24h: vol,
