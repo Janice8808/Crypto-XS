@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { coinIcons } from "../assets/coinIcons";
+import { coinIcons } from "@/assets/coinIconsAuto";
 import { useOkxTickers } from "@/hooks/useOkxTickers";
 import { useTranslation } from "react-i18next";
 
