@@ -111,11 +111,9 @@ const Home = () => {
     "SAND-USDT","MANA-USDT","ARB-USDT","OP-USDT","SUI-USDT"
   ];
 
-  const FIXED_LIST = [...SYMBOLS];
 
   // 实时行情
   const tickers = useOkxTickers(SYMBOLS);
-  const [refresh, setRefresh] = useState(0);
   const list = Object.values(tickers);
 
 const btc = tickers["BTC"] || { price: "--", change: 0 };
@@ -384,17 +382,15 @@ const bnb = tickers["BNB"] || { price: "--", change: 0 };
           <span className="w-1/3 text-center">{t("Latest Price")}</span>
           <span className="w-1/3 text-right">{t("24h")}</span>
         </div>
-
 {list.map((coin) => {
   const up = coin.change >= 0;
 
   return (
     <Link
-      key={coin.symbol + refresh}
+      key={coin.symbol}  // 就这样，很完美
       to={`/coin/${coin.symbol}-USDT`}
       className="flex items-center px-2 py-3 hover:bg-gray-100 transition"
     >
-      {/* 左：图标 + 名称 */}
       <div className="w-1/3 flex items-center">
         <img
           src={coinIcons[coin.symbol] || "/images/default.png"}
@@ -403,18 +399,16 @@ const bnb = tickers["BNB"] || { price: "--", change: 0 };
         <span className="text-gray-600 text-sm">{coin.symbol}</span>
       </div>
 
-      {/* 中：价格 */}
       <div className="w-1/3 text-center text-gray-600 text-sm">
         ${Number(coin.price).toFixed(1)}
       </div>
 
-      {/* 右：涨幅框，贴最右侧，固定宽高 3:1.5 */}
       <div className="w-1/3 flex justify-end items-center">
         <span
           className="rounded text-white font-semibold flex items-center justify-center"
           style={{
-            width: "60px",   // 宽
-            height: "30px",  // 高 = 60 * 1.5 / 3
+            width: "60px",
+            height: "30px",
             backgroundColor: up ? "#22c55e" : "#ef4444",
             fontSize: "12px",
           }}
@@ -426,6 +420,7 @@ const bnb = tickers["BNB"] || { price: "--", change: 0 };
     </Link>
   );
 })}
+
 
       </div>
     </div>
