@@ -26,7 +26,7 @@ export default function Deposit1() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24">
+    <div className="min-h-screen bg-gray-50 pb-24 no-tap">
       {/* 顶部搜索栏 */}
       <div className="flex items-center px-4 py-3 bg-white shadow-sm">
         <input

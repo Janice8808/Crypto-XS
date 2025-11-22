@@ -85,3 +85,24 @@ button:focus-visible {
 .animate-marquee-to-horn {
   animation: marquee-to-horn 6s linear infinite;
 }
+
+
+/* ====== 只对 Deposit1 页面生效的无高亮区域 ====== */
+
+.no-tap * {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
+.no-tap *:active {
+  background-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.no-tap *:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
