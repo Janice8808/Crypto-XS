@@ -284,7 +284,7 @@ const bnb = tickers["BNB"] || { price: "--", change: 0 };
       {/* 滚动公告 */}
       <div className="
         relative overflow-hidden 
-        h-20 px-3 flex items-center
+        h-12 px-3 flex items-center
         bg-gradient-to-b
         from-[#1E1E22]
         via-[#3C3C42]

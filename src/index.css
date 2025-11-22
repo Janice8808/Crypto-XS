@@ -115,16 +115,14 @@ button:focus-visible {
 }
 @keyframes marquee-under {
   0% {
-    transform: translateX(0%);
-    opacity: 1;
+    transform: translateX(120%);   /* 从完全在右侧外面开始 */
   }
   100% {
-    transform: translateX(100%);
-    opacity: 1;
+    transform: translateX(-120%);  /* 完全滑出左侧 */
   }
 }
 
 .animate-marquee-under {
-  animation: marquee-under 4s linear infinite;
+  animation: marquee-under 8s linear infinite;
 }
 
