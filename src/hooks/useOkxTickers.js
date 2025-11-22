@@ -13,17 +13,18 @@ export function useOkxTickers(symbols = [], onUpdate = null) {
     ws.onopen = () => {
       console.log("OKX 多币 WS 已连接");
 
-      const subs = symbols.map((s) => ({
-        channel: "tickers",
-        instId: s,
-      }));
+      const subs = [
+        ...symbols.map((s) => ({
+          channel: "tickers",
+          instId: s,
+        })),
+        ...symbols.map((s) => ({
+          channel: "candle24h",
+          instId: s,
+        })),
+      ];
 
-      ws.send(
-        JSON.stringify({
-          op: "subscribe",
-          args: subs,
-        })
-      );
+      ws.send(JSON.stringify({ op: "subscribe", args: subs }));
     };
 
     ws.onmessage = (event) => {
@@ -36,24 +37,47 @@ export function useOkxTickers(symbols = [], onUpdate = null) {
 
       if (!msg.data || !msg.data[0]) return;
 
-      const d = msg.data[0];
-      const inst = d.instId; 
-      const sym = inst.replace("-USDT", "");
+      const inst = msg.arg?.instId;
+      if (!inst) return;
 
-      const last = Number(d.last || 0);
-      const open = Number(d.open24h || 0);
-      const change = open ? ((last - open) / open) * 100 : 0;
+      // ============= Tick 数据 =============
+      if (msg.arg.channel === "tickers") {
+        const d = msg.data[0];
+        const last = Number(d.last || 0);
+        const open = Number(d.open24h || 0);
+        const change = open ? ((last - open) / open) * 100 : 0;
 
-      setTickers((prev) => ({
-        ...prev,
-        [inst]: {
-          symbol: sym,
-          price: last,
-          change: Number(change.toFixed(2)), // ⭐ 修复为数字
-        },
-      }));
+        setTickers((prev) => ({
+          ...prev,
+          [inst]: {
+            ...(prev[inst] || {}),
+            price: last,
+            change: Number(change.toFixed(2)),
+          },
+        }));
+      }
 
-      if (onUpdate) onUpdate(); // ⭐ 强制刷新 UI
+      // ============= K 线数据 =============
+      if (msg.arg.channel === "candle24h") {
+        const k = msg.data[0]; // 数组
+        const open = Number(k[1]);
+        const high = Number(k[2]);
+        const low = Number(k[3]);
+        const close = Number(k[4]);
+        const vol = Number(k[5]);
+
+        setTickers((prev) => ({
+          ...prev,
+          [inst]: {
+            ...(prev[inst] || {}),
+            high,
+            low,
+            amount24h: vol,
+          },
+        }));
+      }
+
+      if (onUpdate) onUpdate();
     };
 
     ws.onerror = (err) => console.log("WS 错误:", err);

@@ -548,7 +548,7 @@ const Trade = () => {
       {/* 顶部 */}
       <div
         style={{
-          padding: "12px 16px",
+          padding: "6px 12px",
           borderBottom: "1px solid #eee",
           display: "flex",
           alignItems: "center",
@@ -587,7 +587,10 @@ const Trade = () => {
             ☰
           </button>
 
-          <span>{currentSymbol}</span>
+ <span style={{ color: "#555", fontWeight: 600 }}>
+  {currentSymbol.replace("USDT", "/USDT")}
+</span>
+
 
           {showMenu && (
             <div
