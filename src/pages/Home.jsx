@@ -100,7 +100,7 @@ const GlobeIcon = () => (
 const Home = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [marqueeKey, setMarqueeKey] = useState(0);
+  
 
   // 币种订阅
   const SYMBOLS = [
@@ -215,13 +215,7 @@ const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
     return () => clearInterval(t);
   }, []);
 
-  // marquee 滚动
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setMarqueeKey(k => k + 1);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, []);
+
 
   // 未读通知
   const [unread, setUnread] = useState(0);
