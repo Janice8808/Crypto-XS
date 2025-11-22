@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { coinIcons } from "../assets/coinIcons";
 import { useOkxTickers } from "@/hooks/useOkxTickers";
 
-// 一次性订阅 24 个币
+// 订阅 24 个币种
 const SYMBOLS = [
   "BTC-USDT","ETH-USDT","BNB-USDT","SOL-USDT","XRP-USDT",
   "DOGE-USDT","ADA-USDT","TRX-USDT","AVAX-USDT","DOT-USDT",
@@ -12,26 +12,24 @@ const SYMBOLS = [
   "SAND-USDT","MANA-USDT","ARB-USDT","OP-USDT","SUI-USDT"
 ];
 
-const Market = () => {
-  // ⭐ WebSocket 实时行情（每条 ticker 自动更新）
+export default function Market() {
   const tickers = useOkxTickers(SYMBOLS);
-
-  const list = Object.values(tickers); // 转成数组
+  const list = Object.values(tickers); 
 
   return (
-    <div className="w-full min-h-screen text-black px-2 py-4 bg-white">
-      
-      {/* 页面标题 */}
-      <h1 className="text-3xl font-bold mb-4">Market</h1>
+    <div className="w-full min-h-screen text-black px-3 py-4 bg-white">
 
-      {/* 表头 */}
-      <div className="flex items-center px-1 py-1 font-semibold text-gray-700">
-        <span className="w-1/3 text-gray-500">Symbol</span>
-        <span className="w-1/3 text-right text-gray-500">Latest Price</span>
-        <span className="w-1/3 text-right text-gray-500">24h</span>
+      {/* 标题 */}
+      <h1 className="text-2xl font-bold mb-4">Market</h1>
+
+      {/* 列表表头 */}
+      <div className="flex items-center px-1 py-2 font-semibold text-gray-600 border-b">
+        <span className="w-1/3">Symbol</span>
+        <span className="w-1/3 text-right">Latest Price</span>
+        <span className="w-1/3 text-right">24h</span>
       </div>
 
-      {/* 行情列表 */}
+      {/* 币种列表 */}
       {list.map((coin) => {
         const isUp = coin.change >= 0;
 
@@ -39,10 +37,10 @@ const Market = () => {
           <Link
             key={coin.symbol}
             to={`/coin/${coin.symbol}USDT`}
-            className="flex items-center px-1 py-2 hover:bg-gray-100 transition"
+            className="flex items-center px-1 py-3 hover:bg-gray-100 border-b transition"
           >
-            {/* Symbol */}
-            <span className="w-1/3 flex items-center text-gray-600 font-medium">
+            {/* 图标 + 币种名称 */}
+            <span className="w-1/3 flex items-center text-gray-700 font-medium">
               <img
                 src={coinIcons[coin.symbol] || "/images/default.png"}
                 alt={coin.symbol}
@@ -52,23 +50,26 @@ const Market = () => {
                   e.target.src = "/images/default-coin.png";
                 }}
               />
-              {coin.symbol}
+
+              {/* BTC/USDT 格式 */}
+              {coin.symbol}/USDT
             </span>
 
-            {/* Latest Price */}
+            {/* 最新价 */}
             <span
-              className={`w-1/3 text-center ${isUp ? "text-green-500" : "text-red-500"} relative`}
-              style={{ left: "24px" }}
+              className={`w-1/3 text-right text-base font-semibold ${
+                isUp ? "text-green-500" : "text-red-500"
+              }`}
             >
               ${coin.price}
             </span>
 
-            {/* 24h 涨跌幅 */}
+            {/* 涨跌幅 */}
             <span className="w-1/3 flex justify-end">
               <span
-                className={`text-white font-semibold px-1 py-0.5 text-sm ${
+                className={`text-white px-2 py-1 text-sm rounded ${
                   isUp ? "bg-green-500" : "bg-red-500"
-                } rounded-sm`}
+                }`}
               >
                 {isUp ? "+" : ""}
                 {coin.change}%
@@ -79,6 +80,4 @@ const Market = () => {
       })}
     </div>
   );
-};
-
-export default Market;
+}
