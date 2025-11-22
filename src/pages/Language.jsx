@@ -47,11 +47,14 @@ export default function Language() {
   return (
     <div className="w-full h-screen bg-[#101018] text-white">
       <div className="px-4 py-3 bg-[#0F0F12] flex items-center">
-        <button onClick={() => navigate(-1)} className="p-2">
-          <svg width="22" height="22" viewBox="0 0 24 24" stroke="white">
-            <polyline points="15 18 9 12 15 6" fill="none" strokeWidth="2" />
-          </svg>
-        </button>
+        <button
+  onClick={() => navigate(-1)}
+  className="p-0 bg-transparent border-none outline-none"
+>
+  <svg width="22" height="22" viewBox="0 0 24 24" stroke="white">
+    <polyline points="15 18 9 12 15 6" fill="none" strokeWidth="2" />
+  </svg>
+</button>
         <span className="flex-1 text-center text-base">Language</span>
         <span className="w-[22px]"></span>
       </div>
