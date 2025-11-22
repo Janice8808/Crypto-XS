@@ -75,10 +75,14 @@ button:focus-visible {
 
 @keyframes marquee-RTL {
   0% {
-    transform: translateY(-50%) translateX(300%);
+    transform: translateX(300%) translateY(-50%);
   }
   100% {
-    transform: translateY(-50%) translateX(-300%);
+    transform: translateX(-300%) translateY(-50%);
   }
+}
+
+.animate-marquee-RTL {
+  animation: marquee-RTL 10s linear infinite;
 }
 
