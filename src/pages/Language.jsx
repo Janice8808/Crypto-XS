@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import i18n from "../i18n";
 
 export default function Language() {
   const navigate = useNavigate();
-  const [selected, setSelected] = useState("English");
-  const [languages, setLanguages] = useState([
+
+  const languages = [
     "English",
     "Français",
     "Deutsch",
@@ -12,72 +13,57 @@ export default function Language() {
     "한국어",
     "日本語",
     "中文繁体",
+    "中文简体",
     "ภาษาไทย",
     "Tiếng Việt",
     "español",
     "Türkçe",
-  ]);
+  ];
 
-  // 从后端加载当前语言设置
-  useEffect(() => {
-    fetch("https://pankouhoutai.shop/api/userinfo", {
-  headers: { 
-    Authorization: "Bearer " + localStorage.getItem("token")
-  }
-})
-      .catch((err) => console.error("加载语言失败:", err));
-  }, []);
+  const current = i18n.language;
 
-  // 提交选中的语言
   const handleSelect = async (lang) => {
-    setSelected(lang);
-    try {
-const res = await fetch("https://pankouhoutai.shop/api/language", {
-  method: "POST",
-  headers: { 
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + localStorage.getItem("token")
-  },
-  body: JSON.stringify({ language: lang })
-});
+    // 1. 修改本地语言
+    i18n.changeLanguage(lang);
+    localStorage.setItem("language", lang);
 
-      const data = await res.json();
-      if (res.ok) {
-        alert(`Language set to ${lang}`);
-        navigate(-1);
-      } else {
-        alert(data.error || "Failed to set language");
-      }
-    } catch (err) {
-      console.error("语言设置失败:", err);
-      alert("Network error, please try again later");
+    // 2. 调用后台接口保存用户语言
+    const token = localStorage.getItem("token");
+    if (token) {
+      await fetch("/api/language", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({ language: lang }),
+      });
     }
+
+    // 3. 返回上一页
+    navigate(-1);
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* 顶部 */}
-      <div className="flex items-center p-4 border-b">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-gray-600 text-xl mr-3"
-        >
-          ←
+    <div className="w-full h-screen bg-[#101018] text-white">
+      <div className="px-4 py-3 bg-[#0F0F12] flex items-center">
+        <button onClick={() => navigate(-1)} className="p-2">
+          <svg width="22" height="22" viewBox="0 0 24 24" stroke="white">
+            <polyline points="15 18 9 12 15 6" fill="none" strokeWidth="2" />
+          </svg>
         </button>
-        <h1 className="text-lg font-semibold text-gray-800">Language selection</h1>
+        <span className="flex-1 text-center text-base">Language</span>
+        <span className="w-[22px]"></span>
       </div>
 
-      {/* 语言列表 */}
-      <div className="p-5">
+      <div className="mt-3">
         {languages.map((lang) => (
           <div
             key={lang}
-            onClick={() => handleSelect(lang)}
-            className={`py-3 border-b text-base cursor-pointer transition ${
-              selected === lang
-                ? "text-yellow-500 font-medium"
-                : "text-gray-600 hover:text-yellow-500"
+            className={`px-4 py-3 border-b border-gray-700 ${
+              lang === current ? "text-yellow-400" : "text-white"
             }`}
+            onClick={() => handleSelect(lang)}
           >
             {lang}
           </div>
