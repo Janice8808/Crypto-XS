@@ -75,10 +75,10 @@ button:focus-visible {
 
 @keyframes marquee-left-to-right {
   0% {
-    transform: translateX(-100%); /* 从左屏幕外完全开始 */
+    transform: translateX(-100%); 
   }
   100% {
-    transform: translateX(100%);  /* 滑到右屏幕外完全消失 */
+    transform: translateX(100%);
   }
 }
 
