@@ -52,7 +52,7 @@ export default function Deposit1() {
           {rechargeCoins.map((coin) => (
             <div
               key={coin.name}
-              onClick={() => navigate(`/deposit/${coin.name}`)}
+              onClick={() => navigate(`/wallet/${coin.name}/deposit`)}
               className="flex items-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer transition"
             >
               <img src={coin.icon} alt={coin.name} className="w-6 h-6 mr-2" />
