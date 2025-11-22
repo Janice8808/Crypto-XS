@@ -1,61 +1,93 @@
 import { useEffect, useRef, useState } from "react";
 
-export function useOkxTickers() {
+export function useOkxTickers(symbols = [], onUpdate = null) {
   const [tickers, setTickers] = useState({});
   const wsRef = useRef(null);
 
   useEffect(() => {
+    if (!symbols.length) return;
+
     const ws = new WebSocket("wss://ws.okx.com:8443/ws/v5/public");
     wsRef.current = ws;
 
     ws.onopen = () => {
-      console.log("OKX 全量行情 WebSocket 已连接");
+      console.log("OKX 多币 WS 已连接");
 
-      ws.send(
-        JSON.stringify({
-          op: "subscribe",
-          args: [
-            {
-              channel: "tickers",
-              instType: "SPOT"  // ⭐ 一次性订阅全部现货
-            }
-          ]
-        })
-      );
+      const subs = [
+        ...symbols.map((s) => ({
+          channel: "tickers",
+          instId: s,
+        })),
+        ...symbols.map((s) => ({
+          channel: "candle24h",
+          instId: s,
+        })),
+      ];
+
+      ws.send(JSON.stringify({ op: "subscribe", args: subs }));
     };
 
     ws.onmessage = (event) => {
-      const msg = JSON.parse(event.data);
-      if (!msg.data || !Array.isArray(msg.data)) return;
+      let msg;
+      try {
+        msg = JSON.parse(event.data);
+      } catch {
+        return;
+      }
 
-      const update = {};
-      msg.data.forEach((d) => {
-        const base = d.instId.replace("-USDT", "");
-        const last = Number(d.last);
-        const open = Number(d.open24h);
+      if (!msg.data || !msg.data[0]) return;
+
+      const inst = msg.arg?.instId;
+      if (!inst) return;
+
+      const symbol = inst.split("-")[0].toUpperCase(); // ⭐ 修复关键！
+
+      // ============= Tick 数据 =============
+      if (msg.arg.channel === "tickers") {
+        const d = msg.data[0];
+        const last = Number(d.last || 0);
+        const open = Number(d.open24h || 0);
         const change = open ? ((last - open) / open) * 100 : 0;
 
-        update[base] = {
-          symbol: base,
-          price: last,
-          change: Number(change.toFixed(2)),
+        setTickers((prev) => ({
+          ...prev,
+          [symbol]: {
+            ...(prev[symbol] || {}),
+            symbol,        // ⭐ 写入 symbol
+            price: last,
+            change: Number(change.toFixed(2)),
+          },
+        }));
+      }
 
-          // 额外字段（如果你需要高/低/24h量）
-          high: Number(d.high24h),
-          low: Number(d.low24h),
-          amount24h: Number(d.volCcy24h), 
-        };
-      });
+      // ============= K 线数据 =============
+      if (msg.arg.channel === "candle24h") {
+        const k = msg.data[0];
 
-      // ⭐ 一次性更新所有币
-      setTickers(update);
+        const high = Number(k[2]);
+        const low = Number(k[3]);
+        const vol = Number(k[5]);
+
+        setTickers((prev) => ({
+          ...prev,
+          [symbol]: {
+            ...(prev[symbol] || {}),
+            symbol,        // ⭐ 写入 symbol
+            high,
+            low,
+            amount24h: vol,
+          },
+        }));
+      }
+
+      if (onUpdate) onUpdate();
     };
 
-    ws.onerror = () => console.log("OKX WS 错误");
+    ws.onerror = (err) => console.log("WS 错误:", err);
     ws.onclose = () => console.log("OKX WS 断开");
 
     return () => ws.close();
-  }, []);
+  }, [symbols]);
 
   return tickers;
 }
