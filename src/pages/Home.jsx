@@ -165,7 +165,12 @@ const mergedTickers = {
   ...wsTickers, // WebSocket 永远优先
 };
 
-const list = Object.values(mergedTickers);
+const list = SYMBOLS.map((s) => {
+  const base = s.replace("-USDT", "");
+  return mergedTickers[base];
+}).filter(Boolean);
+
+
 
 // 顶部 3 个币
 const btc = mergedTickers["BTC"] || { price: "--", change: 0 };
