@@ -355,7 +355,7 @@ const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
   className="absolute whitespace-nowrap text-white text-base animate-marquee-RTL"
   style={{
     top: "50%",
-    transform: "translate(-50%, -50%)", 
+    transform: "translateY(-50%)", 
     pointerEvents: "none",
   }}
 >
