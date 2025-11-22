@@ -355,31 +355,34 @@ const t = tickers[symbol] || {};
         </div>
 
         {/* 热门 Top3 当前价格 */}
-        <div className="grid grid-cols-3 gap-4">
-          {top3.map((coin) => {
-            const up = coin.change >= 0;
+<div className="grid grid-cols-3 gap-4">
+  {top3.map((coin) => {
+    const up = coin.change >= 0;
 
-            return (
-              <Link
-                key={coin.symbol + refresh}
-                to={`/coin/${coin.base}-USDT`}
-                className="text-center py-2"
-              >
-                <div className="text-gray-600 text-sm">{coin.symbol}</div>
+    return (
+      <Link
+        key={coin.symbol + refresh}
+        to={`/coin/${coin.base}-USDT`}
+        className="text-center py-2"
+      >
+        {/* 名称更小 */}
+        <div className="text-gray-500 text-xs">{coin.symbol}</div>
 
-<div className="font-bold text-gray-600">
-  ${Number(coin.price).toFixed(1)}
-</div>
-
-<div className="text-gray-500">
-  {up ? "+" : ""}
-  {coin.change}%
-</div>
-
-              </Link>
-            );
-          })}
+        {/* 价格稍微大一点，主视觉 */}
+        <div className="font-bold text-gray-600 text-sm">
+          ${Number(coin.price).toFixed(1)}
         </div>
+
+        {/* 涨幅也偏小一点 */}
+        <div className="text-gray-500 text-xs">
+          {up ? "+" : ""}
+          {coin.change}%
+        </div>
+      </Link>
+    );
+  })}
+</div>
+
       </div>
 
       {/* 实时行情 Popular list */}
@@ -394,45 +397,48 @@ const t = tickers[symbol] || {};
           <span className="w-1/3 text-right">{t("24h")}</span>
         </div>
 
-        {stableList.map((coin) => {
-          const up = coin.change >= 0;
+{stableList.map((coin) => {
+  const up = coin.change >= 0;
 
-          return (
-            <Link
-              key={coin.symbol + refresh}
-              to={`/coin/${coin.symbol}-USDT`}
-              className="flex items-center px-2 py-2 hover:bg-gray-100 transition"
-            >
-              <div className="w-1/3 flex items-center">
-                <img
-                  src={coinIcons[coin.symbol] || "/images/default.png"}
-                  className="w-6 h-6 rounded-full mr-2"
-                />
-                <span className="text-gray-600">{coin.symbol}</span>
-              </div>
+  return (
+    <Link
+      key={coin.symbol + refresh}
+      to={`/coin/${coin.symbol}-USDT`}
+      className="flex items-center px-2 py-3 hover:bg-gray-100 transition"
+    >
+      {/* 左：图标 + 名称 */}
+      <div className="w-1/3 flex items-center">
+        <img
+          src={coinIcons[coin.symbol] || "/images/default.png"}
+          className="w-6 h-6 rounded-full mr-2"
+        />
+        <span className="text-gray-600 text-sm">{coin.symbol}</span>
+      </div>
 
-              <div className="w-1/3 text-center text-gray-600">
-                ${Number(coin.price).toFixed(1)}
-              </div>
+      {/* 中：价格 */}
+      <div className="w-1/3 text-center text-gray-600 text-sm">
+        ${Number(coin.price).toFixed(1)}
+      </div>
 
-              <div className="w-1/3 text-right">
-<span
-  className="rounded text-white font-semibold flex items-center justify-center"
-  style={{
-    width: "60px",   // ⭐ 固定宽
-    height: "30px",  // ⭐ 固定高（3:1.5 比例）
-    backgroundColor: up ? "#22c55e" : "#ef4444",
-    fontSize: "12px",
-  }}
->
-  {up ? "+" : ""}
-  {coin.change}%
-</span>
+      {/* 右：涨幅框，贴最右侧，固定宽高 3:1.5 */}
+      <div className="w-1/3 flex justify-end items-center">
+        <span
+          className="rounded text-white font-semibold flex items-center justify-center"
+          style={{
+            width: "60px",   // 宽
+            height: "30px",  // 高 = 60 * 1.5 / 3
+            backgroundColor: up ? "#22c55e" : "#ef4444",
+            fontSize: "12px",
+          }}
+        >
+          {up ? "+" : ""}
+          {coin.change}%
+        </span>
+      </div>
+    </Link>
+  );
+})}
 
-              </div>
-            </Link>
-          );
-        })}
       </div>
     </div>
   );
