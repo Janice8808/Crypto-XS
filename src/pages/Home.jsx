@@ -294,7 +294,7 @@ const t = tickers[symbol] || {};
       {/* 滚动公告 */}
       <div className="
         relative overflow-hidden 
-        h-20 px-3 -mt-1 flex items-center
+        h-20 px-3 flex items-center
         bg-gradient-to-b
         from-[#1E1E22]
         via-[#3C3C42]
@@ -304,22 +304,18 @@ const t = tickers[symbol] || {};
         <div className="text-yellow-400 text-lg mr-2 z-20 relative top-1">🔊</div>
 
         <div className="relative flex-1 overflow-hidden min-h-[24px]">
-          <div
-            key={marqueeKey}
-            className="
-              absolute left-0 
-              top-[20%] -translate-y-1/2
-              whitespace-nowrap 
-              text-white text-base
-              animate-marquee-under z-50
-            "
-          >
+<div
+  key={marqueeKey}
+  className="absolute left-0 top-[20%] -translate-y-1/2 whitespace-nowrap text-white text-base animate-marquee-under z-50"
+  style={{ pointerEvents: "none" }}
+>
+
             {t("Welcome")} Crypto.com
           </div>
         </div>
       </div>
       {/* 功能区 */}
-      <div className="-mt-6 bg-white mx-2 rounded-xl p-4 shadow relative z-5">
+      <div className="mt-2 bg-white mx-2 rounded-xl p-4 shadow relative z-20">
 
         <div className="grid grid-cols-4 gap-4 mb-5">
           {features.map((item) => (
