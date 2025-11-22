@@ -335,19 +335,18 @@ const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
         ))}
       </div>
 
-      {/* 滚动公告 */}
-      <div className="
-        relative overflow-hidden 
-        h-12 px-3 flex items-center
-        bg-gradient-to-b
-        from-[#1E1E22]
-        via-[#3C3C42]
-        via-[#7A7A82]
-        to-[#E8E8EC]
-      ">
-<div className="relative overflow-hidden h-12 px-3 flex items-center bg-gradient-to-b
-  from-[#1E1E22] via-[#3C3C42] via-[#7A7A82] to-[#E8E8EC]">
-
+{/* 滚动公告 */}
+<div
+  className="
+    relative overflow-hidden 
+    h-12 px-3 flex items-center
+    bg-gradient-to-b
+    from-[#1E1E22]
+    via-[#3C3C42]
+    via-[#7A7A82]
+    to-[#E8E8EC]
+  "
+>
   <div className="text-yellow-400 text-lg mr-2">🔊</div>
 
   <div className="relative flex-1 overflow-hidden">
@@ -357,17 +356,15 @@ const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
       style={{
         position: "absolute",
         top: "50%",
-        transform: "translateY(-50%)",   // 确保文字不会掉下去
-        pointerEvents: "none"
+        transform: "translateY(-50%)",
+        pointerEvents: "none",
       }}
     >
       {t("Welcome")} Crypto.com
     </div>
   </div>
-
 </div>
-        </div>
-      </div>
+
       {/* 功能区 */}
       <div className="mt-2 bg-white mx-2 rounded-xl p-4 shadow relative z-20">
 
