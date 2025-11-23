@@ -135,76 +135,87 @@ const SideDrawer = ({ show, onClose, list, currentSymbol, onSelect }) => {
           Markets
         </div>
 
-        {/* 表头 */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            padding: "8px 16px",
-            color: "#666",
-            fontWeight: "600",
-            fontSize: "13px",
-            borderBottom: "1px solid #eee",
-          }}
-        >
-          <span>Symbol</span>
-          <span>Price</span>
+{/* 表头 */}
+<div
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    padding: "8px 16px",
+    color: "#7d7d7d",           // 灰色
+    fontWeight: "600",
+    fontSize: "13px",
+    borderBottom: "1px solid #eee",
+  }}
+>
+  <span>Symbol</span>
+  <span>Latest price</span>     {/* ⭐ 改这里 */}
+</div>
+
+{/* 币种列表 */}
+<div>
+  {list.map((item) => {
+    const isUp = item.changePercent >= 0;
+    const icon = `/coin-icons/${item.symbol}.png`;
+
+    return (
+      <div
+        key={item.fullSymbol}
+        onClick={() => {
+          onSelect(item.fullSymbol.replace("-", ""));
+          onClose();
+        }}
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "14px 16px",
+          cursor: "pointer",
+          borderBottom: "1px solid #f5f5f5",
+          alignItems: "center",
+        }}
+      >
+        {/* 左侧 icon + symbol */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <img
+            src={icon}
+            style={{ width: 26, height: 26, borderRadius: "50%" }}
+          />
+          <span
+            style={{
+              fontWeight: 600,
+              color: "#6e6e6e",        // ⭐ 字体灰色
+            }}
+          >
+            {item.symbol}
+          </span>
         </div>
 
-        {/* 币种列表 */}
-        <div>
-          {list.map((item) => {
-            const isUp = item.changePercent >= 0;
-            const icon = `/coin-icons/${item.symbol}.png`;
-            return (
-              <div
-                key={item.fullSymbol}
-                onClick={() => {
-                  onSelect(item.fullSymbol.replace("-", ""));
-                  onClose();
-                }}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  padding: "14px 16px",
-                  cursor: "pointer",
-                  borderBottom: "1px solid #f5f5f5",
-                  alignItems: "center",
-                }}
-              >
-                {/* 左侧 icon + symbol */}
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <img
-                    src={icon}
-                    style={{ width: 26, height: 26, borderRadius: "50%" }}
-                  />
-                  <span style={{ fontWeight: 600 }}>{item.symbol}</span>
-                </div>
+        {/* 右侧价格 */}
+        <div style={{ textAlign: "right", marginRight: "12px" }}>  {/* ⭐ 向左一点 */}
+          <div
+            style={{
+              color: isUp ? "#2ecc71" : "#e74c3c",
+              fontWeight: 600,
+              fontSize: 15,
+            }}
+          >
+            {item.price}
+          </div>
 
-                {/* 右侧 价格 + 涨跌 */}
-                <div style={{ textAlign: "right" }}>
-                  <div
-                    style={{
-                      color: isUp ? "#2ecc71" : "#e74c3c",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {item.price}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 12,
-                      color: isUp ? "#2ecc71" : "#e74c3c",
-                    }}
-                  >
-                    {isUp ? "+" : ""}
-                    {item.changePercent}%
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          <div
+            style={{
+              fontSize: 12,
+              color: isUp ? "#2ecc71" : "#e74c3c",
+            }}
+          >
+            {isUp ? "+" : ""}
+            {item.changePercent}%
+          </div>
         </div>
+      </div>
+    );
+  })}
+</div>
+
       </div>
     </>
   );
@@ -213,21 +224,22 @@ const SideDrawer = ({ show, onClose, list, currentSymbol, onSelect }) => {
 
 /* ===================== 遮罩弹层 ===================== */
 const BottomModal = ({ children, onClose }) => (
-  <div
-    onClick={onClose}
-    style={{
-      position: "fixed",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      backgroundColor: "rgba(0,0,0,0.3)",
-      display: "flex",
-      justifyContent: "flex-end",
-      flexDirection: "column",
-      zIndex: 9999,
-    }}
-  >
+<div
+  style={{
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: show ? "75%" : "0",
+    height: "100%",
+    backgroundColor: "#fff",
+    boxShadow: show ? "2px 0 10px rgba(0,0,0,0.2)" : "none",
+    zIndex: 9999,
+    transition: "width 0.3s ease",
+    overflowY: "auto",       // ⭐ 允许垂直滑动
+    overflowX: "hidden",
+  }}
+>
+  
     <div
       onClick={(e) => e.stopPropagation()}
       style={{
