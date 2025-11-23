@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 
 // ⭐ 你的后端行情 WebSocket 地址（不要改）
-const WS_URL = `wss://pankouhoutai.shop/ticker?symbol=${currentSymbol}`;
+const WS_URL = "wss://pankouhoutai.shop/ticker?symbol=BTCUSDT";
 
 const CryptoMarket = () => {
   const [price, setPrice] = useState(null);
