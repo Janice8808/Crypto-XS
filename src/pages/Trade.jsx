@@ -121,9 +121,27 @@ const SideDrawer = ({ show, onClose, list, currentSymbol, onSelect }) => {
       </div>
 
       {/* 币种列表 */}
-      <div style={{ padding: "10px" }}>
+      <div style={{ padding: "14px 0" }}>
+
+        {/* 表头 */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            padding: "10px 16px",
+            fontWeight: "600",
+            fontSize: "14px",
+            color: "#555",
+            borderBottom: "1px solid #eee",
+          }}
+        >
+          <span>Symbol</span>
+          <span>Latest price</span>
+        </div>
+
         {list.map((item) => {
           const isUp = item.changePercent >= 0;
+
           return (
             <div
               key={item.symbol}
@@ -134,18 +152,35 @@ const SideDrawer = ({ show, onClose, list, currentSymbol, onSelect }) => {
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                padding: "12px 6px",
+                padding: "14px 16px",
                 cursor: "pointer",
-                borderBottom: "1px solid #eee",
+                borderBottom: "1px solid #f3f3f3",
+                alignItems: "center",
               }}
             >
-              <div style={{ fontWeight: "bold" }}>{item.symbol}</div>
+              {/* 左侧图标 + 名称 */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                }}
+              >
+                <img
+                  src={`/images/${item.symbol.toLowerCase()}.png`}
+                  style={{ width: 26, height: 26, borderRadius: "50%" }}
+                  alt={item.symbol}
+                />
+                <span style={{ fontWeight: 600 }}>{item.symbol}</span>
+              </div>
 
+              {/* 右侧价格 + 涨跌 */}
               <div style={{ textAlign: "right" }}>
                 <div
                   style={{
                     color: isUp ? "#2ecc71" : "#e74c3c",
                     fontWeight: 600,
+                    fontSize: 15,
                   }}
                 >
                   {item.price}
