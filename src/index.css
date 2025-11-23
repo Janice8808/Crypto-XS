@@ -129,3 +129,18 @@ select:focus {
   outline: none !important;
   box-shadow: none !important;
 }
+/* ==== 全局强制所有页面顶部的返回按钮区域为白色 ==== */
+
+button svg {
+  stroke: #444 !important;
+}
+
+/* 针对返回箭头的容器（所有常用写法） */
+div[class*="p-4"]:has(button) {
+  background-color: #ffffff !important;
+}
+
+/* 如果钱包浏览器创建额外容器，也一起覆盖 */
+header, nav {
+  background-color: #ffffff !important;
+}
