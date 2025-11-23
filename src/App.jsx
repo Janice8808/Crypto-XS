@@ -11,7 +11,7 @@ import Market from "./pages/Market";
 import CoinDetail from "./pages/CoinDetail";
 import Trade from "./pages/Trade";
 import Wallet from "./pages/Wallet";
-
+import ScrollToTop from "./ScrollToTop";
 import AssetDetail from "./pages/AssetDetail";
 import Deposit from "./pages/Deposit";
 import Withdraw from "./pages/Withdraw";
@@ -87,6 +87,7 @@ function App() {
 
       {/* ⭐ 主路由 */}
       <Router>
+        <ScrollToTop /> 
         <Routes>
           <Route path="/loginwallet" element={<LoginWallet />} />
 
