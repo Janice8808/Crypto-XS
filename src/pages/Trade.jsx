@@ -4,79 +4,9 @@ import { useUserBalances } from "@/hooks/useUserBalances";
 import { createOrder } from "@/api/order";
 import { useTicker } from "@/hooks/useTicker";
 import { useTranslation } from "react-i18next";
+import KLineWidget from "../components/KLineWidget";
 
-/* ===================== TradingView 图表 ===================== */
-const TradingViewWidget = ({ symbol, onPrice }) => {
-  const containerRef = useRef(null);
-  const tvWidgetRef = useRef(null);
-  const widgetId = useRef(`tv_${symbol}_${Date.now()}`);
 
-  useEffect(() => {
-    let mounted = true;
-
-    const loadTV = () =>
-      new Promise((resolve) => {
-        if (window.TradingView?.widget) return resolve();
-
-        if (document.getElementById("tv_script")) {
-          const wait = () =>
-            window.TradingView?.widget ? resolve() : setTimeout(wait, 50);
-          return wait();
-        }
-
-        const script = document.createElement("script");
-        script.id = "tv_script";
-        script.src = "https://s3.tradingview.com/tv.js";
-        script.onload = resolve;
-        document.body.appendChild(script);
-      });
-
-    const init = async () => {
-      await loadTV();
-      if (!mounted || !containerRef.current) return;
-
-      tvWidgetRef.current = new window.TradingView.widget({
-        container_id: widgetId.current,
-        symbol: `BINANCE:${symbol}`,
-        interval: "1",
-        timezone: "Etc/UTC",
-        style: "1",
-        locale: "en",
-        theme: "light",
-        hide_toolbar: false,
-        autosize: true,
-      });
-
-      tvWidgetRef.current.onChartReady(() => {
-        const chart = tvWidgetRef.current.chart();
-        chart.onRealtimeTick((d) => {
-          if (d?.close && onPrice) onPrice(+d.close);
-        });
-      });
-    };
-
-    init();
-
-    return () => {
-      mounted = false;
-      if (tvWidgetRef.current?.remove) {
-        try {
-          tvWidgetRef.current.remove();
-        } catch {}
-      }
-      tvWidgetRef.current = null;
-    };
-  }, [symbol]);
-
-  return (
-    <div ref={containerRef} style={{ width: "100%", height: "100%" }}>
-      <div
-        id={widgetId.current}
-        style={{ width: "100%", height: "100%" }}
-      ></div>
-    </div>
-  );
-};
 
 /* ===================== 遮罩弹层 ===================== */
 const BottomModal = ({ children, onClose }) => (
