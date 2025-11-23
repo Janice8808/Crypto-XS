@@ -86,7 +86,7 @@ button:focus-visible {
   animation: marquee-RTL 10s linear infinite;
 }
 
-/* ====== 只对 Deposit1 页面生效的无高亮区域 ====== */
+/* ===== 仅影响 Deposit1 页面的彻底无高亮模式 ===== */
 
 .no-tap * {
   -webkit-tap-highlight-color: transparent !important;
@@ -95,13 +95,19 @@ button:focus-visible {
   user-select: none !important;
 }
 
+/* 移除 active 变灰 or 变亮 */
 .no-tap *:active {
-  background-color: transparent !important;
+  background-color: inherit !important;
+  box-shadow: none !important;
+}
+
+/* 移除 focus 阴影 */
+.no-tap *:focus {
   outline: none !important;
   box-shadow: none !important;
 }
 
-.no-tap *:focus {
-  outline: none !important;
-  box-shadow: none !important;
+/* 移除 hover 背景变亮（重点） */
+.no-tap .hover\:bg-gray-200:hover {
+  background-color: inherit !important;
 }
