@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./i18n";
 
+import Splash from "./Splash";    // ⭐ 新增：启动页
+
 import AdminSimple from "./pages/AdminSimple";
 import Layout from "./Layout";
 import AuthGate from "./AuthGate";
@@ -35,7 +37,7 @@ import AdminPanel from "./pages/AdminPanel";
 
 function App() {
 
-  // ⭐ 自动更新用户最后访问时间（last_seen）
+  // ⭐ 自动更新用户 last_seen
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -50,18 +52,19 @@ function App() {
     }).catch(() => {});
   }, []);
 
-  // ⭐ 电脑端弹出“下载钱包二维码”
+  // ⭐ 电脑端弹出 "下载钱包二维码"
   const [showWalletQr, setShowWalletQr] = useState(false);
 
   useEffect(() => {
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (!isMobile) {
-      setShowWalletQr(true); // 电脑才显示
+      setShowWalletQr(true);
     }
   }, []);
 
   return (
-    <>
+    <Splash>   {/* ⭐ 整个 APP 包个启动页 */}
+
       {/* ⭐ 电脑端二维码弹窗 */}
       {showWalletQr && (
         <div className="fixed inset-0 bg-[#16171a]/90 z-50 flex items-center justify-center px-4">
@@ -87,7 +90,7 @@ function App() {
 
       {/* ⭐ 主路由 */}
       <Router>
-        <ScrollToTop /> 
+        <ScrollToTop />
         <Routes>
           <Route path="/loginwallet" element={<LoginWallet />} />
 
@@ -155,8 +158,8 @@ function App() {
 
           <Route path="/defi" element={<AuthGate><Pledge /></AuthGate>} />
           <Route path="/defi-record" element={<AuthGate><DeFiRecord /></AuthGate>} />
-          <Route  path="/pledge-detail/:symbol" element={<AuthGate><PledgeDetail /></AuthGate>}
-/>
+          <Route  path="/pledge-detail/:symbol" element={<AuthGate><PledgeDetail /></AuthGate>} />
+
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/admin2" element={<AdminSimple />} />
 
@@ -164,7 +167,8 @@ function App() {
           <Route path="*" element={<Home />} />
         </Routes>
       </Router>
-    </>
+
+    </Splash>
   );
 }
 
