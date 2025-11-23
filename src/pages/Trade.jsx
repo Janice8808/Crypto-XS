@@ -703,7 +703,7 @@ const Trade = () => {
       </div>
 
       <div style={{ flex: 1 }}>
-        <TradingViewWidget symbol={currentSymbol} onPrice={setTvPrice} />
+        <KLineWidget symbol={currentSymbol} interval="15" />
       </div>
 
       {/* 底部按钮 */}
