@@ -79,128 +79,134 @@ const TradingViewWidget = ({ symbol, onPrice }) => {
   );
 };
 
-/* ===================== 右侧滑出菜单 ===================== */
+/* ===================== 左侧滑出菜单 ===================== */
 const SideDrawer = ({ show, onClose, list, currentSymbol, onSelect }) => {
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        right: 0,
-        width: show ? "75%" : "0",
-        height: "100%",
-        backgroundColor: "#fff",
-        boxShadow: show ? "-2px 0 10px rgba(0,0,0,0.25)" : "none",
-        zIndex: 9999,
-        transition: "0.3s ease",
-        overflow: "hidden",
-      }}
-    >
-      {/* 顶部标题 */}
-      <div
-        style={{
-          padding: "16px",
-          fontWeight: "bold",
-          borderBottom: "1px solid #eee",
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <span>Symbol</span>
-        <button
+    <>
+      {/* 点击空白关闭的遮罩 */}
+      {show && (
+        <div
           onClick={onClose}
           style={{
-            background: "none",
-            border: "none",
-            fontSize: 22,
-            color: "#888",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "rgba(0,0,0,0.3)",
+            zIndex: 9998,
           }}
-        >
-          ✕
-        </button>
-      </div>
+        ></div>
+      )}
 
-      {/* 币种列表 */}
-      <div style={{ padding: "14px 0" }}>
-
+      {/* 左侧菜单 */}
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: show ? "75%" : "0",
+          height: "100%",
+          backgroundColor: "#fff",
+          boxShadow: show ? "2px 0 10px rgba(0,0,0,0.25)" : "none",
+          zIndex: 9999,
+          transition: "width 0.3s ease",
+          overflow: "hidden",
+        }}
+      >
         {/* 表头 */}
         <div
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            padding: "10px 16px",
+            padding: "16px",
             fontWeight: "600",
-            fontSize: "14px",
-            color: "#555",
+            fontSize: "15px",
             borderBottom: "1px solid #eee",
           }}
         >
-          <span>Symbol</span>
-          <span>Latest price</span>
+          Markets
         </div>
 
-        {list.map((item) => {
-          const isUp = item.changePercent >= 0;
+        {/* 币种列表 */}
+        <div style={{ padding: "10px 0" }}>
+          {/* 列标题 */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              padding: "8px 16px",
+              fontSize: "13px",
+              fontWeight: 600,
+              color: "#666",
+              borderBottom: "1px solid #eee",
+            }}
+          >
+            <span>Symbol</span>
+            <span>Price</span>
+          </div>
 
-          return (
-            <div
-              key={item.symbol}
-              onClick={() => {
-                onSelect(item.symbol + "USDT");
-                onClose();
-              }}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                padding: "14px 16px",
-                cursor: "pointer",
-                borderBottom: "1px solid #f3f3f3",
-                alignItems: "center",
-              }}
-            >
-              {/* 左侧图标 + 名称 */}
+          {list.map((item) => {
+            const isUp = item.changePercent >= 0;
+
+            return (
               <div
+                key={item.symbol}
+                onClick={() => {
+                  onSelect(item.symbol + "USDT");
+                  onClose();
+                }}
                 style={{
                   display: "flex",
+                  justifyContent: "space-between",
+                  padding: "14px 16px",
+                  cursor: "pointer",
+                  borderBottom: "1px solid #f5f5f5",
                   alignItems: "center",
-                  gap: 10,
                 }}
               >
-                <img
-                  src={`/images/${item.symbol.toLowerCase()}.png`}
-                  style={{ width: 26, height: 26, borderRadius: "50%" }}
-                  alt={item.symbol}
-                />
-                <span style={{ fontWeight: 600 }}>{item.symbol}</span>
-              </div>
-
-              {/* 右侧价格 + 涨跌 */}
-              <div style={{ textAlign: "right" }}>
-                <div
-                  style={{
-                    color: isUp ? "#2ecc71" : "#e74c3c",
-                    fontWeight: 600,
-                    fontSize: 15,
-                  }}
-                >
-                  {item.price}
+                {/* 左侧：图标 + symbol */}
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <img
+                    src={`/coin-icons/${item.symbol.toLowerCase()}.png`}
+                    alt={item.symbol}
+                    style={{
+                      width: 26,
+                      height: 26,
+                      borderRadius: "50%",
+                    }}
+                  />
+                  <span style={{ fontSize: 15, fontWeight: 600 }}>
+                    {item.symbol}
+                  </span>
                 </div>
 
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: isUp ? "#2ecc71" : "#e74c3c",
-                  }}
-                >
-                  {isUp ? "+" : ""}
-                  {item.changePercent}%
+                {/* 右侧：价格 + 涨跌 */}
+                <div style={{ textAlign: "right" }}>
+                  <div
+                    style={{
+                      fontWeight: 600,
+                      fontSize: 15,
+                      color: isUp ? "#2ecc71" : "#e74c3c",
+                    }}
+                  >
+                    {item.price}
+                  </div>
+
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: isUp ? "#2ecc71" : "#e74c3c",
+                    }}
+                  >
+                    {isUp ? "+" : ""}
+                    {item.changePercent}%
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
