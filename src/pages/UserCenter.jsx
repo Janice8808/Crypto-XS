@@ -121,11 +121,12 @@ export default function UserCenter() {
     <div className="min-h-screen bg-white pb-20">
 
       {/* 返回箭头 */}
-      <div className="p-4">
-        <button onClick={() => navigate(-1)}>
-          <BackIcon />
-        </button>
-      </div>
+ <div className="p-4 bg-white/90 backdrop-blur">
+  <button onClick={() => navigate(-1)}>
+    <BackIcon />
+  </button>
+</div>
+
 
       {/* 用户信息 */}
       <div className="flex items-center px-5 pb-3">
