@@ -129,18 +129,3 @@ select:focus {
   outline: none !important;
   box-shadow: none !important;
 }
-/* ==== 全局浅色按钮（适配所有钱包 + iOS + Android） ==== */
-
-button,
-[type="button"],
-[type="submit"],
-[type="reset"] {
-  -webkit-appearance: none !important;
-  appearance: none !important;
-  background-color: #ffffff !important;   /* 白色按钮 */
-  color: #000000 !important;              /* 黑色文字 */
-  border: 1px solid #dddddd !important;   /* 浅灰边框 */
-  border-radius: 8px !important;
-  box-shadow: none !important;
-}
-
