@@ -224,22 +224,21 @@ const SideDrawer = ({ show, onClose, list, currentSymbol, onSelect }) => {
 
 /* ===================== 遮罩弹层 ===================== */
 const BottomModal = ({ children, onClose }) => (
-<div
-  style={{
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: show ? "75%" : "0",
-    height: "100%",
-    backgroundColor: "#fff",
-    boxShadow: show ? "2px 0 10px rgba(0,0,0,0.2)" : "none",
-    zIndex: 9999,
-    transition: "width 0.3s ease",
-    overflowY: "auto",       // ⭐ 允许垂直滑动
-    overflowX: "hidden",
-  }}
->
-  
+  <div
+    onClick={onClose}
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundColor: "rgba(0,0,0,0.3)",
+      display: "flex",
+      justifyContent: "flex-end",
+      flexDirection: "column",
+      zIndex: 9999,
+    }}
+  >
     <div
       onClick={(e) => e.stopPropagation()}
       style={{
@@ -253,14 +252,23 @@ const BottomModal = ({ children, onClose }) => (
       }}
     >
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button onClick={onClose} style={{ fontSize: 20, background: "none", border: "none" }}>
+        <button
+          onClick={onClose}
+          style={{
+            fontSize: 20,
+            background: "none",
+            border: "none",
+          }}
+        >
           ✕
         </button>
       </div>
+
       {children}
     </div>
   </div>
 );
+
 
 /* ===================== 下单弹窗 ===================== */
 const OrderForm = ({ symbol, modalType, price, onClose }) => {
