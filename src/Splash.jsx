@@ -22,7 +22,7 @@ export default function Splash({ children }) {
         }}
       >
         <img
-          src="/logo.png"
+          src="/mylogo.png"
           alt="logo"
           style={{ width: 80, height: 80, marginBottom: 20 }}
         />
