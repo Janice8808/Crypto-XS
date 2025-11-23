@@ -453,6 +453,7 @@ const OrderForm = ({ symbol, modalType, price, onClose }) => {
               alignItems: "center",
               fontSize: 36,
               fontWeight: "bold",
+              color: "#444",
             }}
           >
             {timeLeft}
@@ -682,6 +683,7 @@ const OrderForm = ({ symbol, modalType, price, onClose }) => {
           borderRadius: 8,
           width: "100%",
           fontSize: 14,
+          color: "#444",
         }}
       />
 
