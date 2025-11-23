@@ -73,17 +73,17 @@ button:focus-visible {
 }
 
 
-@keyframes marquee-RTL {
+@keyframes marquee-rtl {
   0% {
-    transform: translateX(150%) translateY(-50%);   /* 右侧屏幕外 */
+    transform: translateX(100%);  /* 一开始在屏幕右侧之外 */
   }
   100% {
-    transform: translateX(-150%) translateY(-50%);  /* 左侧屏幕外 */
+    transform: translateX(-100%); /* 左侧完全滑出屏幕 */
   }
 }
 
 .animate-marquee-RTL {
-  animation: marquee-RTL 10s linear infinite;
+  animation: marquee-rtl 12s linear infinite;
 }
 
 /* ===== 仅影响 Deposit1 页面的彻底无高亮模式 ===== */
