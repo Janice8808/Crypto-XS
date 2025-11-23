@@ -80,9 +80,23 @@ export default function PledgeDetail() {
 
       {/* Type */}
       <div className="px-4 mt-2 text-gray-500 text-sm">{t("Type")}</div>
-      <div className="px-4 mt-1">
-        <div className="border rounded-md px-3 py-2 text-gray-700">regular</div>
-      </div>
+<div className="px-4 mt-1">
+  <div
+    className="
+      border 
+      border-[#FFC940] 
+      rounded-md 
+      px-3 
+      py-2 
+      text-gray-700 
+      text-center
+    "
+  >
+    regular
+  </div>
+</div>
+
+
 
       {/* Dialogue（天数） */}
       <div className="px-4 mt-5 text-gray-500 text-sm">{t("Dialogue (Sky)")}</div>
@@ -107,12 +121,25 @@ export default function PledgeDetail() {
       <div className="px-4 mt-6 text-gray-500 text-sm">{t("Purchase quantity")}</div>
 
       <div className="px-4 mt-2">
-        <input
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          className="w-full border rounded-md px-3 py-2 text-gray-700"
-          placeholder="Please enter the quantity"
-        />
+<input
+  value={amount}
+  onChange={(e) => setAmount(e.target.value)}
+  className="
+    w-full 
+    border 
+    border-[#FFC940]
+    rounded-md 
+    px-3 
+    py-2 
+    text-gray-700
+    placeholder-gray-400
+    focus:border-[#FFC940]
+    focus:ring-0
+    outline-none
+  "
+  placeholder="Please enter the quantity"
+/>
+
       </div>
 
       <div className="px-4 mt-1 text-gray-400 text-xs">
