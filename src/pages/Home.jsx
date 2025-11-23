@@ -403,7 +403,7 @@ const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
     return (
       <Link
         key={coin.symbol}
-        to={`/coin/${coin.base}-USDT`}
+        to={`/trade?symbol=${coin.base}USDT`}
         className="text-center py-2"
       >
         {/* 名称更小 */}
@@ -444,7 +444,7 @@ const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
   return (
     <Link
       key={coin.symbol}
-      to={`/coin/${coin.symbol}-USDT`}
+      to={`/trade?symbol=${coin.symbol}USDT`}
       className="flex items-center px-2 py-3 hover:bg-gray-100 transition"
     >
       <div className="w-1/3 flex items-center">

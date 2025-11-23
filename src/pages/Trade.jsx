@@ -4,6 +4,7 @@ import { useUserBalances } from "@/hooks/useUserBalances";
 import { createOrder } from "@/api/order";
 import { useTicker } from "@/hooks/useTicker";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 
 /* ===================== TradingView 图表 ===================== */
 const TradingViewWidget = ({ symbol, onPrice }) => {
@@ -74,6 +75,96 @@ const TradingViewWidget = ({ symbol, onPrice }) => {
         id={widgetId.current}
         style={{ width: "100%", height: "100%" }}
       ></div>
+    </div>
+  );
+};
+
+/* ===================== 右侧滑出菜单 ===================== */
+const SideDrawer = ({ show, onClose, list, currentSymbol, onSelect }) => {
+  return (
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        right: 0,
+        width: show ? "75%" : "0",
+        height: "100%",
+        backgroundColor: "#fff",
+        boxShadow: show ? "-2px 0 10px rgba(0,0,0,0.25)" : "none",
+        zIndex: 9999,
+        transition: "0.3s ease",
+        overflow: "hidden",
+      }}
+    >
+      {/* 顶部标题 */}
+      <div
+        style={{
+          padding: "16px",
+          fontWeight: "bold",
+          borderBottom: "1px solid #eee",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <span>Symbol</span>
+        <button
+          onClick={onClose}
+          style={{
+            background: "none",
+            border: "none",
+            fontSize: 22,
+            color: "#888",
+          }}
+        >
+          ✕
+        </button>
+      </div>
+
+      {/* 币种列表 */}
+      <div style={{ padding: "10px" }}>
+        {list.map((item) => {
+          const isUp = item.changePercent >= 0;
+          return (
+            <div
+              key={item.symbol}
+              onClick={() => {
+                onSelect(item.symbol + "USDT");
+                onClose();
+              }}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                padding: "12px 6px",
+                cursor: "pointer",
+                borderBottom: "1px solid #eee",
+              }}
+            >
+              <div style={{ fontWeight: "bold" }}>{item.symbol}</div>
+
+              <div style={{ textAlign: "right" }}>
+                <div
+                  style={{
+                    color: isUp ? "#2ecc71" : "#e74c3c",
+                    fontWeight: 600,
+                  }}
+                >
+                  {item.price}
+                </div>
+
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: isUp ? "#2ecc71" : "#e74c3c",
+                  }}
+                >
+                  {isUp ? "+" : ""}
+                  {item.changePercent}%
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
@@ -555,7 +646,14 @@ const OrderForm = ({ symbol, modalType, price, onClose }) => {
 /* ===================== 主交易页面 ===================== */
 const Trade = () => {
   const { t } = useTranslation();
-  const [currentSymbol, setCurrentSymbol] = useState("BTCUSDT");
+  const [showDrawer, setShowDrawer] = useState(false);
+  // ⭐ 读取 URL 参数 symbol
+  const [searchParams] = useSearchParams();
+  const urlSymbol = searchParams.get("symbol") || "BTCUSDT";
+
+  // ⭐ 从 URL 初始化
+  const [currentSymbol, setCurrentSymbol] = useState(urlSymbol);
+
   const [showMenu, setShowMenu] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
@@ -567,6 +665,7 @@ const Trade = () => {
     setCurrentSymbol(symbol);
     setShowMenu(false);
   };
+
 
   const { price, changePercent, low, high, amount24h } =
     useTicker(currentSymbol);
@@ -612,18 +711,18 @@ const Trade = () => {
       position: "relative",
     }}
   >
-    <button
-      onClick={() => setShowMenu(!showMenu)}
-      style={{
-        background: "none",
-        border: "none",
-        fontSize: 18,
-        color: "#666",
-        padding: 0,
-      }}
-    >
-      ☰
-    </button>
+<button
+  onClick={() => setShowDrawer(true)}
+  style={{
+    background: "none",
+    border: "none",
+    fontSize: 18,
+    color: "#666",
+  }}
+>
+  ☰
+</button>
+
 
     <span style={{ color: "#555", fontWeight: 600 }}>
       {currentSymbol.replace("USDT", "/USDT")}
@@ -754,6 +853,21 @@ const Trade = () => {
           />
         </BottomModal>
       )}
+      <SideDrawer
+  show={showDrawer}
+  onClose={() => setShowDrawer(false)}
+  list={[
+    { symbol: "BTC", price: price, changePercent: changePercent },
+    { symbol: "ETH", price: 2810.15, changePercent: 2.6 },
+    { symbol: "CHZ", price: 0.027966, changePercent: 0.48 },
+    { symbol: "BAL", price: 0.6779, changePercent: 3.56 },
+    { symbol: "AAVE", price: 162.8665, changePercent: 3.04 },
+    { symbol: "UMA", price: 0.8225, changePercent: -0.16 },
+  ]}
+  currentSymbol={currentSymbol}
+  onSelect={(symbol) => setCurrentSymbol(symbol)}
+/>
+
     </div>
   );
 };
