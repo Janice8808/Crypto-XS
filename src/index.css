@@ -75,10 +75,10 @@ button:focus-visible {
 
 @keyframes marquee-RTL {
   0% {
-    transform: translateX(120%) translateY(-50%);   /* 右侧屏幕外 */
+    transform: translateX(150%) translateY(-50%);   /* 右侧屏幕外 */
   }
   100% {
-    transform: translateX(-120%) translateY(-50%);  /* 左侧屏幕外 */
+    transform: translateX(-150%) translateY(-50%);  /* 左侧屏幕外 */
   }
 }
 

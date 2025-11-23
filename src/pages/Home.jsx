@@ -341,21 +341,20 @@ const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
     to-[#E8E8EC]
   "
 >
-  <div className="text-yellow-400 text-lg mr-2">🔊</div>
-
   <div className="relative flex-1 h-full">
-<div
-  className="absolute whitespace-nowrap text-white text-base animate-marquee-RTL"
-  style={{
-    top: "50%",
-    pointerEvents: "none",
-    position: "absolute",
-  }}
->
-  {t("Welcome")} Crypto.com
+    <div
+      className="absolute whitespace-nowrap text-white text-base animate-marquee-RTL"
+      style={{
+        top: "50%",
+        pointerEvents: "none",
+        position: "absolute",
+      }}
+    >
+      {t("Welcome")} Crypto.com
+    </div>
+  </div>
 </div>
- </div>
-</div>
+
 
 
       {/* 功能区 */}
