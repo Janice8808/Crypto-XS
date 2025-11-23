@@ -4,7 +4,7 @@ export default function Splash({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500); // ⭐ 1.5s 后进入首页
+    const timer = setTimeout(() => setLoading(false), 1500); // 可调时间
     return () => clearTimeout(timer);
   }, []);
 
@@ -18,15 +18,17 @@ export default function Splash({ children }) {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          flexDirection: "column",
         }}
       >
         <img
-          src="/mylogo.png"
+          src="/logo.png"     // ⭐ 只显示图标
           alt="logo"
-          style={{ width: 80, height: 80, marginBottom: 20 }}
+          style={{
+            width: 90,
+            height: 90,
+            objectFit: "contain",
+          }}
         />
-        <div style={{ color: "#fff", fontSize: 20 }}>crypto.com</div>
       </div>
     );
   }
