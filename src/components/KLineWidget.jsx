@@ -3,10 +3,10 @@ import React, { useEffect, useRef } from "react";
 let tvScriptLoading = false;
 
 const KLineWidget = ({ symbol = "BINANCE:BTCUSDT", interval = "15" }) => {
-  const widgetRef = useRef(null);
+  const containerRef = useRef(null);
+  const widgetId = useRef(`tv_${Math.random().toString(36).slice(2)}`);
 
   useEffect(() => {
-    // 拉取后台 K 线数据（不替换 TradingView，只是对接后端）
     async function fetchKline() {
       try {
         await fetch(
@@ -22,15 +22,15 @@ const KLineWidget = ({ symbol = "BINANCE:BTCUSDT", interval = "15" }) => {
 
     fetchKline();
 
-    // TradingView 初始化
     function createWidget() {
-      if (!widgetRef.current) return;
+      if (!containerRef.current) return;
+
       new window.TradingView.widget({
         width: "100%",
-        height: 400,
-        symbol: symbol,
-        interval: interval,
-        container_id: widgetRef.current.id,
+        height: "100%",
+        symbol,
+        interval,
+        container_id: widgetId.current,
         locale: "cn",
         theme: "light",
         toolbar_bg: "#f1f3f6",
@@ -40,13 +40,15 @@ const KLineWidget = ({ symbol = "BINANCE:BTCUSDT", interval = "15" }) => {
       });
     }
 
+    // 确保 TV 脚本只加载一次
     if (!window.TradingView) {
       if (!tvScriptLoading) {
         tvScriptLoading = true;
+
         const script = document.createElement("script");
         script.src = "https://s3.tradingview.com/tv.js";
-        script.async = true;
         script.onload = createWidget;
+        script.async = true;
         document.body.appendChild(script);
       }
     } else {
@@ -54,7 +56,14 @@ const KLineWidget = ({ symbol = "BINANCE:BTCUSDT", interval = "15" }) => {
     }
   }, [symbol, interval]);
 
-  return <div ref={widgetRef} id="tradingview-widget" />;
+  return (
+    <div
+      ref={containerRef}
+      style={{ width: "100%", height: "400px" }}
+    >
+      <div id={widgetId.current} style={{ width: "100%", height: "100%" }} />
+    </div>
+  );
 };
 
 export default KLineWidget;
