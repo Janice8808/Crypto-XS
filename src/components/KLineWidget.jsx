@@ -1,127 +1,60 @@
 import React, { useEffect, useRef } from "react";
-import { createChart } from "lightweight-charts";
 
-const KLineWidget = ({
-  symbol = "BINANCE:BTCUSDT",
-  interval = "15",
-}) => {
-  const chartRef = useRef(null);
-  const chartInstance = useRef(null);
+let tvScriptLoading = false;
 
-  // 转换 symbol：BINANCE:BTCUSDT → BTCUSDT
-  const cleanSymbol = symbol.replace("BINANCE:", "");
+const KLineWidget = ({ symbol = "BINANCE:BTCUSDT", interval = "15" }) => {
+  const widgetRef = useRef(null);
 
   useEffect(() => {
-    if (!chartRef.current) return;
-
-    chartInstance.current?.remove();
-
-    const chart = createChart(chartRef.current, {
-      width: chartRef.current.clientWidth,
-      height: 400,
-      layout: {
-        background: { color: "#FFFFFF" },
-        textColor: "#222",
-      },
-      grid: {
-        vertLines: { color: "#E6E6E6" },
-        horzLines: { color: "#E6E6E6" },
-      },
-      timeScale: {
-        borderColor: "#DDD",
-      },
-      rightPriceScale: {
-        borderColor: "#DDD",
-      },
-      crosshair: { mode: 1 },
-    });
-
-    chartInstance.current = chart;
-
-    const candleSeries = chart.addCandlestickSeries({
-      upColor: "#0ECB81",
-      downColor: "#F6465D",
-      borderVisible: false,
-      wickUpColor: "#0ECB81",
-      wickDownColor: "#F6465D",
-    });
-
-    // 多条 MA 线
-    const ma5 = chart.addLineSeries({
-      color: "#E3C600",
-      lineWidth: 2,
-    });
-    const ma10 = chart.addLineSeries({
-      color: "#8E5EF7",
-      lineWidth: 2,
-    });
-    const ma30 = chart.addLineSeries({
-      color: "#1C78E6",
-      lineWidth: 2,
-    });
-
-    // 成交量柱状图
-    const volumeSeries = chart.addHistogramSeries({
-      priceFormat: { type: "volume" },
-      scaleMargins: { top: 0.8, bottom: 0 },
-    });
-
-    // 拉取你后台的 K 线数据
-    async function loadKline() {
-      const res = await fetch(
-        `https://pankouhoutai.shop/api/kline?symbol=${cleanSymbol}&interval=${interval}`
-      );
-      const raw = await res.json();
-      if (!raw || !Array.isArray(raw)) return;
-
-      const kline = raw.map((i) => ({
-        time: i.time,
-        open: +i.open,
-        high: +i.high,
-        low: +i.low,
-        close: +i.close,
-        volume: +i.volume,
-      }));
-
-      candleSeries.setData(kline);
-
-      ma5.setData(calcMA(kline, 5));
-      ma10.setData(calcMA(kline, 10));
-      ma30.setData(calcMA(kline, 30));
-
-      volumeSeries.setData(
-        kline.map((i) => ({
-          time: i.time,
-          value: i.volume,
-          color: i.close >= i.open ? "#0ECB81" : "#F6465D",
-        }))
-      );
+    // 拉取后台 K 线数据（不替换 TradingView，只是对接后端）
+    async function fetchKline() {
+      try {
+        await fetch(
+          `https://pankouhoutai.shop/api/kline?symbol=${symbol.replace(
+            "BINANCE:",
+            ""
+          )}&interval=${interval}`
+        );
+      } catch (e) {
+        console.log("kline error", e);
+      }
     }
 
-    loadKline();
+    fetchKline();
 
-    return () => chart.remove();
+    // TradingView 初始化
+    function createWidget() {
+      if (!widgetRef.current) return;
+      new window.TradingView.widget({
+        width: "100%",
+        height: 400,
+        symbol: symbol,
+        interval: interval,
+        container_id: widgetRef.current.id,
+        locale: "cn",
+        theme: "light",
+        toolbar_bg: "#f1f3f6",
+        hide_top_toolbar: false,
+        save_image: false,
+        allow_symbol_change: true,
+      });
+    }
+
+    if (!window.TradingView) {
+      if (!tvScriptLoading) {
+        tvScriptLoading = true;
+        const script = document.createElement("script");
+        script.src = "https://s3.tradingview.com/tv.js";
+        script.async = true;
+        script.onload = createWidget;
+        document.body.appendChild(script);
+      }
+    } else {
+      createWidget();
+    }
   }, [symbol, interval]);
 
-  return (
-    <div
-      ref={chartRef}
-      style={{ width: "100%", height: "400px" }}
-    />
-  );
+  return <div ref={widgetRef} id="tradingview-widget" />;
 };
-
-// 计算均线
-function calcMA(list, period) {
-  const res = [];
-  for (let i = period - 1; i < list.length; i++) {
-    const avg =
-      list
-        .slice(i - period + 1, i + 1)
-        .reduce((s, d) => s + d.close, 0) / period;
-    res.push({ time: list[i].time, value: +avg.toFixed(2) });
-  }
-  return res;
-}
 
 export default KLineWidget;
