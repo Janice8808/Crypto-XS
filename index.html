@@ -13,12 +13,15 @@
     <!-- 强制浅色模式，禁止浏览器自动变黑 -->
     <meta name="color-scheme" content="light" />
     <style>
-      :root { color-scheme: only light; }
+      :root {
+        color-scheme: only light;
+        --apple-system-webkit-light-theme: 1;
+      }
     </style>
 
-    <!-- iOS Safari 状态栏与输入框变色问题 -->
+    <!-- iOS Safari：强制状态栏和输入框浅色 -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="white" />
 
     <!-- Android Chrome 顶部地址栏颜色，防止变黑 -->
     <meta name="theme-color" content="#ffffff" />
