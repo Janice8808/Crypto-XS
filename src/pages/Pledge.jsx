@@ -81,14 +81,7 @@ export default function Pledge() {
       {/* 顶部导航 */}
       <div className="flex items-center px-4 py-3 bg-white shadow-sm">
         <button onClick={() => nav(-1)} className="mr-3">
-          <svg
-            width="26"
-            height="26"
-            fill="none"
-            stroke="#444"
-            strokeWidth="2"
-            strokeLinecap="round"
-          >
+          <svg width="26" height="26" fill="none" stroke="#444" strokeWidth="2" strokeLinecap="round">
             <path d="M15 6l-6 6 6 6" />
           </svg>
         </button>
@@ -103,79 +96,51 @@ export default function Pledge() {
         · {t("Higher return")}
       </div>
 
-      {/* Tab 区域 */}
+      {/* Tab */}
       <div className="flex items-center bg-[#0E1330] text-white text-sm mt-2">
         <div className="flex-1 text-center py-3 text-[#FFCC33] border-b-2 border-[#FFCC33]">
           {t("Lock income")}
         </div>
 
-        <div
-          className="flex-1 text-center py-3 cursor-pointer"
-          onClick={() => nav("/defi-record")}
-        >
+        <div className="flex-1 text-center py-3 cursor-pointer" onClick={() => nav("/defi-record")}>
           {t("Record")}
         </div>
       </div>
 
-      {/* Lock 内容 */}
+      {/* 列表 */}
       <div className="px-3 py-4">
-        <div className="text-xl font-semibold text-gray-800">
-          {t("Lock income")}
-        </div>
-
-        <div className="text-gray-500 text-sm mt-1 mb-4">
-          {t("Higher return")}
-        </div>
 
         {data.map((item, index) => (
           <div key={index} className="bg-white rounded-lg p-4 mb-4 shadow">
 
-            {/* 币种标题 */}
+            {/* 币种 */}
             <div className="flex items-center mb-3">
               <CoinIcon symbol={item.symbol} />
-              <span className="ml-2 font-semibold text-gray-800">
-                {item.symbol}
-              </span>
+              <span className="ml-2 font-semibold text-gray-800">{item.symbol}</span>
             </div>
 
-            {/* 日利率 */}
+            {/* 利率 */}
             <div className="flex justify-between text-gray-500 text-sm mb-2">
               <span>{t("Daily interest rate")}</span>
               <span className="text-[#4B6BFD]">{item.rate}</span>
             </div>
 
-            {/* 起投数量 */}
+            {/* 最低 */}
             <div className="flex justify-between text-gray-500 text-sm mb-3">
               <span>{t("Minimum starting quantity")}</span>
               <span className="text-gray-700 font-medium">{item.min}</span>
             </div>
 
-            {/* 天数选择 */}
-            <div className="text-gray-500 text-sm mb-2">
-              {t("Lock days")}
-            </div>
-
-            <div className="flex gap-3 mb-4">
-              {item.days.map((d, i) => (
-                <div
-                  key={i}
-                  className={`px-3 py-1 rounded border text-sm font-medium ${
-                    i === 0
-                      ? "border-[#FFB800] text-[#FFB800]"
-                      : "border-gray-300 text-gray-700"
-                  }`}
-                >
-                  {d}
-                </div>
-              ))}
-            </div>
-
-            {/* 按钮 */}
-            <button className="w-full bg-[#FFC940] py-3 rounded-lg text-white text-sm font-medium">
+            {/* Lock now 按钮 → 跳转 */}
+            <button
+              className="w-full bg-[#FFC940] py-3 rounded-lg text-white text-sm font-medium"
+              onClick={() => nav(`/pledge-detail/${item.symbol}`)}
+            >
               {t("Lock now")}
             </button>
           </div>
         ))}
+
       </div>
 
       <div className="h-10" />

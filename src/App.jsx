@@ -18,7 +18,7 @@ import Withdraw from "./pages/Withdraw";
 import Deposit1 from "./pages/Deposit1";
 import Withdraw1 from "./pages/Withdraw1";
 import BuyCrypto1 from "./pages/BuyCrypto1";
-
+import PledgeDetail from "./pages/PledgeDetail";
 import UserCenter from "./pages/UserCenter";
 import Mail from "./pages/Mail";
 import BankCard from "./pages/BankCard";
@@ -154,7 +154,8 @@ function App() {
 
           <Route path="/defi" element={<AuthGate><Pledge /></AuthGate>} />
           <Route path="/defi-record" element={<AuthGate><DeFiRecord /></AuthGate>} />
-
+          <Route  path="/pledge-detail/:symbol" element={<AuthGate><PledgeDetail /></AuthGate>}
+/>
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/admin2" element={<AdminSimple />} />
 
