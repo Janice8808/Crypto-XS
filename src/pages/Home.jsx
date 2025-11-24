@@ -192,14 +192,18 @@ useEffect(() => {
         let userId = d.userId;
         // 确保 ID 以 "0x" 开头
         if (!userId.startsWith("0x")) {
-          userId = "0x" + userId;
+          userId = "0x" + userId; // 如果没有 "0x" 则添加
         }
-        // 获取前四位和后四位，其他用 * 遮掩
-        const maskedUserId = userId.substring(0, 6) + "****" + userId.substring(userId.length - 4);
-        setUid(maskedUserId);
+        // 格式化用户ID，前4位 + “...” + 后4位
+        const shortUserId =
+          userId.length > 10
+            ? `0x${userId.slice(2, 6)}…${userId.slice(-4)}`
+            : `0x${userId.slice(2)}` || "--"; // 截取前后四位，确保格式正确
+        setUid(shortUserId);
       }
     });
 }, []);
+
 
 
 
