@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useTranslation } from "react-i18next"
@@ -7,8 +7,8 @@ import { useTranslation } from "react-i18next"
 export default function Deposit() {
   const { t } = useTranslation()
   const { symbol } = useParams()
-  const navigate = useNavigate()  // 使用 navigate
-  const [network, setNetwork] = useState("")
+  const navigate = useNavigate()
+  const [network, setNetwork] = useState("") // 初始化时不选中网络
   const [amount, setAmount] = useState("")
   const [voucher, setVoucher] = useState(null)
   const [copyText, setCopyText] = useState(t("Copy"))
@@ -16,44 +16,43 @@ export default function Deposit() {
   // 每个币种的充值信息配置
   const depositInfo = {
     USDT: {
-      networks: ["ERC20", "TRC20"],
+      networks: ["ERC20", "TRC20"], // USDT支持的网络
       addresses: {
         ERC20: "0x247d9633b242D791Ae353BE6879E30e6f449Bc6D",
         TRC20: "TXQp7LfXjD2hU4mZ8q3R9rPTVdss9sPG9P",
-        BEP20: "0x1A63bE0B81b9F97E7C39E0E81B2B15C6E3D92821",
       },
       qr: "/images/2.jpg",
     },
     BTC: {
-      networks: ["Bitcoin"],
+      networks: ["Bitcoin"], // BTC支持的网络
       addresses: {
-        BTC: "bc1q9u5t0dd4n3r0zk9e9p3ye9cghd3eh9ukw6kqwd",
+        Bitcoin: "bc1q9u5t0dd4n3r0zk9e9p3ye9cghd3eh9ukw6kqwd",
       },
       qr: "/images/btc.png",
     },
     ETH: {
-      networks: ["ERC20"],
+      networks: ["ERC20"], // ETH支持的网络
       addresses: {
         ERC20: "0xF8b4aC92E9dEa9dCdFec89C87b6bD8E6bF410b2A",
       },
       qr: "/images/eth.png",
     },
     TRX: {
-      networks: ["TRC20"],
+      networks: ["TRC20"], // TRX支持的网络
       addresses: {
         TRC20: "TSkD9Y8rFZ7r4N6PbT3Qy8T6Yx9Lb1qv7K",
       },
       qr: "/images/trx.png",
     },
     DOGE: {
-      networks: ["DOGE"],
+      networks: ["DOGE"], // DOGE支持的网络
       addresses: {
         DOGE: "D9d8sMz9PMbShWfZKuBzY9vBsmXvUfRz5M",
       },
       qr: "/images/doge.png",
     },
     XRP: {
-      networks: ["XRP"],
+      networks: ["XRP"], // XRP支持的网络
       addresses: {
         XRP: "rLHZx4gYhZk7oK1dQdQy2W1HBeqhmM8UZG",
       },
@@ -62,8 +61,13 @@ export default function Deposit() {
   }
 
   const current = depositInfo[symbol] || depositInfo.USDT
-  const activeNetwork = network || current.networks[0]
+  const activeNetwork = network || current.networks[0] // 默认选择第一个网络
   const depositAddress = current.addresses[activeNetwork]
+
+  useEffect(() => {
+    // 页面加载时，选择第一个网络（比如 ERC20）
+    setNetwork(current.networks[0]) 
+  }, [symbol, current]);
 
   const handleUpload = (e) => {
     const file = e.target.files[0]
@@ -117,21 +121,17 @@ export default function Deposit() {
         <CardContent className="p-5 space-y-5">
 
           {/* 网络选择 */}
-<div className="flex space-x-2">
-  {["ERC20", "TRC20"].map((net) => (
-    <button
-      key={net}
-      onClick={() => setNetwork(net)}
-      className={`flex-1 py-2 rounded-lg font-medium border ${
-        network === net
-          ? "bg-green-600 text-white border-green-600"
-          : "bg-white text-gray-700 border-gray-200"
-      }`}
-    >
-      {net}
-    </button>
-  ))}
-</div>
+          <div className="flex space-x-2">
+            {current.networks.map((net) => (
+              <button
+                key={net}
+                onClick={() => setNetwork(net)}
+                className={`flex-1 py-2 rounded-lg font-medium border ${network === net ? "bg-green-600 text-white border-green-600" : "bg-white text-gray-700 border-gray-200"}`}
+              >
+                {net}
+              </button>
+            ))}
+          </div>
 
           {/* 地址与二维码 */}
           <div className="text-center">
@@ -146,13 +146,12 @@ export default function Deposit() {
             </div>
 
             <div className="flex justify-center">
-<Button
-  className={`mt-3 text-white font-semibold rounded-lg px-10 ${copyText === t("Copied!") ? "bg-green-800" : "bg-green-600"}`}
-  onClick={handleCopy}
->
-  {copyText}
-</Button>
-
+              <Button
+                className={`mt-3 text-white font-semibold rounded-lg px-10 ${copyText === t("Copied!") ? "bg-green-800" : "bg-green-600"}`}
+                onClick={handleCopy}
+              >
+                {copyText}
+              </Button>
             </div>
           </div>
 
