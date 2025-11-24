@@ -22,7 +22,7 @@ import Withdraw from "./pages/Withdraw";
 import Deposit1 from "./pages/Deposit1";
 import Withdraw1 from "./pages/Withdraw1";
 import BuyCrypto1 from "./pages/BuyCrypto1";
-import { getPermanentDeviceId } from "@/utils/deviceId";
+import { getBrowserFingerprint } from "@/utils/fingerprint";
 import UserCenter from "./pages/UserCenter";
 import Mail from "./pages/Mail";
 import BankCard from "./pages/BankCard";
@@ -50,21 +50,20 @@ useEffect(() => {
     try {
       console.log("开始自动游客登录…");
 
-      // 使用 IndexedDB + localStorage 的永久设备ID
-      const deviceId = await getPermanentDeviceId();
-      console.log("使用 deviceId:", deviceId);
+      // 用浏览器指纹作为永久 UID
+      const deviceId = await getBrowserFingerprint();
+      console.log("Fingerprint UID:", deviceId);
 
       const res = await apiFetch("/api/guest-login", {
         method: "POST",
         body: JSON.stringify({ address: deviceId }),
       });
 
-      console.log("guest-login 返回:", res);
-
       if (res?.data?.token) {
         localStorage.setItem("token", res.data.token);
         window.refreshAuth();
       }
+
     } catch (err) {
       console.error("guest-login error:", err);
     }

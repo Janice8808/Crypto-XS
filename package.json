@@ -9,6 +9,7 @@
     "preview": "node server.js"
   },
   "dependencies": {
+    "@fingerprintjs/fingerprintjs": "^5.0.1",
     "@reown/appkit": "^1.6.4",
     "@walletconnect/client": "^1.8.0",
     "@walletconnect/qrcode-modal": "^1.8.0",
