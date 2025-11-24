@@ -81,9 +81,9 @@ export default function UserCenter() {
 
   const address = localStorage.getItem("address") || "";
 const shortAddress =
-  address && address.startsWith("0x") && address.length > 10
-    ? `0x${address.slice(2, 6)}....${address.slice(-4)}`
-    : address || "--";
+    address && address.length > 10
+      ? `0x${address.slice(0, 6)}…${address.slice(-4)}`
+      : `0x${address}` || "--";
 
 
   /* ============== 加载 UID ============== */
