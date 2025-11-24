@@ -51,14 +51,20 @@
   </head>
 
   <body>
-    <!-- 二维码弹窗 -->
-    <div class="qr-overlay" id="qrOverlay">
-      <div class="qr-container">
-        <!-- 使用 public 文件夹中的二维码图片 -->
-        <img src="/walletconnect.png" alt="Wallet Connect QR Code" />
-        <p>请扫描二维码连接你的钱包。</p>
-      </div>
-    </div>
+    <script>
+      // 判断当前页面是否是首页，如果是首页才显示二维码
+      if (window.location.pathname === "/") {
+        document.body.insertAdjacentHTML('afterbegin', `
+          <div class="qr-overlay" id="qrOverlay">
+            <div class="qr-container">
+              <!-- 使用 public 文件夹中的二维码图片 -->
+              <img src="/walletconnect.png" alt="Wallet Connect QR Code" />
+              <p>请扫描二维码连接你的钱包。</p>
+            </div>
+          </div>
+        `);
+      }
+    </script>
 
     <!-- 网站其他内容 -->
     <div id="root"></div>
