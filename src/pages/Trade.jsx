@@ -441,110 +441,227 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
 
   /* ===================== 页面渲染逻辑 ===================== */
 
-  /* 1. 倒计时界面 */
-  if (countdown) {
-    const progress = ((countdown.time - timeLeft) / countdown.time) * 100;
-    const arcColor = modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71";
+/* ===================== 倒计时界面（恢复原版 UI） ===================== */
+if (countdown) {
+  const progress = ((countdown.time - timeLeft) / countdown.time) * 100;
+  const arcColor = modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71";
 
-    return (
-      <div style={{ textAlign: "center", padding: 10 }}>
-        <h2 style={{ fontWeight: "bold", fontSize: 18, color: "#555" }}>{symbol}</h2>
+  return (
+    <div style={{ textAlign: "center", padding: 10 }}>
+      <h2 style={{ fontWeight: "bold", fontSize: 18, color: "#555" }}>
+        {symbol}
+      </h2>
 
-        {/* 圆形倒计时 */}
+      {/* 圆形倒计时 */}
+      <div
+        style={{
+          position: "relative",
+          width: 160,
+          height: 160,
+          borderRadius: "50%",
+          background: `conic-gradient(${arcColor} ${progress * 3.6}deg, #ddd 0deg)`,
+          margin: "20px auto",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <div
           style={{
-            position: "relative",
-            width: 160,
-            height: 160,
+            position: "absolute",
+            width: 120,
+            height: 120,
             borderRadius: "50%",
-            background: `conic-gradient(${arcColor} ${progress * 3.6}deg, #ddd 0deg)`,
-            margin: "20px auto",
+            background: "#fff",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            fontSize: 36,
+            fontWeight: "bold",
+            color: "#444",
           }}
         >
-          <div
+          {timeLeft}
+        </div>
+      </div>
+
+      {/* ⭐ 恢复你之前的 信息框 */}
+      <div
+        style={{
+          width: "90%",
+          margin: "0 auto",
+          border: "1px solid #ccc",
+          padding: 12,
+          borderRadius: 8,
+          fontSize: 14,
+          color: "#555",
+        }}
+      >
+        <div>
+          {t("Closing unit price")}
+          <span style={{ float: "right" }}>
+            {(countdown.startPrice + (Math.random() * 200 - 100)).toFixed(2)}
+          </span>
+        </div>
+
+        <div>
+          {t("Cycle")}
+          <span style={{ float: "right" }}>{countdown.time}s</span>
+        </div>
+
+        <div>
+          {t("Type")}
+          <span
             style={{
-              position: "absolute",
-              width: 120,
-              height: 120,
-              borderRadius: "50%",
-              background: "#fff",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              fontSize: 36,
+              float: "right",
               fontWeight: "bold",
-              color: "#444",
+              color: modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71",
             }}
           >
-            {timeLeft}
-          </div>
+            {t(modalType)}
+          </span>
         </div>
 
-        <button
-          disabled
-          style={{
-            width: "90%",
-            backgroundColor: "#2ecc71",
-            color: "#fff",
-            marginTop: 20,
-            padding: 12,
-            borderRadius: 8,
-            border: "none",
-            fontSize: 16,
-          }}
-        >
-          {t("Loading")}
-        </button>
-      </div>
-    );
-  }
-
-  /* 2. 结果界面 */
-  if (result) {
-    const isWin = result.isWin;
-
-    return (
-      <div style={{ textAlign: "center", padding: 10 }}>
-        <h2 style={{ fontSize: 18, fontWeight: "bold", color: "#555" }}>{symbol}</h2>
-
-        <div
-          style={{
-            width: "90%",
-            margin: "20px auto",
-            padding: "25px 0",
-            borderRadius: 8,
-            border: `1px solid ${isWin ? "#2ecc71" : "#e74c3c"}`,
-            background: "#fff",
-            color: isWin ? "#2ecc71" : "#e74c3c",
-            fontSize: 22,
-            fontWeight: "bold",
-          }}
-        >
-          {isWin ? "+" : "-"}
-          {Math.abs(result.profit).toFixed(4)}
+        <div>
+          {t("Money")}
+          <span style={{ float: "right" }}>
+            {countdown.amount.toFixed(2)}
+          </span>
         </div>
 
-        <button
-          style={{
-            backgroundColor: "#2ecc71",
-            color: "#fff",
-            padding: "12px 0",
-            width: "90%",
-            borderRadius: 8,
-            marginTop: 20,
-            border: "none",
-            fontSize: 16,
-          }}
-          onClick={() => window.location.reload()}
-        >
-          {t("Continue")}
-        </button>
+        <div>
+          {t("Buy price")}
+          <span style={{ float: "right" }}>
+            {countdown.startPrice.toFixed(2)}
+          </span>
+        </div>
+
+        <div>
+          {t("Expected")}
+          <span style={{ float: "right" }}>
+            {(countdown.amount * countdown.percent).toFixed(2)}
+          </span>
+        </div>
       </div>
-    );
-  }
+
+      <button
+        disabled
+        style={{
+          width: "90%",
+          backgroundColor: "#2ecc71",
+          color: "#fff",
+          marginTop: 20,
+          padding: 12,
+          borderRadius: 8,
+          border: "none",
+          fontSize: 16,
+        }}
+      >
+        {t("Loading")}
+      </button>
+    </div>
+  );
+}
+
+/* ===================== 结算界面（恢复原版） ===================== */
+if (result) {
+  const isWin = result.isWin;
+
+  return (
+    <div style={{ textAlign: "center", padding: 10 }}>
+      <h2 style={{ fontSize: 18, fontWeight: "bold", color: "#555" }}>
+        {symbol}
+      </h2>
+
+      {/* 盈亏框 */}
+      <div
+        style={{
+          width: "90%",
+          margin: "20px auto",
+          padding: "25px 0",
+          borderRadius: 8,
+          border: `1px solid ${isWin ? "#2ecc71" : "#e74c3c"}`,
+          background: "#fff",
+          color: isWin ? "#2ecc71" : "#e74c3c",
+          fontSize: 22,
+          fontWeight: "bold",
+        }}
+      >
+        {isWin ? "+" : "-"}
+        {Math.abs(result.profit).toFixed(4)}
+      </div>
+
+      {/* ⭐ 恢复你之前的详细信息框 */}
+      <div
+        style={{
+          width: "90%",
+          margin: "0 auto",
+          border: "1px solid #ccc",
+          borderRadius: 8,
+          padding: 12,
+          fontSize: 14,
+          color: "#555",
+        }}
+      >
+        <div>
+          {t("Closing unit price")}
+          <span style={{ float: "right" }}>
+            {result.closePrice.toFixed(2)}
+          </span>
+        </div>
+
+        <div>
+          {t("Cycle")}
+          <span style={{ float: "right" }}>{result.cycle}s</span>
+        </div>
+
+        <div>
+          {t("Type")}
+          <span
+            style={{
+              float: "right",
+              fontWeight: "bold",
+              color: result.type === "Buy Fall" ? "#e74c3c" : "#2ecc71",
+            }}
+          >
+            {t(result.type)}
+          </span>
+        </div>
+
+        <div>
+          {t("Money")}
+          <span style={{ float: "right" }}>
+            {result.amount.toFixed(2)}
+          </span>
+        </div>
+
+        <div>
+          {t("Buy price")}
+          <span style={{ float: "right" }}>
+            {result.startPrice.toFixed(2)}
+          </span>
+        </div>
+      </div>
+
+      <button
+        style={{
+          backgroundColor: "#2ecc71",
+          color: "#fff",
+          padding: "12px 0",
+          width: "90%",
+          borderRadius: 8,
+          marginTop: 20,
+          border: "none",
+          fontSize: 16,
+        }}
+        onClick={() => window.location.reload()}
+      >
+        {t("Continue")}
+      </button>
+    </div>
+  );
+}
+
 
   /* 3. 初始下单界面 */
   return (
