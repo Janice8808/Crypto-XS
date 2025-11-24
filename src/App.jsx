@@ -50,7 +50,7 @@ useEffect(() => {
     try {
       console.log("开始自动游客登录…");
 
-      // 使用统一永久设备ID
+      // 使用 IndexedDB + localStorage 的永久设备ID
       const deviceId = await getPermanentDeviceId();
       console.log("使用 deviceId:", deviceId);
 
@@ -72,6 +72,7 @@ useEffect(() => {
 
   loginGuest();
 }, []);
+
 
 
 
