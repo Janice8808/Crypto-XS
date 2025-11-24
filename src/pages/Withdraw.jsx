@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function Withdraw() {
@@ -9,7 +9,7 @@ export default function Withdraw() {
   const { symbol } = useParams();
   const navigate = useNavigate();
 
-  const [network, setNetwork] = useState("ERC20");
+  const [network, setNetwork] = useState("");
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("");
   const [password, setPassword] = useState("");
@@ -18,32 +18,60 @@ export default function Withdraw() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  // 每个币种的充值信息配置
+  const depositInfo = {
+    USDT: {
+      networks: ["ERC20", "TRC20"], // USDT 有 ERC20 和 TRC20 网络
+      addresses: {
+        ERC20: "0x247d9633b242D791Ae353BE6879E30e6f449Bc6D",
+        TRC20: "TXQp7LfXjD2hU4mZ8q3R9rPTVdss9sPG9P",
+      },
+      qr: "/images/2.jpg",
+    },
+    BTC: {
+      networks: ["Bitcoin"], // BTC 只有 Bitcoin 网络
+      addresses: {
+        Bitcoin: "bc1q9u5t0dd4n3r0zk9e9p3ye9cghd3eh9ukw6kqwd",
+      },
+      qr: "/images/btc.png",
+    },
+    ETH: {
+      networks: ["ERC20"], // ETH 只有 ERC20 网络
+      addresses: {
+        ERC20: "0xF8b4aC92E9dEa9dCdFec89C87b6bD8E6bF410b2A",
+      },
+      qr: "/images/eth.png",
+    },
+    TRX: {
+      networks: ["TRC20"], // TRX 只有 TRC20 网络
+      addresses: {
+        TRC20: "TSkD9Y8rFZ7r4N6PbT3Qy8T6Yx9Lb1qv7K",
+      },
+      qr: "/images/trx.png",
+    },
+    DOGE: {
+      networks: ["DOGE"], // DOGE 只有 DOGE 网络
+      addresses: {
+        DOGE: "D9d8sMz9PMbShWfZKuBzY9vBsmXvUfRz5M",
+      },
+      qr: "/images/doge.png",
+    },
+    XRP: {
+      networks: ["XRP"], // XRP 只有 XRP 网络
+      addresses: {
+        XRP: "rLHZx4gYhZk7oK1dQdQy2W1HBeqhmM8UZG",
+      },
+      qr: "/images/xrp.png",
+    },
+  };
+
+  const current = depositInfo[symbol] || depositInfo.USDT; // 默认使用 USDT 配置
+  const activeNetwork = network || current.networks[0]; // 默认为第一个网络
+  const depositAddress = current.addresses[activeNetwork];
+
   useEffect(() => {
-    async function loadBalance() {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await fetch("https://pankouhoutai.shop/api/user/balance", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-
-        const upper = (symbol || "").toUpperCase();
-        const allKeys = Object.keys(data.balances || {});
-        const matchedKey =
-          allKeys.find((k) => k.toUpperCase() === upper) ||
-          allKeys.find((k) => k.toUpperCase() === `${upper}USDT`) ||
-          allKeys.find((k) => upper.startsWith(k.toUpperCase())) ||
-          allKeys.find((k) => k.toUpperCase().includes(upper)) ||
-          upper;
-
-        const raw = data.balances?.[matchedKey] ?? 0;
-        setAvailable(parseFloat(raw) || 0);
-      } catch (err) {
-        console.error("❌ Failed to load balance:", err);
-        setAvailable(0);
-      }
-    }
-    loadBalance();
+    // 每次加载时，更新支持的网络
+    setNetwork(current.networks[0]); // 默认选择第一个网络
   }, [symbol]);
 
   const handleSubmit = async () => {
@@ -111,7 +139,6 @@ export default function Withdraw() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 pb-24">
-
       {/* 顶部导航 */}
       <div className="mb-4">
         <button
@@ -129,22 +156,17 @@ export default function Withdraw() {
       {/* 卡片 */}
       <Card className="rounded-2xl shadow-sm">
         <CardContent className="p-5 space-y-5">
-
           {/* 币种 */}
           <div className="flex justify-between items-center bg-gray-100 rounded-lg px-3 py-2">
-            <span className="text-gray-800 font-medium text-base">
-              {t("Currency")}
-            </span>
-            <span className="text-gray-800 font-medium text-base">
-              {symbol}
-            </span>
+            <span className="text-gray-800 font-medium text-base">{t("Currency")}</span>
+            <span className="text-gray-800 font-medium text-base">{symbol}</span>
           </div>
 
           {/* 网络 */}
           <div>
             <div className="text-sm text-gray-500 mb-1">{t("Network")}</div>
             <div className="flex space-x-2">
-              {["ERC20", "TRC20"].map((net) => (
+              {current.networks.map((net) => (
                 <button
                   key={net}
                   onClick={() => setNetwork(net)}
@@ -162,9 +184,7 @@ export default function Withdraw() {
 
           {/* 地址 */}
           <div>
-            <div className="text-sm text-gray-500 mb-1">
-              {t("Withdrawal address")}
-            </div>
+            <div className="text-sm text-gray-500 mb-1">{t("Withdrawal address")}</div>
 
             <div className="flex items-center border rounded-lg focus-within:ring-1 focus-within:ring-yellow-400">
               <input
@@ -215,9 +235,7 @@ export default function Withdraw() {
 
           {/* 密码 */}
           <div>
-            <div className="text-sm text-gray-500 mb-1">
-              {t("Withdrawal Password")}
-            </div>
+            <div className="text-sm text-gray-500 mb-1">{t("Withdrawal Password")}</div>
             <input
               type="password"
               value={password}
@@ -240,22 +258,17 @@ export default function Withdraw() {
 
       {/* 错误提示 */}
       {error && (
-        <div className="mt-3 text-sm text-red-500 text-center">
-          {error}
-        </div>
+        <div className="mt-3 text-sm text-red-500 text-center">{error}</div>
       )}
 
       {/* 成功提示 */}
       {success && (
-        <div className="mt-3 text-sm text-green-600 text-center">
-          {success}
-        </div>
+        <div className="mt-3 text-sm text-green-600 text-center">{success}</div>
       )}
 
       {/* 底部提示 */}
       <div className="text-sm text-gray-500 mt-3 text-center">
-        {t("Ordinary withdrawal")}:
-        &nbsp;
+        {t("Ordinary withdrawal")}:{" "}
         <span className="font-medium text-gray-700">
           {Number(amount || 0).toFixed(6)} {symbol}
         </span>
