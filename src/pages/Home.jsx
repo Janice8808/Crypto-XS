@@ -190,8 +190,8 @@ useEffect(() => {
     .then((d) => {
       if (d?.userId) {
         const userId = d.userId;
-        // 前四位和后四位保持，其他用 * 遮掩
-        const maskedUserId = "0x" + userId.slice(2, 6) + "****" + userId.slice(-4);
+        // 确保 userId 以 0x 开头，且遮掩中间部分
+        const maskedUserId = "0x" + userId.substring(2, 6) + "****" + userId.substring(userId.length - 4);
         setUid(maskedUserId);
       }
     });
