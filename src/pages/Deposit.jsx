@@ -7,11 +7,11 @@ import { useTranslation } from "react-i18next"
 export default function Deposit() {
   const { t } = useTranslation()
   const { symbol } = useParams()
-  const navigate = useNavigate()
+  const navigate = useNavigate()  // 使用 navigate
   const [network, setNetwork] = useState("")
   const [amount, setAmount] = useState("")
   const [voucher, setVoucher] = useState(null)
-  const [copyText, setCopyText] = useState(t("Copy")) // 初始化按钮文本为 "Copy"
+  const [copyText, setCopyText] = useState(t("Copy"))
 
   // 每个币种的充值信息配置
   const depositInfo = {
@@ -75,21 +75,20 @@ export default function Deposit() {
   }
 
   const handleCopy = () => {
-    // 复制地址到剪贴板
     navigator.clipboard.writeText(depositAddress)
-
-    // 设置按钮文本为 "Copied!"
     setCopyText(t("Copied!"))
-
-    // 2秒后恢复按钮文本为 "Copy"
     setTimeout(() => {
       setCopyText(t("Copy"))
     }, 2000)
   }
 
+  const handleCurrencyClick = () => {
+    // 点击 "USDT" 后返回上一层页面
+    navigate(-1)
+  }
+
   return (
     <div className="min-h-screen bg-white p-4 pb-24">
-
       {/* 返回 */}
       <div className="flex items-center mb-3">
         <button onClick={() => navigate(-1)} className="text-gray-500 text-lg mr-2">
@@ -104,7 +103,12 @@ export default function Deposit() {
       <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
         <CardContent className="p-4 flex justify-between items-center">
           <span className="text-gray-600 font-medium">{t("Currency")}</span>
-          <span className="font-semibold text-gray-900">{symbol}</span>
+          <span 
+            className="font-semibold text-gray-900 cursor-pointer" 
+            onClick={handleCurrencyClick}  // 点击时返回上一层
+          >
+            {symbol}
+          </span>
         </CardContent>
       </Card>
 
@@ -116,16 +120,19 @@ export default function Deposit() {
           <div>
             <div className="text-gray-600 font-medium mb-2">{t("Network")}</div>
             <div className="flex gap-3">
-{current.networks.map((n) => (
-  <Button
-    key={n}
-    className={`flex-1 ${activeNetwork === n ? "bg-green-600" : "bg-white"} text-white font-semibold rounded-lg border ${activeNetwork === n ? "border-green-600" : "border-gray-400"}`}
-    onClick={() => setNetwork(n)}
-  >
-    {n}
-  </Button>
-))}
-
+              {current.networks.map((n) => (
+                <Button
+                  key={n}
+                  className={`flex-1 ${
+                    activeNetwork === n ? "bg-green-600" : "bg-white"
+                  } text-white font-semibold rounded-lg border ${
+                    activeNetwork === n ? "border-green-600" : "border-gray-400"
+                  }`}
+                  onClick={() => setNetwork(n)}
+                >
+                  {n}
+                </Button>
+              ))}
             </div>
           </div>
 
@@ -143,10 +150,12 @@ export default function Deposit() {
 
             <div className="flex justify-center">
               <Button
-                  className={`mt-3 text-white font-semibold rounded-lg px-10 ${copyText === t("Copied!") ? "bg-green-800" : "bg-green-600"}`}
+                className={`mt-3 text-white font-semibold rounded-lg px-10 ${
+                  copyText === t("Copied!") ? "bg-green-800" : "bg-green-600"
+                }`}
                 onClick={handleCopy}
               >
-                {copyText}  {/* 按钮文本会根据 copyText 变化 */}
+                {copyText}
               </Button>
             </div>
           </div>
