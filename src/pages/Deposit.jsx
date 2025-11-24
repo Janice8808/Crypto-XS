@@ -123,11 +123,7 @@ export default function Deposit() {
               {current.networks.map((n) => (
                 <Button
                   key={n}
-                  className={`flex-1 ${
-                    activeNetwork === n ? "bg-green-600" : "bg-white"
-                  } text-white font-semibold rounded-lg border ${
-                    activeNetwork === n ? "border-green-600" : "border-gray-400"
-                  }`}
+                      className={`flex-1 ${activeNetwork === n ? "bg-green-600" : "bg-white"} text-white font-semibold rounded-lg border ${activeNetwork === n ? "border-green-600" : "border-gray-400"}`}
                   onClick={() => setNetwork(n)}
                 >
                   {n}
@@ -150,9 +146,7 @@ export default function Deposit() {
 
             <div className="flex justify-center">
               <Button
-                className={`mt-3 text-white font-semibold rounded-lg px-10 ${
-                  copyText === t("Copied!") ? "bg-green-800" : "bg-green-600"
-                }`}
+              className={`mt-3 text-white font-semibold rounded-lg px-10 ${copyText === t("Copied!") ? "bg-green-800" : "bg-green-600"}`}
                 onClick={handleCopy}
               >
                 {copyText}
