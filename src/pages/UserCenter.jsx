@@ -80,10 +80,11 @@ export default function UserCenter() {
   const [uid, setUid] = useState("--");
 
   const address = localStorage.getItem("address") || "";
-  const shortAddress =
-    address.length > 10
-      ? `${address.slice(0, 6)}....${address.slice(-4)}`
-      : address || "--";
+const shortAddress =
+  address && address.startsWith("0x") && address.length > 10
+    ? `0x${address.slice(2, 6)}....${address.slice(-4)}`
+    : address || "--";
+
 
   /* ============== 加载 UID ============== */
   useEffect(() => {
