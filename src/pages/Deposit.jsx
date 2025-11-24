@@ -217,7 +217,7 @@ const handleCopy = () => {
       {/* 提交按钮 */}
       <div className="py-3">
         <Button
-          className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold rounded-lg py-3"
+          className="w-full bg-green-600 hover:bg-green-800 text-white font-semibold rounded-lg py-3"
           onClick={handleSubmit}
         >
           {t("Submit")}
