@@ -123,7 +123,7 @@ export default function Deposit() {
               {current.networks.map((n) => (
                 <Button
                   key={n}
-                      className={`flex-1 ${activeNetwork === n ? "bg-green-500" : "bg-white"} text-white font-semibold rounded-lg border ${activeNetwork === n ? "border-green-600" : "border-gray-400"}`}
+                  className={`flex-1 ${activeNetwork === n ? "bg-green-600" : "bg-white"} text-white font-semibold rounded-lg border ${activeNetwork === n ? "border-green-600" : "border-gray-400"}`}
                   onClick={() => setNetwork(n)}
                 >
                   {n}
@@ -146,7 +146,7 @@ export default function Deposit() {
 
             <div className="flex justify-center">
               <Button
-              className={`mt-3 text-white font-semibold rounded-lg px-10 ${copyText === t("Copied!") ? "bg-green-800" : "bg-green-500"}`}
+                className={`mt-3 text-white font-semibold rounded-lg px-10 ${copyText === t("Copied!") ? "bg-green-800" : "bg-green-600"}`}
                 onClick={handleCopy}
               >
                 {copyText}
@@ -196,12 +196,11 @@ export default function Deposit() {
           <div className="text-xs text-gray-500 leading-relaxed mt-2">
             <p className="text-red-500 font-medium mb-1">
               {t("Minimum recharge amount")}: 100.00 {symbol}.  
-              {t("Recharge less than the minimum amount will not be credited and cannot be returned")}
+              {t("Recharge less than the minimum amount will not be credited")}
             </p>
-            <p>{t("Please select the correct recharge channel network, otherwise the assets will not be retrieved")}</p>
-            <p>{t("Minimum recharge amount：100.00USDT，Recharge less than the minimum amount will not be credited and cannot be returned")}</p>
-            <p>{t("Your recharge address will not change frequently, and you can recharge repeatedly; If there is any change, we will try our best to notify you through website announcement or email")}</p>
-            <p>{t("Please make sure that the computer and browser are secure to prevent information from being tampered with or disclosed")}</p>
+            <p>{t("Select correct network tip")}</p>
+            <p>{t("Address rarely changes tip")}</p>
+            <p>{t("Ensure device secure tip")}</p>
           </div>
 
         </CardContent>
