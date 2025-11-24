@@ -8,7 +8,7 @@ import { useOkxTickers } from "../hooks/useOkxTickers";
 const maskAddress = (addr) => {
   if (!addr) return "--";
   if (addr.length < 16) return addr;
-  return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
+  return `0x${addr.slice(0, 6)}…${addr.slice(-4)}`; // 在地址前加上 "0x"
 };
 
 
