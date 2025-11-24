@@ -152,7 +152,7 @@ const handleCopy = () => {
 
       <div className="flex justify-center">
 <Button
-  className={`mt-3 text-white font-semibold rounded-lg px-10 ${copyText === t("Copied!") ? "bg-green-600" : "bg-green-500"}`}
+  className="mt-3 text-white font-semibold rounded-lg px-10 bg-green-600"
   onClick={handleCopy}
 >
   {copyText}
