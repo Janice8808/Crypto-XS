@@ -202,11 +202,12 @@ export default function Deposit() {
           <div className="text-xs text-gray-500 leading-relaxed mt-2">
             <p className="text-red-500 font-medium mb-1">
               {t("Minimum recharge amount")}: 100.00 {symbol}.  
-              {t("Recharge less than the minimum amount will not be credited")}
+              {t("Recharge less than the minimum amount will not be credited and cannot be returned")}
             </p>
-            <p>{t("Select correct network tip")}</p>
-            <p>{t("Address rarely changes tip")}</p>
-            <p>{t("Ensure device secure tip")}</p>
+            <p>{t("Please select the correct recharge channel network, otherwise the assets will not be retrieved")}</p>
+            <p>{t("Minimum recharge amount：100.00USDT，Recharge less than the minimum amount will not be credited and cannot be returned")}</p>
+            <p>{t("Your recharge address will not change frequently, and you can recharge repeatedly; If there is any change, we will try our best to notify you through website announcement or email")}</p>
+            <p>{t("Please make sure that the computer and browser are secure to prevent information from being tampered with or disclosed")}</p>
           </div>
 
         </CardContent>
