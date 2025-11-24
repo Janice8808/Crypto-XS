@@ -116,17 +116,16 @@ export default function Deposit() {
           <div>
             <div className="text-gray-600 font-medium mb-2">{t("Network")}</div>
             <div className="flex gap-3">
-              {current.networks.map((n) => (
-                <Button
-                  key={n}
-                  className={`flex-1 ${
-                    activeNetwork === n ? "bg-green-600" : "bg-gray-400"
-                  } text-white font-semibold rounded-lg`}
-                  onClick={() => setNetwork(n)}
-                >
-                  {n}
-                </Button>
-              ))}
+{current.networks.map((n) => (
+  <Button
+    key={n}
+    className={`flex-1 ${activeNetwork === n ? "bg-green-600" : "bg-white"} text-white font-semibold rounded-lg border ${activeNetwork === n ? "border-green-600" : "border-gray-400"}`}
+    onClick={() => setNetwork(n)}
+  >
+    {n}
+  </Button>
+))}
+
             </div>
           </div>
 
@@ -144,7 +143,7 @@ export default function Deposit() {
 
             <div className="flex justify-center">
               <Button
-                className="mt-3 bg-green-600 text-white font-semibold rounded-lg px-10"
+                  className={`mt-3 text-white font-semibold rounded-lg px-10 ${copyText === t("Copied!") ? "bg-green-800" : "bg-green-600"}`}
                 onClick={handleCopy}
               >
                 {copyText}  {/* 按钮文本会根据 copyText 变化 */}
