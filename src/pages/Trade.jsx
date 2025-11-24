@@ -419,7 +419,6 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
     }
 
     setCountdown(null);
-
     setResult({
       isWin,
       profit,
@@ -439,22 +438,77 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
     }
   }, [result]);
 
-  /* ===================== UI 这里不改... ===================== */
 
-  // （你的 UI 保持不变…我就不重复贴了）
-  
-};
+  /* ===================== 页面渲染逻辑 ===================== */
 
+  /* 1. 倒计时界面 */
+  if (countdown) {
+    const progress = ((countdown.time - timeLeft) / countdown.time) * 100;
+    const arcColor = modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71";
 
-  /* ===================== 结算界面 ===================== */
+    return (
+      <div style={{ textAlign: "center", padding: 10 }}>
+        <h2 style={{ fontWeight: "bold", fontSize: 18, color: "#555" }}>{symbol}</h2>
+
+        {/* 圆形倒计时 */}
+        <div
+          style={{
+            position: "relative",
+            width: 160,
+            height: 160,
+            borderRadius: "50%",
+            background: `conic-gradient(${arcColor} ${progress * 3.6}deg, #ddd 0deg)`,
+            margin: "20px auto",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              width: 120,
+              height: 120,
+              borderRadius: "50%",
+              background: "#fff",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              fontSize: 36,
+              fontWeight: "bold",
+              color: "#444",
+            }}
+          >
+            {timeLeft}
+          </div>
+        </div>
+
+        <button
+          disabled
+          style={{
+            width: "90%",
+            backgroundColor: "#2ecc71",
+            color: "#fff",
+            marginTop: 20,
+            padding: 12,
+            borderRadius: 8,
+            border: "none",
+            fontSize: 16,
+          }}
+        >
+          {t("Loading")}
+        </button>
+      </div>
+    );
+  }
+
+  /* 2. 结果界面 */
   if (result) {
     const isWin = result.isWin;
 
     return (
       <div style={{ textAlign: "center", padding: 10 }}>
-        <h2 style={{ fontSize: 18, fontWeight: "bold", color: "#555" }}>
-          {symbol}
-        </h2>
+        <h2 style={{ fontSize: 18, fontWeight: "bold", color: "#555" }}>{symbol}</h2>
 
         <div
           style={{
@@ -471,57 +525,6 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
         >
           {isWin ? "+" : "-"}
           {Math.abs(result.profit).toFixed(4)}
-        </div>
-
-        <div
-          style={{
-            width: "90%",
-            margin: "0 auto",
-            border: "1px solid #ccc",
-            borderRadius: 8,
-            padding: 12,
-            fontSize: 14,
-            color: "#555",
-          }}
-        >
-          <div>
-            {t("Closing unit price")}
-            <span style={{ float: "right" }}>
-              {result.closePrice.toFixed(2)}
-            </span>
-          </div>
-
-          <div>
-            {t("Cycle")}
-            <span style={{ float: "right" }}>{result.cycle}s</span>
-          </div>
-
-          <div>
-            {t("Type")}
-            <span
-              style={{
-                float: "right",
-                fontWeight: "bold",
-                color: result.type === "Buy Fall" ? "#e74c3c" : "#2ecc71",
-              }}
-            >
-              {t(result.type)}
-            </span>
-          </div>
-
-          <div>
-            {t("Money")}
-            <span style={{ float: "right" }}>
-              {result.amount.toFixed(2)}
-            </span>
-          </div>
-
-          <div>
-            {t("Buy price")}
-            <span style={{ float: "right" }}>
-              {result.startPrice.toFixed(2)}
-            </span>
-          </div>
         </div>
 
         <button
@@ -543,7 +546,7 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
     );
   }
 
-  /* ===================== 初始下单界面 ===================== */
+  /* 3. 初始下单界面 */
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       <div style={{ fontSize: 12, color: "#888" }}>{t("Selection Period")}</div>
@@ -574,8 +577,6 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
         })}
       </div>
 
-      <div style={{ fontSize: 12, color: "#888" }}>{t("Custom amount")}</div>
-
       <input
         type="number"
         placeholder={t("Please enter amount")}
@@ -587,16 +588,8 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
           borderRadius: 8,
           width: "100%",
           fontSize: 14,
-          color: "#444",
         }}
       />
-
-      <div style={{ fontSize: 12, color: "#666" }}>
-        {t("Balance")}:{" "}
-        <span style={{ color: "#2ecc71", fontWeight: "bold" }}>
-          {localBalance.toFixed(4)} USDT
-        </span>
-      </div>
 
       <button
         disabled={!selectedPeriod}
@@ -617,6 +610,7 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
     </div>
   );
 };
+
 
 /* ===================== 主交易页面 ===================== */
 const Trade = () => {
