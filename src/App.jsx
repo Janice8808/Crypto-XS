@@ -1,27 +1,28 @@
+// src/App.jsx
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./i18n";
 
-import Splash from "./Splash";    // ⭐ 新增：启动页
-
-import AdminSimple from "./pages/AdminSimple";
+import Splash from "./Splash";
 import Layout from "./Layout";
 import AuthGate from "./AuthGate";
-import { getPermanentUserId } from "@/utils/userIdManager";
 import { apiFetch } from "@/api/http";
+
 import Home from "./pages/Home";
 import Market from "./pages/Market";
 import CoinDetail from "./pages/CoinDetail";
 import Trade from "./pages/Trade";
 import Wallet from "./pages/Wallet";
+
 import ScrollToTop from "./ScrollToTop";
+
 import AssetDetail from "./pages/AssetDetail";
 import Deposit from "./pages/Deposit";
 import Withdraw from "./pages/Withdraw";
 import Deposit1 from "./pages/Deposit1";
 import Withdraw1 from "./pages/Withdraw1";
 import BuyCrypto1 from "./pages/BuyCrypto1";
-import PledgeDetail from "./pages/PledgeDetail";
+
 import UserCenter from "./pages/UserCenter";
 import Mail from "./pages/Mail";
 import BankCard from "./pages/BankCard";
@@ -31,174 +32,120 @@ import MSBCertification from "./pages/MSBCertification";
 import Introduction from "./pages/Introduction";
 
 import Pledge from "./pages/Pledge";
+import PledgeDetail from "./pages/PledgeDetail";
 import DeFiRecord from "./pages/DeFiRecord";
+
 import Notice from "./pages/Notice";
 import AdminPanel from "./pages/AdminPanel";
+import AdminSimple from "./pages/AdminSimple";
 
 function App() {
-// ⭐ App 启动自动登录（保证永久用户账号）
-useEffect(() => {
-  const initUser = async () => {
 
-    // 1) IndexedDB 永久设备地址（不会变）
-    const address = await getPermanentUserId();
-    console.log("🔒 Device Permanent Address:", address);
-
-    // 2) 如果已经有 token → 不重复登录
-    let token = localStorage.getItem("token");
-    if (token) return;
-
-    // 3) 没 token → 用永久地址做游客登录
-    try {
-      const res = await apiFetch("/api/guest-login", {
-        method: "POST",
-        body: JSON.stringify({ address }),
-      });
-
-      if (res?.data?.token) {
-        localStorage.setItem("token", res.data.token);
-        console.log("🎉 Guest login success!");
-      }
-    } catch (err) {
-      console.error("❌ guest-login error:", err);
-    }
-  };
-
-  initUser();
-}, []);
-
-  // ⭐ 自动更新用户 last_seen
+  // ⭐ 前端首次打开自动 guest-login
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) return;
+    if (token) return; // 已经有 token，无需重新登录
 
-    const API = import.meta.env.PROD
-      ? "https://pankouhoutai.shop"
-      : "http://localhost:3001";
+    async function loginGuest() {
+      try {
+        const res = await apiFetch("/api/guest-login", {
+          method: "POST",
+          body: JSON.stringify({}), // 不需要 address，后端用 cookie 找
+        });
 
-    fetch(`${API}/api/ping`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-    }).catch(() => {});
-  }, []);
-
-  // ⭐ 电脑端弹出 "下载钱包二维码"
-  const [showWalletQr, setShowWalletQr] = useState(false);
-
-  useEffect(() => {
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (!isMobile) {
-      setShowWalletQr(true);
+        if (res?.data?.token) {
+          localStorage.setItem("token", res.data.token);
+          console.log("🎉 自动游客登录成功");
+          window.refreshAuth(); // 通知 AuthContext 刷新
+        }
+      } catch (err) {
+        console.error("guest-login error: ", err);
+      }
     }
+
+    loginGuest();
   }, []);
 
-return (
-  <Splash>   {/* ⭐ 整个 APP 包个启动页 */}
-
-    {/* ⭐ 电脑端二维码弹窗 */}
-    {showWalletQr && (
-      <div className="fixed inset-0 bg-[#16171a]/90 z-50 flex items-center justify-center px-4">
-        <div className="bg-transparent text-center max-w-lg w-full">
-          <img
-            src="/walletconnect.png"
-            alt="WalletConnect QR"
-            className="w-full rounded-3xl shadow-2xl mx-auto"
+  return (
+    <Splash>
+      <Router>
+        <ScrollToTop />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <AuthGate>
+                <Layout><Home /></Layout>
+              </AuthGate>
+            }
           />
 
-          <div
-            onClick={() => setShowWalletQr(false)}
-            className="mt-4 text-white/70 hover:text-white text-4xl cursor-pointer select-none"
-          >
-            ×
-          </div>
-        </div>
-      </div>
-    )}
+          <Route
+            path="/market"
+            element={
+              <AuthGate>
+                <Layout><Market /></Layout>
+              </AuthGate>
+            }
+          />
 
-    {/* ⭐ 主路由 —— 必须先打开 Router 和 Routes！ */}
-    <Router>
-      <ScrollToTop />
+          <Route
+            path="/coin/:symbol"
+            element={
+              <AuthGate>
+                <Layout><CoinDetail /></Layout>
+              </AuthGate>
+            }
+          />
 
-      <Routes>
+          <Route
+            path="/trade"
+            element={
+              <AuthGate>
+                <Layout><Trade /></Layout>
+              </AuthGate>
+            }
+          />
 
-        <Route
-          path="/"
-          element={
-            <AuthGate>
-              <Layout><Home /></Layout>
-            </AuthGate>
-          }
-        />
+          <Route
+            path="/wallet"
+            element={
+              <AuthGate>
+                <Layout><Wallet /></Layout>
+              </AuthGate>
+            }
+          />
 
-        <Route
-          path="/market"
-          element={
-            <AuthGate>
-              <Layout><Market /></Layout>
-            </AuthGate>
-          }
-        />
+          {/* 其余页面照旧 */}
+          <Route path="/asset/:symbol" element={<AuthGate><AssetDetail /></AuthGate>} />
+          <Route path="/wallet/:symbol/deposit" element={<AuthGate><Deposit /></AuthGate>} />
+          <Route path="/wallet/:symbol/withdraw" element={<AuthGate><Withdraw /></AuthGate>} />
+          <Route path="/notice" element={<Notice />} />
+          <Route path="/deposit1" element={<AuthGate><Deposit1 /></AuthGate>} />
+          <Route path="/withdraw1" element={<AuthGate><Withdraw1 /></AuthGate>} />
+          <Route path="/buycrypto1" element={<AuthGate><BuyCrypto1 /></AuthGate>} />
 
-        <Route
-          path="/coin/:symbol"
-          element={
-            <AuthGate>
-              <Layout><CoinDetail /></Layout>
-            </AuthGate>
-          }
-        />
+          <Route path="/user" element={<AuthGate><UserCenter /></AuthGate>} />
+          <Route path="/user/mail" element={<AuthGate><Mail /></AuthGate>} />
+          <Route path="/user/bank" element={<AuthGate><BankCard /></AuthGate>} />
+          <Route path="/user/language" element={<AuthGate><Language /></AuthGate>} />
+          <Route path="/user/withdrawal-password" element={<AuthGate><WithdrawalPassword /></AuthGate>} />
+          <Route path="/intro" element={<AuthGate><Introduction /></AuthGate>} />
+          <Route path="/user/msb" element={<AuthGate><MSBCertification /></AuthGate>} />
 
-        <Route
-          path="/trade"
-          element={
-            <AuthGate>
-              <Layout><Trade /></Layout>
-            </AuthGate>
-          }
-        />
+          <Route path="/defi" element={<AuthGate><Pledge /></AuthGate>} />
+          <Route path="/defi-record" element={<AuthGate><DeFiRecord /></AuthGate>} />
+          <Route path="/pledge-detail/:symbol" element={<AuthGate><PledgeDetail /></AuthGate>} />
 
-        <Route
-          path="/wallet"
-          element={
-            <AuthGate>
-              <Layout><Wallet /></Layout>
-            </AuthGate>
-          }
-        />
+          {/* 管理员 */}
+          <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/admin2" element={<AdminSimple />} />
 
-        {/* 其他页面 */}
-        <Route path="/asset/:symbol" element={<AuthGate><AssetDetail /></AuthGate>} />
-        <Route path="/wallet/:symbol/deposit" element={<AuthGate><Deposit /></AuthGate>} />
-        <Route path="/wallet/:symbol/withdraw" element={<AuthGate><Withdraw /></AuthGate>} />
-        <Route path="/notice" element={<Notice />} />
-        <Route path="/deposit1" element={<AuthGate><Deposit1 /></AuthGate>} />
-        <Route path="/withdraw1" element={<AuthGate><Withdraw1 /></AuthGate>} />
-        <Route path="/buycrypto1" element={<AuthGate><BuyCrypto1 /></AuthGate>} />
-
-        <Route path="/user" element={<AuthGate><UserCenter /></AuthGate>} />
-        <Route path="/user/mail" element={<AuthGate><Mail /></AuthGate>} />
-        <Route path="/user/bank" element={<AuthGate><BankCard /></AuthGate>} />
-        <Route path="/user/language" element={<AuthGate><Language /></AuthGate>} />
-        <Route path="/user/withdrawal-password" element={<AuthGate><WithdrawalPassword /></AuthGate>} />
-        <Route path="/intro" element={<AuthGate><Introduction /></AuthGate>} />
-        <Route path="/user/msb" element={<AuthGate><MSBCertification /></AuthGate>} />
-
-        <Route path="/defi" element={<AuthGate><Pledge /></AuthGate>} />
-        <Route path="/defi-record" element={<AuthGate><DeFiRecord /></AuthGate>} />
-        <Route path="/pledge-detail/:symbol" element={<AuthGate><PledgeDetail /></AuthGate>} />
-
-        <Route path="/admin" element={<AdminPanel />} />
-        <Route path="/admin2" element={<AdminSimple />} />
-
-        {/* 默认首页 */}
-        <Route path="*" element={<Home />} />
-
-      </Routes>
-    </Router>
-
-  </Splash>
-);
-
+          <Route path="*" element={<Home />} />
+        </Routes>
+      </Router>
+    </Splash>
+  );
 }
 
 export default App;

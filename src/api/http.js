@@ -1,12 +1,14 @@
 // src/api/http.js
 
-// 去掉尾部的 /，并且如果没设置环境变量，就用后端的线上地址
+// 后端主域名
 const API_BASE = "https://pankouhoutai.shop";
 
+// 获取用户 token
 function getUserToken() {
   return localStorage.getItem("token") || "";
 }
 
+// 获取后台 token
 function getAdminToken() {
   return localStorage.getItem("adminToken") || "";
 }
@@ -15,25 +17,27 @@ export async function apiFetch(path, options = {}) {
   const userToken = getUserToken();
   const adminToken = getAdminToken();
 
-  const hasAdminAuth = options.headers?.Authorization; 
-  // ⭐ 如果 admin.js 传了 Authorization，就说明它是后台请求
+  const hasAdminAuth = options.headers?.Authorization;
 
   const finalHeaders = {
     "Content-Type": "application/json",
 
-    ...(options.headers || {}),    // ⭐ 先放用户/管理员传入的 headers
+    ...(options.headers || {}),
 
     Authorization:
-      hasAdminAuth                        // ⭐ 后台请求优先使用 Admin Token
+      hasAdminAuth
         ? options.headers.Authorization
         : userToken
-        ? `Bearer ${userToken}`           // ⭐ 前台请求 fallback 使用普通用户 token
+        ? `Bearer ${userToken}`
         : undefined,
   };
 
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers: finalHeaders,
+
+    // ⭐⭐⭐ 必须加这个，才能让浏览器带上 HttpOnly Cookie
+    credentials: "include",
   });
 
   if (!res.ok) {
