@@ -6,12 +6,43 @@ import { useCoins } from "../hooks/useCoins";
 import { useUserBalances } from "@/hooks/useUserBalances";
 import { coinIcons } from "../assets/coinIcons";
 import { useTranslation } from "react-i18next";
+import { apiFetch } from "@/api/http";
+import { useEffect, useState } from "react";
 
 export default function Wallet() {
   const navigate = useNavigate();
   const { allCoins } = useCoins();
   const { balances } = useUserBalances();
   const { t } = useTranslation();
+
+  const [userInfo, setUserInfo] = useState(null);
+
+  /* -------------------- ⭐ 加载用户信息（带 UID） -------------------- */
+  useEffect(() => {
+    async function loadInfo() {
+      try {
+        const res = await apiFetch("/api/userinfo");
+        setUserInfo(res);
+
+        if (res?.userId) localStorage.setItem("userId", res.userId);
+        if (res?.wallet) localStorage.setItem("address", res.wallet);
+
+      } catch (err) {
+        console.error("加载用户信息失败:", err);
+      }
+    }
+
+    loadInfo();
+  }, []);
+
+  /* -------------------- ⭐ 地址 & UID -------------------- */
+  const address = userInfo?.wallet || localStorage.getItem("address") || "";
+  const userId = userInfo?.userId || localStorage.getItem("userId") || "";
+
+  const shortAddress =
+    address && address.length > 10
+      ? `${address.slice(0, 6)}....${address.slice(-4)}`
+      : address || "--";
 
   const coinList = Array.isArray(allCoins) ? allCoins : [];
 
@@ -23,9 +54,6 @@ export default function Wallet() {
     if (sym) priceMap[sym] = price;
   });
   priceMap["USDT"] = 1; // 恒定价格
-
-  console.log("🔥 balances =", balances);
-  console.log("🔥 priceMap =", priceMap);
 
   /* -------------------- ⭐ 计算总资产 -------------------- */
   let totalAsset = 0;
@@ -47,30 +75,26 @@ export default function Wallet() {
     });
   }
 
-  /* -------------------- ⭐ 展示的币种列表 -------------------- */
+  /* -------------------- ⭐ 展示币种列表 -------------------- */
   const coinsForView = [
     { symbol: "USDT", logo: "/images/USDT.png" },
     ...coinList.slice(0, 24),
   ];
 
-  const address = localStorage.getItem("address") || "";
-  const userId = localStorage.getItem("userId") || "";
-
-  const shortAddress =
-    address && address.length > 10
-      ? `${address.slice(0, 6)}....${address.slice(-4)}`
-      : address || "--";
-
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
 
-      {/* -------------------- ⭐ 顶部卡片 -------------------- */}
+      {/* -------------------- ⭐ 顶部卡片（含 UID） -------------------- */}
       <Card className="m-4 rounded-2xl shadow-sm">
         <CardContent className="p-4 space-y-3">
           <div className="text-sm text-gray-600">
             <div className="font-semibold text-[#26a17b]">{shortAddress}</div>
+
             <div>
-              UID: <span className="font-medium text-gray-700">{userId || "--"}</span>
+              UID:{" "}
+              <span className="font-medium text-gray-700">
+                {userId || "--"}
+              </span>
             </div>
           </div>
 
