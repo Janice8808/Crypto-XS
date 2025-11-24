@@ -15,7 +15,6 @@ import Trade from "./pages/Trade";
 import Wallet from "./pages/Wallet";
 
 import ScrollToTop from "./ScrollToTop";
-
 import AssetDetail from "./pages/AssetDetail";
 import Deposit from "./pages/Deposit";
 import Withdraw from "./pages/Withdraw";

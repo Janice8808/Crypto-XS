@@ -39,10 +39,11 @@ export default function Wallet() {
   const address = userInfo?.wallet || localStorage.getItem("address") || "";
   const userId = userInfo?.userId || localStorage.getItem("userId") || "";
 
-  const shortAddress =
+const shortAddress =
     address && address.length > 10
-      ? `${address.slice(0, 6)}....${address.slice(-4)}`
-      : address || "--";
+      ? `0x${address.slice(0, 6)}…${address.slice(-4)}`
+      : `0x${address}` || "--";
+
 
   const coinList = Array.isArray(allCoins) ? allCoins : [];
 
