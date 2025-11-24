@@ -31,41 +31,42 @@ export default function CoinDetail() {
     load();
   }, []);
 
-  const coinInfo = useMemo(() => {
-    if (upperSymbol === "USDT") {
-      return {
-        symbol: "USDT",
-        name: "Tether USD",
-        price: 1,
-        logo: "/images/USDT.png",
-      };
-    }
+const coinInfo = useMemo(() => {
+  if (upperSymbol === "USDT") {
+    return {
+      symbol: "USDT",
+      name: "Tether USD",
+      price: 1,
+      logo: "/coin-icons/USDT.png",  // 修改为 coin-icons 文件夹中的图标
+    };
+  }
 
-    const found = allCoins.find((c) => {
-      const s = (c.symbol || "").toUpperCase();
-      return (
-        s === upperSymbol ||
-        s === `${upperSymbol}USDT` ||
-        s.startsWith(upperSymbol)
-      );
-    });
+  const found = allCoins.find((c) => {
+    const s = (c.symbol || "").toUpperCase();
+    return (
+      s === upperSymbol ||
+      s === `${upperSymbol}USDT` ||
+      s.startsWith(upperSymbol)
+    );
+  });
 
-    if (!found) {
-      return {
-        symbol: upperSymbol,
-        name: upperSymbol,
-        price: 0,
-        logo: "/images/default-coin.png",
-      };
-    }
-
+  if (!found) {
     return {
       symbol: upperSymbol,
-      name: found.name || upperSymbol,
-      price: Number(found.price ?? found.current_price ?? 0),
-      logo: found.image || "/images/default-coin.png",
+      name: upperSymbol,
+      price: 0,
+      logo: "/coin-icons/default-coin.png",  // 默认图标
     };
-  }, [allCoins, upperSymbol]);
+  }
+
+  return {
+    symbol: upperSymbol,
+    name: found.name || upperSymbol,
+    price: Number(found.price ?? found.current_price ?? 0),
+    logo: `/coin-icons/${found.symbol || upperSymbol}.png`,  // 动态设置图标路径
+  };
+}, [allCoins, upperSymbol]);
+
 
 
   const availableRaw =
