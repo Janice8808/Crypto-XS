@@ -230,9 +230,9 @@ const SideDrawer = ({ show, onClose, list, currentSymbol, onSelect }) => {
 
 
 /* ===================== 遮罩弹层 ===================== */
-const BottomModal = ({ children, onClose }) => (
+const BottomModal = ({ children, onClose, show }) => (
   <div
-    onClick={onClose}
+    onClick={show ? onClose : undefined}
     style={{
       position: "fixed",
       top: 0,
@@ -240,10 +240,11 @@ const BottomModal = ({ children, onClose }) => (
       width: "100%",
       height: "100%",
       backgroundColor: "rgba(0,0,0,0.3)",
-      display: "flex",
+      display: show ? "flex" : "none",      // ⭐ 用 show 控制显隐
       justifyContent: "flex-end",
       flexDirection: "column",
       zIndex: 9999,
+      pointerEvents: show ? "auto" : "none" // ⭐ 隐藏时不拦截点击
     }}
   >
     <div
@@ -275,6 +276,7 @@ const BottomModal = ({ children, onClose }) => (
     </div>
   </div>
 );
+
 
 
 /* ===================== 下单弹窗 ===================== */
@@ -923,15 +925,19 @@ useEffect(() => {
       </div>
 
       {showModal && (
-        <BottomModal onClose={() => setShowModal(false)}>
-          <OrderForm
-            symbol={currentSymbol}
-            modalType={modalType}
-            price={tvPrice ?? price}
-      onResult={setOrderResult}        // ⭐ 新增
-      result={orderResult}             // ⭐ 新增           
-          />
-        </BottomModal>
+<BottomModal
+  show={showModal}                          // ⭐ 改用 show 控制显示
+  onClose={() => setShowModal(false)}
+>
+  <OrderForm
+    symbol={currentSymbol}
+    modalType={modalType}
+    price={tvPrice ?? price}
+    onResult={setOrderResult}
+    result={orderResult}
+  />
+</BottomModal>
+
       )}
 <SideDrawer
   show={showDrawer}
