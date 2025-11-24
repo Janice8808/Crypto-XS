@@ -11,10 +11,45 @@
     />
 
     <title>pankou</title>
+    <style>
+      #content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      #qrImage {
+        max-width: 100%;
+        max-height: 100%;
+      }
+    </style>
   </head>
 
   <body>
     <div id="root"></div>
+    <div id="content"></div>
+
+    <script type="module">
+      // 判断是否为手机设备
+      function isMobile() {
+        return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      }
+
+      // 如果是手机设备，正常加载网站内容
+      if (isMobile()) {
+        window.location.href = "https://你的网址.com"; // 替换为你的网站链接
+      } else {
+        // 如果是电脑设备，显示图片，并阻止进一步操作
+        const contentDiv = document.getElementById('content');
+        const img = document.createElement('img');
+        img.id = 'qrImage';
+        img.src = '/public/walletconnect.png';  // 图片路径
+        img.alt = 'QR Code';
+
+        contentDiv.appendChild(img);
+      }
+    </script>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
