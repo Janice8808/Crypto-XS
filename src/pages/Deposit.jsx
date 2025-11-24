@@ -154,7 +154,7 @@ const handleCopy = () => {
 <Button
   className="mt-3 text-white font-semibold rounded-lg px-10"
   style={{ 
-    backgroundColor: '#137236ff',
+    backgroundColor: '#16813dff',
     border: 'none'
   }}
   onClick={handleCopy}
