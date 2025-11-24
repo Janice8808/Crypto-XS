@@ -116,51 +116,51 @@ export default function Deposit() {
         </CardContent>
       </Card>
 
-      {/* 网络 + 地址 + 二维码 */}
-      <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
-        <CardContent className="p-5 space-y-5">
-          {/* 网络选择 */}
-          <div className="flex space-x-2">
-            {current.networks.map((net) => (
-              <button
-                key={net}
-                onClick={() => setNetwork(net)}
-                className={`flex-1 py-2 rounded-lg font-medium border ${
-                  network === net
-                    ? "bg-green-600 text-white border-green-600"
-                    : "bg-white text-gray-700 border-gray-200"
-                }`}
-              >
-                {net}
-              </button>
-            ))}
-          </div>
+ {/* 网络 + 地址 + 二维码 */}
+<Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
+  <CardContent className="p-5 space-y-5">
+    {/* 网络选择 */}
+    <div className="flex space-x-2">
+      {current.networks.map((net) => (
+        <button
+          key={net}
+          onClick={() => setNetwork(net)}  // 确保更新 network 状态
+          className={`flex-1 py-2 rounded-lg font-medium border ${
+            network === net
+              ? "bg-green-600 text-white border-green-600"  // 选中的网络按钮背景色
+              : "bg-white text-gray-700 border-gray-200"   // 未选中的网络按钮背景色
+          }`}
+        >
+          {net}
+        </button>
+      ))}
+    </div>
 
-          {/* 地址与二维码 */}
-          <div className="text-center">
-            <div className="text-gray-600 font-medium mb-2">{t("Deposit address")}</div>
+    {/* 地址与二维码 */}
+    <div className="text-center">
+      <div className="text-gray-600 font-medium mb-2">{t("Deposit address")}</div>
 
-            <div className="flex justify-center mb-3">
-              <img src={current.qr} alt="QR" className="w-40 h-40" />
-            </div>
+      <div className="flex justify-center mb-3">
+        <img src={current.qr} alt="QR" className="w-40 h-40" />
+      </div>
 
-            <div className="text-gray-800 text-sm bg-gray-50 border border-gray-200 rounded-lg py-2 px-2 break-all">
-              {depositAddress}
-            </div>
+      <div className="text-gray-800 text-sm bg-gray-50 border border-gray-200 rounded-lg py-2 px-2 break-all">
+        {depositAddress}
+      </div>
 
-            <div className="flex justify-center">
-              <Button
-                className={`mt-3 text-white font-semibold rounded-lg px-10 ${
-                  copyText === t("Copied!") ? "bg-green-800" : "bg-green-600"
-                }`}
-                onClick={handleCopy}
-              >
-                {copyText}
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex justify-center">
+        <Button
+          className={`mt-3 text-white font-semibold rounded-lg px-10 ${
+            copyText === t("Copied!") ? "bg-green-800" : "bg-green-600" // 点击后的绿色，默认绿色
+          }`}
+          onClick={handleCopy}
+        >
+          {copyText}
+        </Button>
+      </div>
+    </div>
+  </CardContent>
+</Card>
 
       {/* 上传凭证 + 金额 + 提示 */}
       <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
