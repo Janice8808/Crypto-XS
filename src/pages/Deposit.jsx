@@ -121,13 +121,14 @@ export default function Deposit() {
             <div className="text-gray-600 font-medium mb-2">{t("Network")}</div>
             <div className="flex gap-3">
               {current.networks.map((n) => (
-                <Button
-                  key={n}
-                  className={`flex-1 ${activeNetwork === n ? "bg-green-600" : "bg-white"} text-white font-semibold rounded-lg border ${activeNetwork === n ? "border-green-600" : "border-gray-400"}`}
-                  onClick={() => setNetwork(n)}
-                >
-                  {n}
-                </Button>
+<Button
+  key={n}
+  className={`flex-1 ${activeNetwork === n ? "bg-green-600" : "bg-white"} text-white font-semibold rounded-lg border ${activeNetwork === n ? "border-green-600" : "border-gray-400"}`}
+  onClick={() => setNetwork(n)}
+>
+  {n}
+</Button>
+
               ))}
             </div>
           </div>
