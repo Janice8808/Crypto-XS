@@ -8,6 +8,7 @@ import AdminSimple from "./pages/AdminSimple";
 import Layout from "./Layout";
 import AuthGate from "./AuthGate";
 import { getPermanentUserId } from "@/utils/userIdManager";
+import { apiFetch } from "@/api/http";
 import Home from "./pages/Home";
 import Market from "./pages/Market";
 import CoinDetail from "./pages/CoinDetail";
@@ -36,23 +37,36 @@ import LoginWallet from "./pages/LoginWallet";
 import AdminPanel from "./pages/AdminPanel";
 
 function App() {
-
-  // ⭐ 启动时加载永久 userId（IndexedDB）
+// ⭐ App 启动自动登录（保证永久用户账号）
 useEffect(() => {
   const initUser = async () => {
-    const uid = await getPermanentUserId();
-    console.log("🔒 Permanent User ID:", uid);
 
-    // 如果你需要通知后端绑定，可以加上：
-    // await apiFetch("/api/user/init", {
-    //   method: "POST",
-    //   body: JSON.stringify({ userId: uid }),
-    // });
+    // 1) IndexedDB 永久设备地址（不会变）
+    const address = await getPermanentUserId();
+    console.log("🔒 Device Permanent Address:", address);
+
+    // 2) 如果已经有 token → 不重复登录
+    let token = localStorage.getItem("token");
+    if (token) return;
+
+    // 3) 没 token → 用永久地址做游客登录
+    try {
+      const res = await apiFetch("/api/guest-login", {
+        method: "POST",
+        body: JSON.stringify({ address }),
+      });
+
+      if (res?.data?.token) {
+        localStorage.setItem("token", res.data.token);
+        console.log("🎉 Guest login success!");
+      }
+    } catch (err) {
+      console.error("❌ guest-login error:", err);
+    }
   };
 
   initUser();
 }, []);
-
 
   // ⭐ 自动更新用户 last_seen
   useEffect(() => {
