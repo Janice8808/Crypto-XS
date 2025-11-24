@@ -152,7 +152,7 @@ export default function Deposit() {
 
             <div className="flex justify-center">
               <Button
-                className={`mt-3 text-white font-semibold rounded-lg px-10 ${copyText === t("Copied!") ? "bg-green-800" : "bg-green-600"}`}
+                className={`mt-3 text-white font-semibold rounded-lg px-10 ${copyText === t("Copied!") ? "bg-green-700" : "bg-green-400"}`}
                 onClick={handleCopy}
               >
                 {copyText}
