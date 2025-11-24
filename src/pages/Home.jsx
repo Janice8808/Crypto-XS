@@ -182,15 +182,21 @@ const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
   const [uid, setUid] = useState("--");
 
   // 获取用户ID
-  useEffect(() => {
-    fetch("https://pankouhoutai.shop/api/user/balance", {
-      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-    })
-      .then((r) => r.json())
-      .then((d) => {
-        if (d?.userId) setUid(d.userId);
-      });
-  }, []);
+useEffect(() => {
+  fetch("https://pankouhoutai.shop/api/user/balance", {
+    headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+  })
+    .then((r) => r.json())
+    .then((d) => {
+      if (d?.userId) {
+        const userId = d.userId;
+        // 前四位和后四位保持，其他用 * 遮掩
+        const maskedUserId = "0x" + userId.slice(2, 6) + "****" + userId.slice(-4);
+        setUid(maskedUserId);
+      }
+    });
+}, []);
+
 
   // 多语言 features
   const features = [
