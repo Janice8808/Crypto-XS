@@ -74,13 +74,15 @@ export default function Deposit() {
     alert(`${t("Deposit")} ${amount} ${symbol} ${t("via")} ${activeNetwork}`)
   }
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(depositAddress)
-    setCopyText(t("Copied!"))
-    setTimeout(() => {
-      setCopyText(t("Copy"))
-    }, 2000)
-  }
+const handleCopy = () => {
+  navigator.clipboard.writeText(depositAddress); // 复制地址
+  setCopyText(t("Copied!")); // 改变按钮文本为 "Copied!"
+  console.log(copyText);  // 打印 copyText 查看是否更新
+  setTimeout(() => {
+    setCopyText(t("Copy")); // 两秒后恢复原文本
+  }, 2000);
+};
+
 
   const handleCurrencyClick = () => {
     // 点击 "USDT" 后返回上一层页面
