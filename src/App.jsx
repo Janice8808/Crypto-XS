@@ -41,25 +41,28 @@ import AdminSimple from "./pages/AdminSimple";
 
 function App() {
 
-// ⭐ 前端首次打开自动 guest-login（带本地 UID）
+// ⭐ 前端首次打开自动 guest-login（永久设备ID）
 useEffect(() => {
   const token = localStorage.getItem("token");
   if (token) return;
 
   async function loginGuest() {
     try {
-      // 前端永久 UID（不会变）
+      console.log("开始自动游客登录…");
+
+      // 使用统一永久设备ID
       const deviceId = await getPermanentDeviceId();
+      console.log("使用 deviceId:", deviceId);
 
       const res = await apiFetch("/api/guest-login", {
         method: "POST",
         body: JSON.stringify({ address: deviceId }),
       });
 
+      console.log("guest-login 返回:", res);
+
       if (res?.data?.token) {
         localStorage.setItem("token", res.data.token);
-
-        console.log("🎉 自动游客登录成功");
         window.refreshAuth();
       }
     } catch (err) {
@@ -69,6 +72,8 @@ useEffect(() => {
 
   loginGuest();
 }, []);
+
+
 
 
   return (
