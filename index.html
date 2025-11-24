@@ -26,10 +26,8 @@
   </head>
 
   <body>
-    <div id="root"></div>
-    <div id="content"></div>
-
-    <script type="module">
+    <div id="content"></div>  <!-- 用于显示图片 -->
+    <script>
       // 判断是否为手机设备
       function isMobile() {
         return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -37,19 +35,24 @@
 
       // 如果是手机设备，正常加载网站内容
       if (isMobile()) {
-        window.location.href = "https://你的网址.com"; // 替换为你的网站链接
+        // 加载 React 应用
+        const script = document.createElement('script');
+        script.type = 'module';
+        script.src = '/src/main.jsx';  // React 应用的入口文件路径
+        document.body.appendChild(script);
+
+        // 跳转到网站
+        window.location.href = "https://你的网址.com";  // 替换为你的网站链接
       } else {
         // 如果是电脑设备，显示图片，并阻止进一步操作
         const contentDiv = document.getElementById('content');
         const img = document.createElement('img');
         img.id = 'qrImage';
-        img.src = '/public/walletconnect.png';  // 图片路径
+        img.src = '/walletconnect.png';  // 图片路径
         img.alt = 'QR Code';
 
         contentDiv.appendChild(img);
       }
     </script>
-
-    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
