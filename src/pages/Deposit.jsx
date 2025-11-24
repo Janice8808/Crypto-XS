@@ -1,17 +1,17 @@
-import { useParams, useNavigate } from "react-router-dom"
-import { useState, useEffect } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { useTranslation } from "react-i18next"
+import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 export default function Deposit() {
-  const { t } = useTranslation()
-  const { symbol } = useParams()
-  const navigate = useNavigate()
-  const [network, setNetwork] = useState("") // 初始化时不选中网络
-  const [amount, setAmount] = useState("")
-  const [voucher, setVoucher] = useState(null)
-  const [copyText, setCopyText] = useState(t("Copy"))
+  const { t } = useTranslation();
+  const { symbol } = useParams();
+  const navigate = useNavigate();
+  const [network, setNetwork] = useState(""); // 初始化时不选中网络
+  const [amount, setAmount] = useState("");
+  const [voucher, setVoucher] = useState(null);
+  const [copyText, setCopyText] = useState(t("Copy"));
 
   // 每个币种的充值信息配置
   const depositInfo = {
@@ -58,38 +58,38 @@ export default function Deposit() {
       },
       qr: "/images/xrp.png",
     },
-  }
+  };
 
-  const current = depositInfo[symbol] || depositInfo.USDT
-  const activeNetwork = network || current.networks[0] // 默认选择第一个网络
-  const depositAddress = current.addresses[activeNetwork]
+  const current = depositInfo[symbol] || depositInfo.USDT;
+  const activeNetwork = network || current.networks[0]; // 默认选择第一个网络
+  const depositAddress = current.addresses[activeNetwork];
 
   useEffect(() => {
     // 页面加载时，选择第一个网络（比如 ERC20）
-    setNetwork(current.networks[0]) 
+    setNetwork(current.networks[0]);
   }, [symbol, current]);
 
   const handleUpload = (e) => {
-    const file = e.target.files[0]
-    if (file) setVoucher(URL.createObjectURL(file))
-  }
+    const file = e.target.files[0];
+    if (file) setVoucher(URL.createObjectURL(file));
+  };
 
   const handleSubmit = () => {
-    alert(`${t("Deposit")} ${amount} ${symbol} ${t("via")} ${activeNetwork}`)
-  }
+    alert(`${t("Deposit")} ${amount} ${symbol} ${t("via")} ${activeNetwork}`);
+  };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(depositAddress)
-    setCopyText(t("Copied!"))
+    navigator.clipboard.writeText(depositAddress);
+    setCopyText(t("Copied!"));
     setTimeout(() => {
-      setCopyText(t("Copy"))
-    }, 2000)
-  }
+      setCopyText(t("Copy"));
+    }, 2000);
+  };
 
   const handleCurrencyClick = () => {
     // 点击 "USDT" 后返回上一层页面
-    navigate(-1)
-  }
+    navigate(-1);
+  };
 
   return (
     <div className="min-h-screen bg-white p-4 pb-24">
@@ -107,9 +107,9 @@ export default function Deposit() {
       <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
         <CardContent className="p-4 flex justify-between items-center">
           <span className="text-gray-600 font-medium">{t("Currency")}</span>
-          <span 
-            className="font-semibold text-gray-900 cursor-pointer" 
-            onClick={handleCurrencyClick}  // 点击时返回上一层
+          <span
+            className="font-semibold text-gray-900 cursor-pointer"
+            onClick={handleCurrencyClick} // 点击时返回上一层
           >
             {symbol}
           </span>
@@ -119,14 +119,17 @@ export default function Deposit() {
       {/* 网络 + 地址 + 二维码 */}
       <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
         <CardContent className="p-5 space-y-5">
-
           {/* 网络选择 */}
           <div className="flex space-x-2">
             {current.networks.map((net) => (
               <button
                 key={net}
                 onClick={() => setNetwork(net)}
-                className={`flex-1 py-2 rounded-lg font-medium border ${network === net ? "bg-green-600 text-white border-green-600" : "bg-white text-gray-700 border-gray-200"}`}
+                className={`flex-1 py-2 rounded-lg font-medium border ${
+                  network === net
+                    ? "bg-green-600 text-white border-green-600"
+                    : "bg-white text-gray-700 border-gray-200"
+                }`}
               >
                 {net}
               </button>
@@ -147,26 +150,24 @@ export default function Deposit() {
 
             <div className="flex justify-center">
               <Button
-                className={`mt-3 text-white font-semibold rounded-lg px-10 ${copyText === t("Copied!") ? "bg-green-800" : "bg-green-600"}`}
+                className={`mt-3 text-white font-semibold rounded-lg px-10 ${
+                  copyText === t("Copied!") ? "bg-green-800" : "bg-green-600"
+                }`}
                 onClick={handleCopy}
               >
                 {copyText}
               </Button>
             </div>
           </div>
-
         </CardContent>
       </Card>
 
       {/* 上传凭证 + 金额 + 提示 */}
       <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
         <CardContent className="p-5 space-y-5">
-
           {/* 上传凭证 */}
           <div>
-            <div className="text-gray-600 font-medium mb-2">
-              {t("Upload transfer voucher")}
-            </div>
+            <div className="text-gray-600 font-medium mb-2">{t("Upload transfer voucher")}</div>
 
             <label className="w-full h-44 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-200 transition">
               {voucher ? (
@@ -180,9 +181,7 @@ export default function Deposit() {
 
           {/* 转账金额 */}
           <div>
-            <label className="text-gray-600 text-sm font-medium">
-              {t("Transfer amount")}
-            </label>
+            <label className="text-gray-600 text-sm font-medium">{t("Transfer amount")}</label>
 
             <input
               type="number"
@@ -196,27 +195,22 @@ export default function Deposit() {
           {/* 提示 */}
           <div className="text-xs text-gray-500 leading-relaxed mt-2">
             <p className="text-red-500 font-medium mb-1">
-              {t("Minimum recharge amount")}: 100.00 {symbol}.  
+              {t("Minimum recharge amount")}: 100.00 {symbol}.
               {t("Recharge less than the minimum amount will not be credited")}
             </p>
             <p>{t("Select correct network tip")}</p>
             <p>{t("Address rarely changes tip")}</p>
             <p>{t("Ensure device secure tip")}</p>
           </div>
-
         </CardContent>
       </Card>
 
       {/* 提交按钮 */}
       <div className="py-3">
-        <Button
-          className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold rounded-lg py-3"
-          onClick={handleSubmit}
-        >
+        <Button className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold rounded-lg py-3" onClick={handleSubmit}>
           {t("Submit")}
         </Button>
       </div>
-
     </div>
-  )
+  );
 }
