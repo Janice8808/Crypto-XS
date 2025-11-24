@@ -3,7 +3,8 @@
 // IndexedDB 存储（不会被清除）
 export function saveToIndexedDB(uid) {
   return new Promise((resolve) => {
-    const request = indexedDB.open("DEVICE_UID_DB", 1);
+    // ⭐ 升级版本号触发 onupgradeneeded，确保 kv 存在
+    const request = indexedDB.open("DEVICE_UID_DB", 2);
 
     request.onupgradeneeded = (e) => {
       const db = e.target.result;
@@ -23,7 +24,15 @@ export function saveToIndexedDB(uid) {
 
 export function loadFromIndexedDB() {
   return new Promise((resolve) => {
-    const request = indexedDB.open("DEVICE_UID_DB", 1);
+    // ⭐ 同样必须用版本号 2
+    const request = indexedDB.open("DEVICE_UID_DB", 2);
+
+    request.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains("kv")) {
+        db.createObjectStore("kv");
+      }
+    };
 
     request.onsuccess = (e) => {
       const db = e.target.result;
