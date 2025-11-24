@@ -21,48 +21,49 @@ export default function Deposit() {
         ERC20: "0x247d9633b242D791Ae353BE6879E30e6f449Bc6D",
         TRC20: "TXQp7LfXjD2hU4mZ8q3R9rPTVdss9sPG9P",
       },
-      qr: "/images/2.jpg",
+      qr: "/images/2.jpg", // 二维码图片
     },
     BTC: {
       networks: ["Bitcoin"], // BTC支持的网络
       addresses: {
         Bitcoin: "bc1q9u5t0dd4n3r0zk9e9p3ye9cghd3eh9ukw6kqwd",
       },
-      qr: "/images/btc.png",
+      qr: "/images/btc.png", // 二维码图片
     },
     ETH: {
       networks: ["ERC20"], // ETH支持的网络
       addresses: {
         ERC20: "0xF8b4aC92E9dEa9dCdFec89C87b6bD8E6bF410b2A",
       },
-      qr: "/images/eth.png",
+      qr: "/images/eth.png", // 二维码图片
     },
     TRX: {
       networks: ["TRC20"], // TRX支持的网络
       addresses: {
         TRC20: "TSkD9Y8rFZ7r4N6PbT3Qy8T6Yx9Lb1qv7K",
       },
-      qr: "/images/trx.png",
+      qr: "/images/trx.png", // 二维码图片
     },
     DOGE: {
       networks: ["DOGE"], // DOGE支持的网络
       addresses: {
         DOGE: "D9d8sMz9PMbShWfZKuBzY9vBsmXvUfRz5M",
       },
-      qr: "/images/doge.png",
+      qr: "/images/doge.png", // 二维码图片
     },
     XRP: {
       networks: ["XRP"], // XRP支持的网络
       addresses: {
         XRP: "rLHZx4gYhZk7oK1dQdQy2W1HBeqhmM8UZG",
       },
-      qr: "/images/xrp.png",
+      qr: "/images/xrp.png", // 二维码图片
     },
   };
 
   const current = depositInfo[symbol] || depositInfo.USDT;
   const activeNetwork = network || current.networks[0]; // 默认选择第一个网络
-  const depositAddress = current.addresses[activeNetwork];
+  const depositAddress = current.addresses[activeNetwork]; // 获取对应网络的地址
+  const qrImage = current.qr; // 获取对应网络的二维码图片
 
   useEffect(() => {
     // 页面加载时，选择第一个网络（比如 ERC20）
@@ -124,10 +125,7 @@ export default function Deposit() {
             {current.networks.map((net) => (
               <button
                 key={net}
-                onClick={() => {
-                  setNetwork(net);
-                  console.log("Network selected:", net); // Debugging the network change
-                }}
+                onClick={() => setNetwork(net)} // 更新 network 状态
                 className={`flex-1 py-2 rounded-lg font-medium border ${
                   network === net
                     ? "bg-green-600 text-white border-green-600"
@@ -144,7 +142,7 @@ export default function Deposit() {
             <div className="text-gray-600 font-medium mb-2">{t("Deposit address")}</div>
 
             <div className="flex justify-center mb-3">
-              <img src={current.qr} alt="QR" className="w-40 h-40" />
+              <img src={qrImage} alt="QR" className="w-40 h-40" />
             </div>
 
             <div className="text-gray-800 text-sm bg-gray-50 border border-gray-200 rounded-lg py-2 px-2 break-all">
