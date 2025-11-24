@@ -117,20 +117,21 @@ export default function Deposit() {
         <CardContent className="p-5 space-y-5">
 
           {/* 网络选择 */}
-          <div>
-            <div className="text-gray-600 font-medium mb-2">{t("Network")}</div>
-            <div className="flex gap-3">
-              {current.networks.map((n) => (
-                <Button
-                  key={n}
-                  className={`flex-1 ${activeNetwork === n ? "bg-green-600" : "bg-white"} text-white font-semibold rounded-lg border ${activeNetwork === n ? "border-green-600" : "border-gray-400"}`}
-                  onClick={() => setNetwork(n)}
-                >
-                  {n}
-                </Button>
-              ))}
-            </div>
-          </div>
+<div className="flex space-x-2">
+  {["ERC20", "TRC20"].map((net) => (
+    <button
+      key={net}
+      onClick={() => setNetwork(net)}
+      className={`flex-1 py-2 rounded-lg font-medium border ${
+        network === net
+          ? "bg-green-600 text-white border-green-600"
+          : "bg-white text-gray-700 border-gray-200"
+      }`}
+    >
+      {net}
+    </button>
+  ))}
+</div>
 
           {/* 地址与二维码 */}
           <div className="text-center">
@@ -145,12 +146,13 @@ export default function Deposit() {
             </div>
 
             <div className="flex justify-center">
-              <Button
-                className={`mt-3 text-white font-semibold rounded-lg px-10 ${copyText === t("Copied!") ? "bg-green-800" : "bg-green-600"}`}
-                onClick={handleCopy}
-              >
-                {copyText}
-              </Button>
+<Button
+  className={`mt-3 text-white font-semibold rounded-lg px-10 ${copyText === t("Copied!") ? "bg-green-800" : "bg-green-600"}`}
+  onClick={handleCopy}
+>
+  {copyText}
+</Button>
+
             </div>
           </div>
 
