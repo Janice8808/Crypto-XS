@@ -22,7 +22,7 @@ import Withdraw from "./pages/Withdraw";
 import Deposit1 from "./pages/Deposit1";
 import Withdraw1 from "./pages/Withdraw1";
 import BuyCrypto1 from "./pages/BuyCrypto1";
-
+import { getPermanentDeviceId } from "@/utils/deviceId";
 import UserCenter from "./pages/UserCenter";
 import Mail from "./pages/Mail";
 import BankCard from "./pages/BankCard";
@@ -41,30 +41,35 @@ import AdminSimple from "./pages/AdminSimple";
 
 function App() {
 
-  // ⭐ 前端首次打开自动 guest-login
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) return; // 已经有 token，无需重新登录
+// ⭐ 前端首次打开自动 guest-login（带本地 UID）
+useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (token) return;
 
-    async function loginGuest() {
-      try {
-        const res = await apiFetch("/api/guest-login", {
-          method: "POST",
-          body: JSON.stringify({}), // 不需要 address，后端用 cookie 找
-        });
+  async function loginGuest() {
+    try {
+      // 前端永久 UID（不会变）
+      const deviceId = await getPermanentDeviceId();
 
-        if (res?.data?.token) {
-          localStorage.setItem("token", res.data.token);
-          console.log("🎉 自动游客登录成功");
-          window.refreshAuth(); // 通知 AuthContext 刷新
-        }
-      } catch (err) {
-        console.error("guest-login error: ", err);
+      const res = await apiFetch("/api/guest-login", {
+        method: "POST",
+        body: JSON.stringify({ address: deviceId }),
+      });
+
+      if (res?.data?.token) {
+        localStorage.setItem("token", res.data.token);
+
+        console.log("🎉 自动游客登录成功");
+        window.refreshAuth();
       }
+    } catch (err) {
+      console.error("guest-login error:", err);
     }
+  }
 
-    loginGuest();
-  }, []);
+  loginGuest();
+}, []);
+
 
   return (
     <Splash>

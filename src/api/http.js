@@ -31,14 +31,12 @@ export async function apiFetch(path, options = {}) {
         ? `Bearer ${userToken}`
         : undefined,
   };
-
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers: finalHeaders,
-
-    // ⭐⭐⭐ 必须加这个，才能让浏览器带上 HttpOnly Cookie
-    credentials: "include",
+    credentials: "include",   // ⭐ 关键：让浏览器带 Cookie、接收 Set-Cookie
   });
+
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");

@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [loadingUserInfo, setLoadingUserInfo] = useState(true);
 
   axios.defaults.baseURL = "https://pankouhoutai.shop";
-
+  axios.defaults.withCredentials = true;  // ⭐⭐ 必须加
   /* ===========================
    * Token 变化时 → 更新 axios header
    * =========================== */
