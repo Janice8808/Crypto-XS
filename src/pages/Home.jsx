@@ -8,8 +8,9 @@ import { useOkxTickers } from "../hooks/useOkxTickers";
 const maskAddress = (addr) => {
   if (!addr) return "--";
   if (addr.length < 16) return addr;
-  return `${addr.slice(0, 6)}****${addr.slice(-10)}`;
+  return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
 };
+
 
 /* ---------------- SVG ICONS ---------------- */
 const iconUser = (
