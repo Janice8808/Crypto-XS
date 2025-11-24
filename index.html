@@ -26,7 +26,8 @@
   </head>
 
   <body>
-    <div id="content"></div>  <!-- 用于显示图片 -->
+    <div id="content"></div> <!-- 用于显示图片 -->
+
     <script>
       // 判断是否为手机设备
       function isMobile() {
@@ -35,14 +36,17 @@
 
       // 如果是手机设备，正常加载网站内容
       if (isMobile()) {
+        // 延迟加载 React 应用，给浏览器足够的时间进行跳转
+        setTimeout(function() {
+          // 跳转到网站
+          window.location.href = "https://你的网址.com";  // 替换为你的网站链接
+        }, 1000); // 延迟1秒跳转，避免直接阻止
+
         // 加载 React 应用
         const script = document.createElement('script');
         script.type = 'module';
         script.src = '/src/main.jsx';  // React 应用的入口文件路径
         document.body.appendChild(script);
-
-        // 跳转到网站
-        window.location.href = "https://你的网址.com";  // 替换为你的网站链接
       } else {
         // 如果是电脑设备，显示图片，并阻止进一步操作
         const contentDiv = document.getElementById('content');
