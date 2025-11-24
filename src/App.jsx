@@ -33,7 +33,6 @@ import Introduction from "./pages/Introduction";
 import Pledge from "./pages/Pledge";
 import DeFiRecord from "./pages/DeFiRecord";
 import Notice from "./pages/Notice";
-import LoginWallet from "./pages/LoginWallet";
 import AdminPanel from "./pages/AdminPanel";
 
 function App() {
@@ -120,10 +119,7 @@ useEffect(() => {
       )}
 
       {/* ⭐ 主路由 */}
-      <Router>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/loginwallet" element={<LoginWallet />} />
+
 
           <Route
             path="/"
