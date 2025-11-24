@@ -230,9 +230,11 @@ const SideDrawer = ({ show, onClose, list, currentSymbol, onSelect }) => {
 
 
 /* ===================== 遮罩弹层 ===================== */
-const BottomModal = ({ children, onClose, show }) => (
+const BottomModal = ({ children, onClose, disableClose }) => (
   <div
-    onClick={show ? onClose : undefined}
+    onClick={() => {
+      if (!disableClose) onClose();
+    }}
     style={{
       position: "fixed",
       top: 0,
@@ -240,11 +242,10 @@ const BottomModal = ({ children, onClose, show }) => (
       width: "100%",
       height: "100%",
       backgroundColor: "rgba(0,0,0,0.3)",
-      display: show ? "flex" : "none",      // ⭐ 用 show 控制显隐
+      display: "flex",
       justifyContent: "flex-end",
       flexDirection: "column",
       zIndex: 9999,
-      pointerEvents: show ? "auto" : "none" // ⭐ 隐藏时不拦截点击
     }}
   >
     <div
@@ -259,17 +260,20 @@ const BottomModal = ({ children, onClose, show }) => (
         boxShadow: "0 -2px 10px rgba(0,0,0,0.15)",
       }}
     >
+      {/* ✕ 按钮也根据 disableClose 决定是否允许关闭 */}
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button
-          onClick={onClose}
-          style={{
-            fontSize: 20,
-            background: "none",
-            border: "none",
-          }}
-        >
-          ✕
-        </button>
+        {!disableClose && (
+          <button
+            onClick={onClose}
+            style={{
+              fontSize: 20,
+              background: "none",
+              border: "none",
+            }}
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       {children}
@@ -280,14 +284,14 @@ const BottomModal = ({ children, onClose, show }) => (
 
 
 /* ===================== 下单弹窗 ===================== */
-const OrderForm = ({ symbol, modalType, price, onResult, result: orderResult }) => {
-
+const OrderForm = ({ symbol, modalType, price, onClose }) => {
   const { t } = useTranslation();
 
   const [customAmount, setCustomAmount] = useState("");
   const [localBalance, setLocalBalance] = useState(0);
   const [selectedPeriod, setSelectedPeriod] = useState(null);
   const [countdown, setCountdown] = useState(null);
+  const [result, setResult] = useState(null);
   const [timeLeft, setTimeLeft] = useState(0);
 
   const { balances: userBalances, controlMode } = useUserBalances();
@@ -403,17 +407,16 @@ const OrderForm = ({ symbol, modalType, price, onResult, result: orderResult }) 
 
     setCountdown(null);
 
-onResult({
-  isWin,
-  profit,
-  amount,
-  startPrice,
-  closePrice,
-  percent,
-  cycle: selectedPeriod,
-  type: modalType,
-});
-
+    setResult({
+      isWin,
+      profit,
+      amount,
+      startPrice,
+      closePrice,
+      percent,
+      cycle: selectedPeriod,
+      type: modalType,
+    });
   };
 
   /* ===================== 倒计时界面 UI ===================== */
@@ -546,8 +549,8 @@ onResult({
   }
 
   /* ===================== 结算界面 ===================== */
-  if (orderResult) {
-    const isWin = orderResult.isWin;
+  if (result) {
+    const isWin = result.isWin;
 
     return (
       <div style={{ textAlign: "center", padding: 10 }}>
@@ -569,7 +572,7 @@ onResult({
           }}
         >
           {isWin ? "+" : "-"}
-          {Math.abs(orderResult.profit).toFixed(4)}
+          {Math.abs(result.profit).toFixed(4)}
         </div>
 
         <div
@@ -586,13 +589,13 @@ onResult({
           <div>
             {t("Closing unit price")}
             <span style={{ float: "right" }}>
-              {orderResult.closePrice.toFixed(2)}
+              {result.closePrice.toFixed(2)}
             </span>
           </div>
 
           <div>
             {t("Cycle")}
-            <span style={{ float: "right" }}>{orderResult.cycle}s</span>
+            <span style={{ float: "right" }}>{result.cycle}s</span>
           </div>
 
           <div>
@@ -601,24 +604,24 @@ onResult({
               style={{
                 float: "right",
                 fontWeight: "bold",
-                color: orderResult.type === "Buy Fall" ? "#e74c3c" : "#2ecc71",
+                color: result.type === "Buy Fall" ? "#e74c3c" : "#2ecc71",
               }}
             >
-              {t(orderResult.type)}
+              {t(result.type)}
             </span>
           </div>
 
           <div>
             {t("Money")}
             <span style={{ float: "right" }}>
-              {orderResult.amount.toFixed(2)}
+              {result.amount.toFixed(2)}
             </span>
           </div>
 
           <div>
             {t("Buy price")}
             <span style={{ float: "right" }}>
-              {orderResult.startPrice.toFixed(2)}
+              {result.startPrice.toFixed(2)}
             </span>
           </div>
         </div>
@@ -730,7 +733,6 @@ const [currentSymbol, setCurrentSymbol] = useState(urlSymbol);
 
 // ⭐ 现在才能用 currentSymbol
 const baseSymbol = currentSymbol.replace("USDT", "");
-const [orderResult, setOrderResult] = useState(null);
 
 
   const [showMenu, setShowMenu] = useState(false);
@@ -769,12 +771,6 @@ const amount24h = d.amount24h || 0;
 
 
   const priceColor = changePercent >= 0 ? "#2ecc71" : "#e74c3c";
-
-useEffect(() => {
-  if (orderResult) {
-    setShowModal(true);   // ⭐ 自动重新弹出
-  }
-}, [orderResult]);
 
   return (
     <div style={{ width: "100%", height: "100vh", display: "flex", flexDirection: "column" }}>
@@ -924,21 +920,19 @@ useEffect(() => {
         </button>
       </div>
 
-      {showModal && (
-<BottomModal
-  show={showModal}                          // ⭐ 改用 show 控制显示
-  onClose={() => setShowModal(false)}
->
-  <OrderForm
-    symbol={currentSymbol}
-    modalType={modalType}
-    price={tvPrice ?? price}
-    onResult={setOrderResult}
-    result={orderResult}
-  />
-</BottomModal>
+{showModal && (
+  <BottomModal
+    onClose={() => setShowModal(false)}
+    disableClose={true}   // ⭐ 下单时禁止关闭
+  >
+    <OrderForm
+      symbol={currentSymbol}
+      modalType={modalType}
+      price={tvPrice ?? price}
+    />
+  </BottomModal>
+)}
 
-      )}
 <SideDrawer
   show={showDrawer}
   onClose={() => setShowDrawer(false)}
