@@ -11,6 +11,7 @@ export default function Deposit() {
   const [network, setNetwork] = useState("")
   const [amount, setAmount] = useState("")
   const [voucher, setVoucher] = useState(null)
+  const [copyText, setCopyText] = useState(t("Copy")) // 初始化按钮文本为 "Copy"
 
   // 每个币种的充值信息配置
   const depositInfo = {
@@ -73,6 +74,19 @@ export default function Deposit() {
     alert(`${t("Deposit")} ${amount} ${symbol} ${t("via")} ${activeNetwork}`)
   }
 
+  const handleCopy = () => {
+    // 复制地址到剪贴板
+    navigator.clipboard.writeText(depositAddress)
+
+    // 设置按钮文本为 "Copied!"
+    setCopyText(t("Copied!"))
+
+    // 2秒后恢复按钮文本为 "Copy"
+    setTimeout(() => {
+      setCopyText(t("Copy"))
+    }, 2000)
+  }
+
   return (
     <div className="min-h-screen bg-white p-4 pb-24">
 
@@ -131,9 +145,9 @@ export default function Deposit() {
             <div className="flex justify-center">
               <Button
                 className="mt-3 bg-green-600 text-white font-semibold rounded-lg px-10"
-                onClick={() => navigator.clipboard.writeText(depositAddress)}
+                onClick={handleCopy}
               >
-                {t("Copy")}
+                {copyText}  {/* 按钮文本会根据 copyText 变化 */}
               </Button>
             </div>
           </div>
