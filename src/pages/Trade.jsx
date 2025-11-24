@@ -278,14 +278,14 @@ const BottomModal = ({ children, onClose }) => (
 
 
 /* ===================== 下单弹窗 ===================== */
-const OrderForm = ({ symbol, modalType, price, onClose }) => {
+const OrderForm = ({ symbol, modalType, price, onResult, result: orderResult }) => {
+
   const { t } = useTranslation();
 
   const [customAmount, setCustomAmount] = useState("");
   const [localBalance, setLocalBalance] = useState(0);
   const [selectedPeriod, setSelectedPeriod] = useState(null);
   const [countdown, setCountdown] = useState(null);
-  const [result, setResult] = useState(null);
   const [timeLeft, setTimeLeft] = useState(0);
 
   const { balances: userBalances, controlMode } = useUserBalances();
@@ -401,16 +401,17 @@ const OrderForm = ({ symbol, modalType, price, onClose }) => {
 
     setCountdown(null);
 
-    setResult({
-      isWin,
-      profit,
-      amount,
-      startPrice,
-      closePrice,
-      percent,
-      cycle: selectedPeriod,
-      type: modalType,
-    });
+onResult({
+  isWin,
+  profit,
+  amount,
+  startPrice,
+  closePrice,
+  percent,
+  cycle: selectedPeriod,
+  type: modalType,
+});
+
   };
 
   /* ===================== 倒计时界面 UI ===================== */
@@ -543,8 +544,8 @@ const OrderForm = ({ symbol, modalType, price, onClose }) => {
   }
 
   /* ===================== 结算界面 ===================== */
-  if (result) {
-    const isWin = result.isWin;
+  if (orderResult) {
+    const isWin = orderResult.isWin;
 
     return (
       <div style={{ textAlign: "center", padding: 10 }}>
@@ -566,7 +567,7 @@ const OrderForm = ({ symbol, modalType, price, onClose }) => {
           }}
         >
           {isWin ? "+" : "-"}
-          {Math.abs(result.profit).toFixed(4)}
+          {Math.abs(orderResult.profit).toFixed(4)}
         </div>
 
         <div
@@ -583,13 +584,13 @@ const OrderForm = ({ symbol, modalType, price, onClose }) => {
           <div>
             {t("Closing unit price")}
             <span style={{ float: "right" }}>
-              {result.closePrice.toFixed(2)}
+              {orderResult.closePrice.toFixed(2)}
             </span>
           </div>
 
           <div>
             {t("Cycle")}
-            <span style={{ float: "right" }}>{result.cycle}s</span>
+            <span style={{ float: "right" }}>{orderResult.cycle}s</span>
           </div>
 
           <div>
@@ -598,24 +599,24 @@ const OrderForm = ({ symbol, modalType, price, onClose }) => {
               style={{
                 float: "right",
                 fontWeight: "bold",
-                color: result.type === "Buy Fall" ? "#e74c3c" : "#2ecc71",
+                color: orderResult.type === "Buy Fall" ? "#e74c3c" : "#2ecc71",
               }}
             >
-              {t(result.type)}
+              {t(orderResult.type)}
             </span>
           </div>
 
           <div>
             {t("Money")}
             <span style={{ float: "right" }}>
-              {result.amount.toFixed(2)}
+              {orderResult.amount.toFixed(2)}
             </span>
           </div>
 
           <div>
             {t("Buy price")}
             <span style={{ float: "right" }}>
-              {result.startPrice.toFixed(2)}
+              {orderResult.startPrice.toFixed(2)}
             </span>
           </div>
         </div>
@@ -727,6 +728,7 @@ const [currentSymbol, setCurrentSymbol] = useState(urlSymbol);
 
 // ⭐ 现在才能用 currentSymbol
 const baseSymbol = currentSymbol.replace("USDT", "");
+const [orderResult, setOrderResult] = useState(null);
 
 
   const [showMenu, setShowMenu] = useState(false);
@@ -765,6 +767,12 @@ const amount24h = d.amount24h || 0;
 
 
   const priceColor = changePercent >= 0 ? "#2ecc71" : "#e74c3c";
+
+useEffect(() => {
+  if (orderResult) {
+    setShowModal(true);   // ⭐ 自动重新弹出
+  }
+}, [orderResult]);
 
   return (
     <div style={{ width: "100%", height: "100vh", display: "flex", flexDirection: "column" }}>
@@ -920,6 +928,8 @@ const amount24h = d.amount24h || 0;
             symbol={currentSymbol}
             modalType={modalType}
             price={tvPrice ?? price}
+      onResult={setOrderResult}        // ⭐ 新增
+      result={orderResult}             // ⭐ 新增           
           />
         </BottomModal>
       )}
