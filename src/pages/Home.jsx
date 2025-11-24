@@ -190,20 +190,28 @@ useEffect(() => {
     .then((d) => {
       if (d?.userId) {
         let userId = d.userId;
+        
         // 确保 ID 以 "0x" 开头
         if (!userId.startsWith("0x")) {
           userId = "0x" + userId; // 如果没有 "0x" 则添加
         }
+
+        // 调试输出查看userId
+        console.log("Original userId:", userId);
+
         // 格式化用户ID，前4位 + “...” + 后4位
         const shortUserId =
           userId.length > 10
             ? `0x${userId.slice(2, 6)}…${userId.slice(-4)}`
-            : `0x${userId.slice(2)}` || "--"; // 截取前后四位，确保格式正确
+            : userId || "--"; // 截取前后四位，确保格式正确
+
+        // 调试输出查看最终短地址
+        console.log("Formatted shortUserId:", shortUserId);
+
         setUid(shortUserId);
       }
     });
 }, []);
-
 
 
 
