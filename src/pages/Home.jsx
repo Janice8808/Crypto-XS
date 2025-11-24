@@ -189,13 +189,18 @@ useEffect(() => {
     .then((r) => r.json())
     .then((d) => {
       if (d?.userId) {
-        const userId = d.userId;
-        // 确保 userId 以 0x 开头，且遮掩中间部分
-        const maskedUserId = "0x" + userId.substring(2, 6) + "****" + userId.substring(userId.length - 4);
+        let userId = d.userId;
+        // 确保 ID 以 "0x" 开头
+        if (!userId.startsWith("0x")) {
+          userId = "0x" + userId;
+        }
+        // 获取前四位和后四位，其他用 * 遮掩
+        const maskedUserId = userId.substring(0, 6) + "****" + userId.substring(userId.length - 4);
         setUid(maskedUserId);
       }
     });
 }, []);
+
 
 
   // 多语言 features
