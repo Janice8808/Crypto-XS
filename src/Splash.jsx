@@ -14,7 +14,7 @@ export default function Splash({ children }) {
         style={{
           width: "100vw",
           height: "100vh",
-          background: "#ffffff",
+          background: "#0d0f15",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
