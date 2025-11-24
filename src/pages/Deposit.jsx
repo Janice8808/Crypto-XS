@@ -152,7 +152,11 @@ const handleCopy = () => {
 
       <div className="flex justify-center">
 <Button
-  className="mt-3 text-white font-semibold rounded-lg px-10 bg-green-600"
+  className="mt-3 text-white font-semibold rounded-lg px-10"
+  style={{ 
+    backgroundColor: '#22c55e',
+    border: 'none'
+  }}
   onClick={handleCopy}
 >
   {copyText}
