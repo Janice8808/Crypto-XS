@@ -7,7 +7,7 @@ import Splash from "./Splash";    // ⭐ 新增：启动页
 import AdminSimple from "./pages/AdminSimple";
 import Layout from "./Layout";
 import AuthGate from "./AuthGate";
-
+import { getPermanentUserId } from "@/utils/userIdManager";
 import Home from "./pages/Home";
 import Market from "./pages/Market";
 import CoinDetail from "./pages/CoinDetail";
@@ -36,6 +36,23 @@ import LoginWallet from "./pages/LoginWallet";
 import AdminPanel from "./pages/AdminPanel";
 
 function App() {
+
+  // ⭐ 启动时加载永久 userId（IndexedDB）
+useEffect(() => {
+  const initUser = async () => {
+    const uid = await getPermanentUserId();
+    console.log("🔒 Permanent User ID:", uid);
+
+    // 如果你需要通知后端绑定，可以加上：
+    // await apiFetch("/api/user/init", {
+    //   method: "POST",
+    //   body: JSON.stringify({ userId: uid }),
+    // });
+  };
+
+  initUser();
+}, []);
+
 
   // ⭐ 自动更新用户 last_seen
   useEffect(() => {
