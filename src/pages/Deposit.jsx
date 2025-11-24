@@ -123,7 +123,8 @@ export default function Deposit() {
               {current.networks.map((n) => (
 <Button
   key={n}
-  className={`flex-1 ${activeNetwork === n ? "bg-green-600" : "bg-white"} text-white font-semibold rounded-lg border ${activeNetwork === n ? "border-green-600" : "border-gray-400"}`}
+  style={{ backgroundColor: activeNetwork === n ? 'green' : 'white', color: activeNetwork === n ? 'white' : 'gray' }}
+  className="flex-1 font-semibold rounded-lg border"
   onClick={() => setNetwork(n)}
 >
   {n}
