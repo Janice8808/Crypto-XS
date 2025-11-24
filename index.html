@@ -34,10 +34,11 @@
         text-align: center;
       }
 
-      /* QR Code图片宽度和高度，放大图片 */
+      /* 放大二维码图片，确保图片不超出容器 */
       .qr-container img {
-        width: 500px;  /* 增大图片宽度 */
-        height: 500px; /* 增大图片高度 */
+        width: 80vw;  /* 设置宽度为屏幕宽度的80% */
+        max-width: 600px;  /* 最大宽度为600px */
+        height: auto;  /* 保持图片比例 */
       }
 
       /* 隐藏在手机端 */
@@ -55,7 +56,7 @@
       <div class="qr-container">
         <!-- 使用 public 文件夹中的二维码图片 -->
         <img src="/walletconnect.png" alt="Wallet Connect QR Code" />
-        <p>Log in using a wallet browser compatible with WalletConnect.</p>
+        <p>请扫描二维码连接你的钱包。</p>
       </div>
     </div>
 
