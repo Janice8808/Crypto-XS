@@ -413,8 +413,8 @@ useEffect(() => {
     <img src="/images/online.jpg" className="w-full h-[70px] rounded-lg object-fill" />
     {/* 在图片上叠加可翻译的文字 */}
     <div className="absolute inset-0 flex items-center justify-center">
-      <span className="text-gray-600 text-sm font-bold bg-white bg-opacity-80 px-2 py-1 rounded">
-        {t("Online Service")}
+      <span className="text-gray-600 text-sm font-bold text-center leading-tight">
+        Online<br />Service
       </span>
     </div>
   </div>
@@ -426,7 +426,7 @@ useEffect(() => {
       onClick={() => navigate('/deposit1')}
     />
     <div className="absolute inset-0 flex items-center justify-center">
-      <span className="text-gray-600 text-sm font-bold bg-white bg-opacity-80 px-2 py-1 rounded">
+      <span className="text-gray-600 text-sm font-bold text-center">
         {t("Fast buying coin")}
       </span>
     </div>
