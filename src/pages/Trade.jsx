@@ -300,7 +300,7 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
     { time: 90, percent: 0.3, min: 5001, max: 10000 },
     { time: 120, percent: 0.37, min: 10001, max: 50000 },
     { time: 180, percent: 0.5, min: 50001, max: 100000 },
-    { time: 360, percent: 0.7, min: 100001, max: Number.MAX_SAFE_INTEGER },
+    { time: 360, percent: 0.7, min: 100001, max: MAX },
   ];
 
   // 计算预期收益的函数
@@ -788,52 +788,52 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
   {t("Available Balance")}: <span style={{ fontWeight: "bold", color: "#333" }}>{localBalance.toFixed(2)} USDT</span>
 </div>
 
-      {/* 使用表格显示订单信息 */}
-      <table style={{ width: "100%", marginTop: 20, borderCollapse: "collapse" }}>
-        <thead>
-          <tr>
-            <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Symbol")}</th>
-            <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Direction")}</th>
-            <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Price")}</th>
-            <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Money")}</th>
-            <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Expected")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            {/* Symbol: 显示当前币种，如 BTC/USDT */}
-            <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>
-              {symbol.replace("USDT", "/USDT")}
-            </td>
-            
-            {/* Direction: 显示 Buy up 或 Buy fall */}
-            <td style={{ 
-              padding: "10px", 
-              textAlign: "center", 
-              fontSize: 14, 
-              color: modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71",
-              fontWeight: "bold"
-            }}>
-              {t(modalType)}
-            </td>
-            
-            {/* Price: 显示实时价格 */}
-            <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>
-              {currentPrice.toFixed(2)} {/* 修复：使用 currentPrice 而不是未定义的 buyPrice */}
-            </td>
-            
-            {/* Money: 显示用户输入的金额 */}
-            <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>
-              {customAmount || "0"} USDT
-            </td>
-            
-            {/* Expected: 根据金额和选择的百分比计算预期收益 */}
-            <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>
-              {calculateExpectedProfit().toFixed(2)} USDT {/* 使用计算函数 */}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+{/* 使用表格显示订单信息 */}
+<table style={{ width: "100%", marginTop: 20, borderCollapse: "collapse" }}>
+  <thead>
+    <tr>
+      <th style={{ padding: "10px", textAlign: "left", fontSize: 13, color: "#555" }}>{t("Symbol")}</th>
+      <th style={{ padding: "10px", textAlign: "left", fontSize: 13, color: "#555" }}>{t("Direction")}</th>
+      <th style={{ padding: "10px", textAlign: "left", fontSize: 13, color: "#555" }}>{t("Price")}</th>
+      <th style={{ padding: "10px", textAlign: "left", fontSize: 13, color: "#555" }}>{t("Money")}</th>
+      <th style={{ padding: "10px", textAlign: "left", fontSize: 13, color: "#555" }}>{t("Expected")}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      {/* Symbol: 显示当前币种，如 BTC/USDT */}
+      <td style={{ padding: "10px", textAlign: "left", fontSize: 13, color: "#333" }}>
+        {symbol.replace("USDT", "/USDT")}
+      </td>
+      
+      {/* Direction: 显示 Buy up 或 Buy fall */}
+      <td style={{ 
+        padding: "10px", 
+        textAlign: "left", 
+        fontSize: 13, 
+        color: modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71",
+        fontWeight: "bold"
+      }}>
+        {t(modalType)}
+      </td>
+      
+      {/* Price: 显示实时价格 */}
+      <td style={{ padding: "10px", textAlign: "left", fontSize: 13, color: "#333" }}>
+        {currentPrice.toFixed(2)}
+      </td>
+      
+      {/* Money: 显示用户输入的金额 */}
+      <td style={{ padding: "10px", textAlign: "left", fontSize: 13, color: "#333" }}>
+        {customAmount || "0"} USDT
+      </td>
+      
+      {/* Expected: 根据金额和选择的百分比计算预期收益 */}
+      <td style={{ padding: "10px", textAlign: "left", fontSize: 13, color: "#333" }}>
+        {calculateExpectedProfit().toFixed(2)} USDT
+      </td>
+    </tr>
+  </tbody>
+</table>
 
       <button
         disabled={!selectedPeriod}
