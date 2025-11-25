@@ -291,7 +291,8 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
   const [result, setResult] = useState(null);
   const [pollingInterval, setPollingInterval] = useState(null);
 
-  const { balances: userBalances, controlMode } = useUserBalances();
+  // ⭐ 添加 refetch
+  const { balances: userBalances, controlMode, refetch } = useUserBalances();
   const currentPrice = price;
   
   const periods = [
@@ -410,8 +411,13 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
       type: modalType,
     });
     
-    // 更新余额
+    // ⭐⭐ 修复：本金 + 盈利都要加上
     setLocalBalance(prev => prev + status.profit);
+    
+    // ⭐ 更新全局余额（如果 refetch 存在）
+    if (refetch) {
+      refetch();
+    }
     
     // 解锁界面
     onLockChange(false);
@@ -612,6 +618,13 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
   if (result) {
     const isWin = result.isWin;
 
+    // ⭐ 安全处理所有数值
+    const closePrice = Number(result.closePrice) || 0;
+    const startPrice = Number(result.startPrice) || 0;
+    const profit = Number(result.profit) || 0;
+    const amount = Number(result.amount) || 0;
+    const cycle = Number(result.cycle) || 0;
+
     return (
       <div style={{ textAlign: "center", padding: 10 }}>
         <h2 style={{ fontSize: 18, fontWeight: "bold", color: "#555" }}>
@@ -633,7 +646,7 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
           }}
         >
           {isWin ? "+" : "-"}
-          {Math.abs(result.profit).toFixed(4)}
+          {Math.abs(profit).toFixed(4)}
         </div>
 
         {/* 详细信息框 */}
@@ -651,13 +664,13 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
           <div>
             {t("Closing unit price")}
             <span style={{ float: "right" }}>
-              {result.closePrice.toFixed(2)}
+              {closePrice.toFixed(2)} {/* ⭐ 使用安全变量 */}
             </span>
           </div>
 
           <div>
             {t("Cycle")}
-            <span style={{ float: "right" }}>{result.cycle}s</span>
+            <span style={{ float: "right" }}>{cycle}s</span> {/* ⭐ 使用安全变量 */}
           </div>
 
           <div>
@@ -676,14 +689,14 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
           <div>
             {t("Money")}
             <span style={{ float: "right" }}>
-              {result.amount.toFixed(2)}
+              {amount.toFixed(2)} {/* ⭐ 使用安全变量 */}
             </span>
           </div>
 
           <div>
             {t("Buy price")}
             <span style={{ float: "right" }}>
-              {result.startPrice.toFixed(2)}
+              {startPrice.toFixed(2)} {/* ⭐ 使用安全变量 */}
             </span>
           </div>
         </div>
@@ -706,6 +719,8 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
       </div>
     );
   }
+
+  // ... 其余代码保持不变
 
   /* ===================== 初始下单界面 ===================== */
   return (
