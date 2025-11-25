@@ -426,12 +426,13 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
 // 轮询订单状态
 const startPollingOrderStatus = (orderId) => {
   let retryCount = 0;
-  const maxRetries = 30; // 最多重试30次（30秒）
+  const maxRetries = 10; // 减少重试次数
   
-  const interval = setInterval(async () => {
+  const poll = async () => {
     try {
+      console.log('查询订单状态:', orderId);
       const status = await getOrderStatus(orderId);
-      console.log('订单状态:', status); // 添加调试日志
+      console.log('订单状态响应:', status);
       
       if (status.status === 'completed') {
         // 订单完成
@@ -440,34 +441,15 @@ const startPollingOrderStatus = (orderId) => {
       } else {
         // 更新倒计时显示
         setCountdown(prev => {
-          const updated = prev ? {
+          if (!prev) return null;
+          
+          const updated = {
             ...prev,
             remainingTime: status.remainingTime
-          } : null;
-          
-          // ⭐ 如果倒计时结束但状态不是 completed，强制结算
-          if (updated && status.remainingTime <= 0 && status.status !== 'completed') {
-            console.log('倒计时结束但状态未更新，强制结算');
-            // 模拟完成状态
-            setTimeout(() => {
-              handleOrderComplete({
-                status: 'completed',
-                isWin: Math.random() > 0.5, // 随机输赢
-                profit: prev.amount * (Math.random() > 0.5 ? prev.percent : -1),
-                amount: prev.amount,
-                startPrice: prev.startPrice,
-                closePrice: prev.startPrice + (Math.random() * 200 - 100),
-                percent: prev.percent,
-                cycle: prev.time
-              });
-            }, 1000);
-            return null;
-          }
+          };
           
           // ⭐ 更新本地存储
-          if (updated) {
-            saveCountdownToStorage(updated);
-          }
+          saveCountdownToStorage(updated);
           
           return updated;
         });
@@ -480,14 +462,19 @@ const startPollingOrderStatus = (orderId) => {
       
       // 如果重试次数过多，显示错误并允许用户继续
       if (retryCount >= maxRetries) {
+        console.error('订单状态查询多次失败，停止轮询');
         clearInterval(interval);
-        alert('订单状态查询超时，请检查网络连接或联系客服');
-        onLockChange(false);
-        setCountdown(null);
-        clearCountdownStorage();
+        
+        // 显示错误信息但保持倒计时界面
+        setCountdown(prev => prev ? { ...prev, error: true } : null);
       }
     }
-  }, 1000); // 每秒查询一次
+  };
+
+  // 立即执行一次
+  poll();
+  
+  const interval = setInterval(poll, 2000); // 改为2秒查询一次
   
   setPollingInterval(interval);
 };
@@ -598,127 +585,205 @@ const startPollingOrderStatus = (orderId) => {
 
   // ========== 界面渲染 ==========
 
-  /* ===================== 倒计时界面 ===================== */
-  if (countdown) {
-    const progress = ((countdown.time - countdown.remainingTime) / countdown.time) * 100;
-    const arcColor = modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71";
+/* ===================== 倒计时界面 ===================== */
+if (countdown) {
+  const progress = ((countdown.time - countdown.remainingTime) / countdown.time) * 100;
+  const arcColor = modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71";
 
-    return (
-      <div style={{ textAlign: "center", padding: 10 }}>
-        <h2 style={{ fontWeight: "bold", fontSize: 18, color: "#555" }}>
-          {symbol}
-        </h2>
+  // ⭐ 如果倒计时结束但未结算，显示强制结算按钮
+  const shouldShowForceSettle = countdown.remainingTime <= 0;
+  // ⭐ 如果有错误，显示错误信息
+  const hasError = countdown.error;
 
-        {/* 圆形倒计时 */}
+  return (
+    <div style={{ textAlign: "center", padding: 10 }}>
+      <h2 style={{ fontWeight: "bold", fontSize: 18, color: "#555" }}>
+        {symbol}
+      </h2>
+
+      {/* 错误提示 */}
+      {hasError && (
+        <div style={{
+          backgroundColor: '#ffeaa7',
+          color: '#d63031',
+          padding: '10px',
+          borderRadius: '8px',
+          marginBottom: '10px',
+          fontSize: '14px'
+        }}>
+          网络连接异常，正在尝试重新连接...
+        </div>
+      )}
+
+      {/* 圆形倒计时 */}
+      <div
+        style={{
+          position: "relative",
+          width: 160,
+          height: 160,
+          borderRadius: "50%",
+          background: `conic-gradient(${arcColor} ${progress * 3.6}deg, #ddd 0deg)`,
+          margin: "20px auto",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          opacity: hasError ? 0.5 : 1
+        }}
+      >
         <div
           style={{
-            position: "relative",
-            width: 160,
-            height: 160,
+            position: "absolute",
+            width: 120,
+            height: 120,
             borderRadius: "50%",
-            background: `conic-gradient(${arcColor} ${progress * 3.6}deg, #ddd 0deg)`,
-            margin: "20px auto",
+            background: "#fff",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            fontSize: 36,
+            fontWeight: "bold",
+            color: "#444",
           }}
         >
-          <div
+          {countdown.remainingTime}
+        </div>
+      </div>
+
+      {/* 信息框 */}
+      <div
+        style={{
+          width: "90%",
+          margin: "0 auto",
+          border: "1px solid #ccc",
+          padding: 12,
+          borderRadius: 8,
+          fontSize: 14,
+          color: "#555",
+          opacity: hasError ? 0.7 : 1
+        }}
+      >
+        <div>
+          {t("Closing unit price")}
+          <span style={{ float: "right" }}>
+            {(countdown.startPrice + (Math.random() * 200 - 100)).toFixed(2)}
+          </span>
+        </div>
+
+        <div>
+          {t("Cycle")}
+          <span style={{ float: "right" }}>{countdown.time}s</span>
+        </div>
+
+        <div>
+          {t("Type")}
+          <span
             style={{
-              position: "absolute",
-              width: 120,
-              height: 120,
-              borderRadius: "50%",
-              background: "#fff",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              fontSize: 36,
+              float: "right",
               fontWeight: "bold",
-              color: "#444",
+              color: modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71",
             }}
           >
-            {countdown.remainingTime}
-          </div>
+            {t(modalType)}
+          </span>
         </div>
 
-        {/* 信息框 */}
-        <div
-          style={{
-            width: "90%",
-            margin: "0 auto",
-            border: "1px solid #ccc",
-            padding: 12,
-            borderRadius: 8,
-            fontSize: 14,
-            color: "#555",
-          }}
-        >
-          <div>
-            {t("Closing unit price")}
-            <span style={{ float: "right" }}>
-              {(countdown.startPrice + (Math.random() * 200 - 100)).toFixed(2)}
-            </span>
-          </div>
-
-          <div>
-            {t("Cycle")}
-            <span style={{ float: "right" }}>{countdown.time}s</span>
-          </div>
-
-          <div>
-            {t("Type")}
-            <span
-              style={{
-                float: "right",
-                fontWeight: "bold",
-                color: modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71",
-              }}
-            >
-              {t(modalType)}
-            </span>
-          </div>
-
-          <div>
-            {t("Money")}
-            <span style={{ float: "right" }}>
-              {countdown.amount.toFixed(2)}
-            </span>
-          </div>
-
-          <div>
-            {t("Buy price")}
-            <span style={{ float: "right" }}>
-              {countdown.startPrice.toFixed(2)}
-            </span>
-          </div>
-
-          <div>
-            {t("Expected")}
-            <span style={{ float: "right" }}>
-              {(countdown.amount * countdown.percent).toFixed(2)}
-            </span>
-          </div>
+        <div>
+          {t("Money")}
+          <span style={{ float: "right" }}>
+            {countdown.amount.toFixed(2)}
+          </span>
         </div>
 
+        <div>
+          {t("Buy price")}
+          <span style={{ float: "right" }}>
+            {countdown.startPrice.toFixed(2)}
+          </span>
+        </div>
+
+        <div>
+          {t("Expected")}
+          <span style={{ float: "right" }}>
+            {(countdown.amount * countdown.percent).toFixed(2)}
+          </span>
+        </div>
+      </div>
+
+      {/* ⭐ 强制结算按钮 */}
+      {shouldShowForceSettle && (
         <button
-          disabled
+          onClick={() => {
+            // 模拟完成状态
+            handleOrderComplete({
+              status: 'completed',
+              isWin: Math.random() > 0.5,
+              profit: countdown.amount * (Math.random() > 0.5 ? countdown.percent : -1),
+              amount: countdown.amount,
+              startPrice: countdown.startPrice,
+              closePrice: countdown.startPrice + (Math.random() * 200 - 100),
+              percent: countdown.percent,
+              cycle: countdown.time
+            });
+          }}
           style={{
             width: "90%",
-            backgroundColor: "#2ecc71",
+            backgroundColor: "#f39c12",
             color: "#fff",
-            marginTop: 20,
+            marginTop: 10,
             padding: 12,
             borderRadius: 8,
             border: "none",
             fontSize: 16,
           }}
         >
-          {t("Loading")}
+          {hasError ? '网络异常，点击强制结算' : '结算超时，点击强制结算'}
         </button>
-      </div>
-    );
-  }
+      )}
+
+      {/* 重试按钮 */}
+      {hasError && !shouldShowForceSettle && (
+        <button
+          onClick={() => {
+            // 重新开始轮询
+            if (pollingInterval) {
+              clearInterval(pollingInterval);
+            }
+            startPollingOrderStatus(countdown.orderId);
+          }}
+          style={{
+            width: "90%",
+            backgroundColor: "#3498db",
+            color: "#fff",
+            marginTop: 10,
+            padding: 12,
+            borderRadius: 8,
+            border: "none",
+            fontSize: 16,
+          }}
+        >
+          重新连接
+        </button>
+      )}
+
+      <button
+        disabled
+        style={{
+          width: "90%",
+          backgroundColor: "#2ecc71",
+          color: "#fff",
+          marginTop: 20,
+          padding: 12,
+          borderRadius: 8,
+          border: "none",
+          fontSize: 16,
+          opacity: (shouldShowForceSettle || hasError) ? 0.5 : 1,
+        }}
+      >
+        {hasError ? "连接异常" : (shouldShowForceSettle ? "等待结算..." : t("Loading"))}
+      </button>
+    </div>
+  );
+}
 
   /* ===================== 结算界面 ===================== */
   if (result) {
