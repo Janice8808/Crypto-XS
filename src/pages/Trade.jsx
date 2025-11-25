@@ -812,7 +812,7 @@ const periods = [
     padding: "8px 0"
   }}>
     {/* Symbol */}
-    <div style={{ flex: 1, textAlign: "left", fontSize: 12, color: "#5c5b5bff" }}>
+    <div style={{ flex: 1, textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>
       {symbol.replace("USDT", "/USDT")}
     </div>
     
@@ -828,29 +828,20 @@ const periods = [
     </div>
     
     {/* Price */}
-    <div style={{ flex: 1, textAlign: "left", fontSize: 11, color: "#5c5b5bff" }}>
+    <div style={{ flex: 1, textAlign: "center", fontSize: 11, color: "#5c5b5bff" }}>
       {currentPrice.toFixed(2)}
     </div>
     
     {/* Money */}
-    <div style={{ flex: 1, textAlign: "left", fontSize: 11, color: "#5c5b5bff" }}>
+    <div style={{ flex: 1, textAlign: "center", fontSize: 11, color: "#5c5b5bff" }}>
       {customAmount || "0"}
     </div>
     
     {/* Expected */}
-    <div style={{ flex: 1, textAlign: "left", fontSize: 11, color: "#5c5b5bff" }}>
+    <div style={{ flex: 1, textAlign: "center", fontSize: 11, color: "#5c5b5bff" }}>
       {calculateExpectedProfit().toFixed(2)} USDT
     </div>
   </div>
-</div>
-
-{/* 可用余额显示 */}
-<div style={{ 
-  fontSize: 14, 
-  color: "#7e7777ff",
-  marginTop: 5,
-}}>
-  {t("Available Balance")}: <span style={{ fontWeight: "bold", color: "#696868ff" }}>{localBalance.toFixed(2)} USDT</span>
 </div>
 
       <button
