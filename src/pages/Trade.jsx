@@ -608,7 +608,7 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
     );
   }
 
-  /* ===================== 结算界面 ===================== */
+ /* ===================== 结算界面 ===================== */
   if (result) {
     const isWin = result.isWin;
 
