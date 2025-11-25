@@ -707,7 +707,19 @@ if (result) {
           fontSize: 14,
         }}
       />
-
+{/* Display Custom Amount Information (new element to be added above the button) */}
+    <div style={{ fontSize: 14, color: "#555", marginTop: 20 }}>
+      <div>
+        <span>{t("Symbol")}: BTC/USDT</span>
+        <span style={{ marginLeft: 20 }}>{t("Direction")}: Buy up</span>
+      </div>
+      <div>
+        <span>{t("Price")}: 88151</span>
+        <span style={{ marginLeft: 20 }}>{t("Money")}: 10 USDT</span>
+        <span style={{ marginLeft: 20 }}>{t("Expected")}: 0 USDT</span>
+      </div>
+    </div>
+    
       <button
         disabled={!selectedPeriod}
         onClick={handleConfirm}
