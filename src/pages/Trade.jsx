@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { apiFetch } from "@/api/http";
 import { useUserBalances } from "@/hooks/useUserBalances";
-import { createOrder } from "@/api/order";
+import { createOrder, getOrderStatus } from "@/api/order"; 
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { coinIcons } from "../assets/coinIcons";
@@ -228,7 +228,6 @@ const SideDrawer = ({ show, onClose, list, currentSymbol, onSelect }) => {
   );
 };
 
-
 /* ===================== 遮罩弹层 ===================== */
 const BottomModal = ({ children, onClose, disableClose }) => (
   <div
@@ -302,6 +301,76 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
     { time: 180, percent: 0.5, min: 50001, max: 100000 },
     { time: 360, percent: 0.7, min: 100001, max: Number.MAX_SAFE_INTEGER },
   ];
+
+  // ========== 辅助函数 ==========
+  
+  // 获取当前选择周期的金额范围
+  const getCurrentRange = () => {
+    if (!selectedPeriod) return { min: 0, max: 0 };
+    const period = periods.find(p => p.time === selectedPeriod);
+    return period ? { min: period.min, max: period.max } : { min: 0, max: 0 };
+  };
+
+  // 格式化金额范围显示
+  const formatRangeText = () => {
+    const { min, max } = getCurrentRange();
+    if (max === Number.MAX_SAFE_INTEGER) {
+      return `${min}+`;
+    }
+    return `${min} - ${max}`;
+  };
+
+  // 全部投入按钮点击事件
+  const handleMaxAmount = () => {
+    const { max } = getCurrentRange();
+    const maxAmount = Math.min(localBalance, max);
+    setCustomAmount(maxAmount.toString());
+  };
+
+  // 计算预期收益
+  const calculateExpectedProfit = () => {
+    if (!customAmount || !selectedPeriod) return 0;
+    const amount = Number(customAmount);
+    const period = periods.find(p => p.time === selectedPeriod);
+    return period ? amount * period.percent : 0;
+  };
+
+  // ========== useEffect hooks ==========
+
+  /* ⭐ 初始界面允许关闭 */
+  useEffect(() => {
+    onLockChange(false);
+  }, []);
+
+  /* ====== 同步后台余额 ====== */
+  useEffect(() => {
+    const usdt = Number(
+      userBalances?.USDT ??
+        userBalances?.usdt ??
+        userBalances?.USD ??
+        userBalances?.USDC ??
+        0
+    );
+    setLocalBalance(usdt);
+  }, [userBalances]);
+
+  /* ⭐ 结果界面恢复允许关闭 */
+  useEffect(() => {
+    if (result) {
+      onLockChange(false);
+    }
+  }, [result]);
+
+  // 清理轮询
+  useEffect(() => {
+    return () => {
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
+      }
+    };
+  }, [pollingInterval]);
+
+  // ========== 业务函数 ==========
 
   // 轮询订单状态
   const startPollingOrderStatus = (orderId) => {
@@ -415,16 +484,7 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
     }
   };
 
-  // 清理轮询
-  useEffect(() => {
-    return () => {
-      if (pollingInterval) {
-        clearInterval(pollingInterval);
-      }
-    };
-  }, [pollingInterval]);
-
-  // 其他函数保持不变...
+  // ========== 界面渲染 ==========
 
   /* ===================== 倒计时界面 ===================== */
   if (countdown) {
@@ -548,7 +608,267 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
     );
   }
 
-  
+  /* ===================== 结算界面 ===================== */
+  if (result) {
+    const isWin = result.isWin;
+
+    return (
+      <div style={{ textAlign: "center", padding: 10 }}>
+        <h2 style={{ fontSize: 18, fontWeight: "bold", color: "#555" }}>
+          {symbol}
+        </h2>
+
+        {/* 盈亏框 */}
+        <div
+          style={{
+            width: "90%",
+            margin: "20px auto",
+            padding: "25px 0",
+            borderRadius: 8,
+            border: `1px solid ${isWin ? "#2ecc71" : "#e74c3c"}`,
+            background: "#fff",
+            color: isWin ? "#2ecc71" : "#e74c3c",
+            fontSize: 22,
+            fontWeight: "bold",
+          }}
+        >
+          {isWin ? "+" : "-"}
+          {Math.abs(result.profit).toFixed(4)}
+        </div>
+
+        {/* 详细信息框 */}
+        <div
+          style={{
+            width: "90%",
+            margin: "0 auto",
+            border: "1px solid #ccc",
+            borderRadius: 8,
+            padding: 12,
+            fontSize: 14,
+            color: "#555",
+          }}
+        >
+          <div>
+            {t("Closing unit price")}
+            <span style={{ float: "right" }}>
+              {result.closePrice.toFixed(2)}
+            </span>
+          </div>
+
+          <div>
+            {t("Cycle")}
+            <span style={{ float: "right" }}>{result.cycle}s</span>
+          </div>
+
+          <div>
+            {t("Type")}
+            <span
+              style={{
+                float: "right",
+                fontWeight: "bold",
+                color: result.type === "Buy Fall" ? "#e74c3c" : "#2ecc71",
+              }}
+            >
+              {t(result.type)}
+            </span>
+          </div>
+
+          <div>
+            {t("Money")}
+            <span style={{ float: "right" }}>
+              {result.amount.toFixed(2)}
+            </span>
+          </div>
+
+          <div>
+            {t("Buy price")}
+            <span style={{ float: "right" }}>
+              {result.startPrice.toFixed(2)}
+            </span>
+          </div>
+        </div>
+
+        <button
+          style={{
+            backgroundColor: "#2ecc71",
+            color: "#fff",
+            padding: "12px 0",
+            width: "90%",
+            borderRadius: 8,
+            marginTop: 20,
+            border: "none",
+            fontSize: 16,
+          }}
+          onClick={() => window.location.reload()}
+        >
+          {t("Continue")}
+        </button>
+      </div>
+    );
+  }
+
+  /* ===================== 初始下单界面 ===================== */
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      <div style={{ fontSize: 12, color: "#888" }}>{t("Selection Period")}</div>
+
+      <div style={{ display: "flex", gap: 12, overflowX: "auto" }}>
+        {periods.map((p) => {
+          const isSelected = selectedPeriod === p.time;
+          return (
+            <div
+              key={p.time}
+              onClick={() => setSelectedPeriod(p.time)}
+              style={{
+                minWidth: 70,
+                padding: "10px 0",
+                backgroundColor: isSelected ? "#f1c40f" : "#2ecc71",
+                borderRadius: 10,
+                textAlign: "center",
+                color: "#fff",
+                cursor: "pointer",
+                transform: isSelected ? "scale(1.05)" : "scale(1)",
+                transition: "0.2s",
+              }}
+            >
+              <div>{p.time}s</div>
+              <div>{(p.percent * 100).toFixed(0)}%</div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* 添加金额范围提示 */}
+      {selectedPeriod && (
+        <div style={{ 
+          fontSize: 14, 
+          color: "#858484ff",
+          textAlign: "left",
+          padding: "8px 0",
+        }}>
+          <strong>Custom amount:</strong> {formatRangeText()}
+        </div>
+      )}
+
+      {/* 金额输入框 */}
+      <div style={{ position: "relative" }}>
+        <input
+          type="number"
+          placeholder={t("Please enter amount")}
+          value={customAmount}
+          onChange={(e) => setCustomAmount(e.target.value)}
+          style={{
+            border: "1px solid #ccc",
+            padding: "12px 80px 12px 12px",
+            borderRadius: 8,
+            width: "100%",
+            fontSize: 14,
+            boxSizing: "border-box",
+          }}
+        />
+        {/* 全部按钮 */}
+        <button
+          onClick={handleMaxAmount}
+          style={{
+            position: "absolute",
+            right: "8px",
+            top: "50%",
+            transform: "translateY(-50%)",
+            backgroundColor: "#2ecc71",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            padding: "4px 8px",
+            fontSize: "12px",
+            cursor: "pointer",
+          }}
+        >
+          MAX
+        </button>
+      </div>
+
+      {/* 可用余额显示 */}
+      <div style={{ 
+        fontSize: 14, 
+        color: "#7e7777ff",
+        marginTop: 5,
+      }}>
+        {t("Available Balance")}: <span style={{ fontWeight: "bold", color: "#696868ff" }}>{localBalance.toFixed(2)} USDT</span>
+      </div>
+
+      {/* 使用 div 布局显示订单信息 */}
+      <div style={{ width: "100%", marginTop: 10 }}>
+        {/* 表头 */}
+        <div style={{ 
+          display: "flex", 
+          justifyContent: "space-between",
+          padding: "8px 0",
+          borderBottom: "1px solid #eee"
+        }}>
+          <div style={{ flex: 1, textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Symbol")}</div>
+          <div style={{ flex: 1, textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Direction")}</div>
+          <div style={{ flex: 1, textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Price")}</div>
+          <div style={{ flex: 1, textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Money")}</div>
+          <div style={{ flex: 1, textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Expected")}</div>
+        </div>
+        
+        {/* 数据行 */}
+        <div style={{ 
+          display: "flex", 
+          justifyContent: "space-between",
+          padding: "8px 0"
+        }}>
+          {/* Symbol */}
+          <div style={{ flex: 1, textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>
+            {symbol.replace("USDT", "/USDT")}
+          </div>
+          
+          {/* Direction */}
+          <div style={{ 
+            flex: 1, 
+            textAlign: "center", 
+            fontSize: 12, 
+            color: modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71",
+            fontWeight: "bold"
+          }}>
+            {t(modalType)}
+          </div>
+          
+          {/* Price */}
+          <div style={{ flex: 1, textAlign: "center", fontSize: 11, color: "#2ecc71" }}>
+            {currentPrice.toFixed(2)}
+          </div>
+          
+          {/* Money */}
+          <div style={{ flex: 1, textAlign: "center", fontSize: 11, color: "#5c5b5bff" }}>
+            {customAmount || "0"}
+          </div>
+          
+          {/* Expected */}
+          <div style={{ flex: 1, textAlign: "center", fontSize: 11, color: "#2ecc71" }}>
+            {calculateExpectedProfit().toFixed(2)} USDT
+          </div>
+        </div>
+      </div>
+
+      <button
+        disabled={!selectedPeriod}
+        onClick={handleConfirm}
+        style={{
+          marginTop: "auto",
+          backgroundColor: "#f1c40f",
+          color: "#fff",
+          padding: 14,
+          borderRadius: 10,
+          border: "none",
+          fontSize: 16,
+          opacity: selectedPeriod ? 1 : 0.6,
+        }}
+      >
+        {t("Confirm Order")}
+      </button>
+    </div>
+  );
 };
 
 /* ===================== 主交易页面 ===================== */
@@ -602,87 +922,79 @@ const Trade = () => {
     };
   });
 
-  
-
   const handleSymbolChange = (symbol) => {
     setCurrentSymbol(symbol);
     setShowMenu(false);
   };
 
-
-const d = tickers[baseSymbol] || {};
-const price = d.price || 0;
-const changePercent = d.change || 0;
-const low = d.low || 0;
-const high = d.high || 0;
-const amount24h = d.amount24h || 0;
-
+  const d = tickers[baseSymbol] || {};
+  const price = d.price || 0;
+  const changePercent = d.change || 0;
+  const low = d.low || 0;
+  const high = d.high || 0;
+  const amount24h = d.amount24h || 0;
 
   const priceColor = changePercent >= 0 ? "#2ecc71" : "#e74c3c";
 
   return (
     <div style={{ width: "100%", height: "100vh", display: "flex", flexDirection: "column" }}>
-{/* 顶部 */}
-<div
-  style={{
-    height: "44px",
-    padding: "0 0", // ⭐ 去掉左右 padding，避免挤压返回键
-    borderBottom: "1px solid #eee",
-    display: "flex",
-    alignItems: "center",
-  }}
->
-  {/* ⭐ 左侧返回键 - 绝对贴左 */}
-  <button
-    onClick={() => window.history.back()}
-    style={{
-      background: "none",
-      border: "none",
-      fontSize: 20,
-      color: "#666",
-      width: "45px",        // ⭐ 固定宽度用于撑开左右空间
-      textAlign: "left",    // ⭐ 完全贴左
-      paddingLeft: "12px",  // ⭐ 稍微留点呼吸感
-    }}
-  >
-    ←
-  </button>
+      {/* 顶部 */}
+      <div
+        style={{
+          height: "44px",
+          padding: "0 0",
+          borderBottom: "1px solid #eee",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        {/* ⭐ 左侧返回键 - 绝对贴左 */}
+        <button
+          onClick={() => window.history.back()}
+          style={{
+            background: "none",
+            border: "none",
+            fontSize: 20,
+            color: "#666",
+            width: "45px",
+            textAlign: "left",
+            paddingLeft: "12px",
+          }}
+        >
+          ←
+        </button>
 
-  {/* ⭐ 中间区域 - 居中对齐 */}
-  <div
-    style={{
-      flex: 1,
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      gap: 8,
-      position: "relative",
-    }}
-  >
-<button
-  onClick={() => setShowDrawer(true)}
-  style={{
-    background: "none",
-    border: "none",
-    fontSize: 18,
-    color: "#666",
-  }}
->
-  ☰
-</button>
+        {/* ⭐ 中间区域 - 居中对齐 */}
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 8,
+            position: "relative",
+          }}
+        >
+          <button
+            onClick={() => setShowDrawer(true)}
+            style={{
+              background: "none",
+              border: "none",
+              fontSize: 18,
+              color: "#666",
+            }}
+          >
+            ☰
+          </button>
 
+          <span style={{ color: "#555", fontWeight: 600 }}>
+            {currentSymbol.replace("USDT", "/USDT")}
+          </span>
+        </div>
 
-    <span style={{ color: "#555", fontWeight: 600 }}>
-      {currentSymbol.replace("USDT", "/USDT")}
-    </span>
-
-
-  </div>
-
-  {/* ⭐ 右侧占位（保持中间真正居中） */}
-  <div style={{ width: "45px" }}></div>
-</div>
-
+        {/* ⭐ 右侧占位（保持中间真正居中） */}
+        <div style={{ width: "45px" }}></div>
+      </div>
 
       {/* 行情条 */}
       <div
@@ -711,12 +1023,11 @@ const amount24h = d.amount24h || 0;
           </div>
         </div>
 
-<div style={{ color: "#888" }}>
-  <div>{t("Low")}</div>
-  <div>{t("High")}</div>
-  <div>{t("24h Amount")}</div>
-</div>
-
+        <div style={{ color: "#888" }}>
+          <div>{t("Low")}</div>
+          <div>{t("High")}</div>
+          <div>{t("24h Amount")}</div>
+        </div>
 
         <div style={{ textAlign: "right" }}>
           <div>{low}</div>
@@ -768,30 +1079,27 @@ const amount24h = d.amount24h || 0;
         </button>
       </div>
 
-{showModal && (
-  <BottomModal
-    onClose={() => setShowModal(false)}
-    disableClose={modalLocked}   // ⭐ 根据是否倒计时锁定
-  >
-    <OrderForm
-      symbol={currentSymbol}
-      modalType={modalType}
-      price={tvPrice ?? price}
-      onLockChange={setModalLocked}   // ⭐ 接收子组件发来的锁定状态
-    />
-  </BottomModal>
-)}
+      {showModal && (
+        <BottomModal
+          onClose={() => setShowModal(false)}
+          disableClose={modalLocked}
+        >
+          <OrderForm
+            symbol={currentSymbol}
+            modalType={modalType}
+            price={tvPrice ?? price}
+            onLockChange={setModalLocked}
+          />
+        </BottomModal>
+      )}
 
-
-<SideDrawer
-  show={showDrawer}
-  onClose={() => setShowDrawer(false)}
-  list={drawerList}
-  currentSymbol={currentSymbol}
-  onSelect={(symbol) => setCurrentSymbol(symbol)}
-/>
-
-
+      <SideDrawer
+        show={showDrawer}
+        onClose={() => setShowDrawer(false)}
+        list={drawerList}
+        currentSymbol={currentSymbol}
+        onSelect={(symbol) => setCurrentSymbol(symbol)}
+      />
     </div>
   );
 };
