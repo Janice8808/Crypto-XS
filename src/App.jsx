@@ -150,7 +150,11 @@ useEffect(() => {
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/admin2" element={<AdminSimple />} />
 
-          <Route path="*" element={<Home />} />
+          <Route path="*" element={
+  <AuthGate>
+    <Layout><NotFound /></Layout>
+  </AuthGate>
+} />
         </Routes>
       </Router>
     </Splash>
