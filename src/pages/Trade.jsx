@@ -295,13 +295,13 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
   const { balances: userBalances, controlMode } = useUserBalances();
   const currentPrice = price; // 使用正确的变量名
   
-  const periods = [
-    { time: 60, percent: 0.25, min: 100, max: 5000 },
-    { time: 90, percent: 0.3, min: 5001, max: 10000 },
-    { time: 120, percent: 0.37, min: 10001, max: 50000 },
-    { time: 180, percent: 0.5, min: 50001, max: 100000 },
-    { time: 360, percent: 0.7, min: 100001, max: MAX },
-  ];
+const periods = [
+  { time: 60, percent: 0.25, min: 100, max: 5000 },
+  { time: 90, percent: 0.3, min: 5001, max: 10000 },
+  { time: 120, percent: 0.37, min: 10001, max: 50000 },
+  { time: 180, percent: 0.5, min: 50001, max: 100000 },
+  { time: 360, percent: 0.7, min: 100001, max: Number.MAX_SAFE_INTEGER },
+];
 
   // 计算预期收益的函数
   const calculateExpectedProfit = () => {
