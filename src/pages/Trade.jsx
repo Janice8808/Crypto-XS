@@ -868,16 +868,15 @@ const Trade = () => {
   const { t } = useTranslation();
   const [modalLocked, setModalLocked] = useState(false);
   const [showDrawer, setShowDrawer] = useState(false);
-// ⭐ 读取 URL 参数 symbol
-const [searchParams] = useSearchParams();
-const urlSymbol = searchParams.get("symbol") || "BTCUSDT";
+  // ⭐ 读取 URL 参数 symbol
+  const [searchParams] = useSearchParams();
+  const urlSymbol = searchParams.get("symbol") || "BTCUSDT";
 
-// ⭐ 从 URL 初始化 symbol
-const [currentSymbol, setCurrentSymbol] = useState(urlSymbol);
+  // ⭐ 从 URL 初始化 symbol
+  const [currentSymbol, setCurrentSymbol] = useState(urlSymbol);
 
-// ⭐ 现在才能用 currentSymbol
-const baseSymbol = currentSymbol.replace("USDT", "");
-
+  // ⭐ 现在才能用 currentSymbol
+  const baseSymbol = currentSymbol.replace("USDT", "");
 
   const [showMenu, setShowMenu] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -886,6 +885,21 @@ const baseSymbol = currentSymbol.replace("USDT", "");
 
   // ⭐ 你的 24 个币
   const tickers = useOkxTickers(SYMBOLS);
+
+  // 添加阻止下拉刷新的 useEffect
+  useEffect(() => {
+    // 阻止下拉刷新
+    const preventPullToRefresh = (e) => {
+      e.preventDefault();
+    };
+
+    // 阻止触摸移动的默认行为
+    document.addEventListener('touchmove', preventPullToRefresh, { passive: false });
+    
+    return () => {
+      document.removeEventListener('touchmove', preventPullToRefresh);
+    };
+  }, []);
 
   /* ⭐ 侧边栏币种列表（完全等于 Market 页） */
   const drawerList = SYMBOLS.map((instId) => {
@@ -899,6 +913,8 @@ const baseSymbol = currentSymbol.replace("USDT", "");
       changePercent: d.change || 0,
     };
   });
+
+  
 
   const handleSymbolChange = (symbol) => {
     setCurrentSymbol(symbol);
