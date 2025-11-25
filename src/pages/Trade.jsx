@@ -824,12 +824,12 @@ const periods = [
       
       {/* Money: 显示用户输入的金额 */}
       <td style={{ padding: "10px", textAlign: "left", fontSize: 11, color: "#5c5b5bff" }}>
-        {customAmount || "0"} USDT
+        {customAmount || "0"} 
       </td>
       
       {/* Expected: 根据金额和选择的百分比计算预期收益 */}
       <td style={{ padding: "10px", textAlign: "left", fontSize: 11, color: "#5c5b5bff" }}>
-        {calculateExpectedProfit().toFixed(2)} 
+        {calculateExpectedProfit().toFixed(2)} USDT
       </td>
     </tr>
   </tbody>
