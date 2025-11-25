@@ -733,7 +733,7 @@ const periods = [
 {selectedPeriod && (
   <div style={{ 
     fontSize: 14, 
-    color: "#666",
+    color: "#858484ff",
     textAlign: "left",   // 改为左对齐
     padding: "8px 0",    // 去掉左右内边距，只保留上下
     // 去掉背景色和边框
@@ -766,7 +766,7 @@ const periods = [
             right: "8px",
             top: "50%",
             transform: "translateY(-50%)",
-            backgroundColor: "#6c757d",
+            backgroundColor: "#1ab682ff",
             color: "white",
             border: "none",
             borderRadius: "4px",
