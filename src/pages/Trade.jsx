@@ -838,7 +838,7 @@ const periods = [
     </div>
     
     {/* Expected */}
-    <div style={{ flex: 1, textAlign: "center", fontSize: 11, color: "#5c5b5bff" }}>
+    <div style={{ flex: 1, textAlign: "center", fontSize: 11, color: "#2ecc71" }}>
       {calculateExpectedProfit().toFixed(2)} USDT
     </div>
   </div>
