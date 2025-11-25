@@ -652,111 +652,122 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
   }
 
 
- /* ===================== 结算界面 ===================== */
-  if (result) {
-    const isWin = result.isWin;
+/* ===================== 结算界面 ===================== */
+if (result) {
+  const isWin = result.isWin;
 
-    // ⭐ 安全处理所有数值
-    const closePrice = Number(result.closePrice) || 0;
-    const startPrice = Number(result.startPrice) || 0;
-    const profit = Number(result.profit) || 0;
-    const amount = Number(result.amount) || 0;
-    const cycle = Number(result.cycle) || 0;
+  // ⭐ 安全处理所有数值
+  const closePrice = Number(result.closePrice) || 0;
+  const startPrice = Number(result.startPrice) || 0;
+  const netProfit = Number(result.netProfit) || 0; // ⭐ 关键修改：使用 netProfit
+  const amount = Number(result.amount) || 0;
+  const cycle = Number(result.cycle) || 0;
 
-    return (
-      <div style={{ textAlign: "center", padding: 10 }}>
-        <h2 style={{ fontSize: 18, fontWeight: "bold", color: "#555" }}>
-          {symbol}
-        </h2>
+  return (
+    <div style={{ textAlign: "center", padding: 10 }}>
+      <h2 style={{ fontSize: 18, fontWeight: "bold", color: "#555" }}>
+        {symbol}
+      </h2>
 
-        {/* 盈亏框 */}
-        <div
-          style={{
-            width: "90%",
-            margin: "20px auto",
-            padding: "25px 0",
-            borderRadius: 8,
-            border: `1px solid ${isWin ? "#2ecc71" : "#e74c3c"}`,
-            background: "#fff",
-            color: isWin ? "#2ecc71" : "#e74c3c",
-            fontSize: 22,
-            fontWeight: "bold",
-          }}
-        >
-          {isWin ? "+" : "-"}
-          {Math.abs(profit).toFixed(4)}
-        </div>
-
-        {/* 详细信息框 */}
-        <div
-          style={{
-            width: "90%",
-            margin: "0 auto",
-            border: "1px solid #ccc",
-            borderRadius: 8,
-            padding: 12,
-            fontSize: 14,
-            color: "#555",
-          }}
-        >
-          <div>
-            {t("Closing unit price")}
-            <span style={{ float: "right" }}>
-              {closePrice.toFixed(2)} {/* ⭐ 使用安全变量 */}
-            </span>
-          </div>
-
-          <div>
-            {t("Cycle")}
-            <span style={{ float: "right" }}>{cycle}s</span> {/* ⭐ 使用安全变量 */}
-          </div>
-
-          <div>
-            {t("Type")}
-            <span
-              style={{
-                float: "right",
-                fontWeight: "bold",
-                color: result.type === "Buy Fall" ? "#e74c3c" : "#2ecc71",
-              }}
-            >
-              {t(result.type)}
-            </span>
-          </div>
-
-          <div>
-            {t("Money")}
-            <span style={{ float: "right" }}>
-              {amount.toFixed(2)} {/* ⭐ 使用安全变量 */}
-            </span>
-          </div>
-
-          <div>
-            {t("Buy price")}
-            <span style={{ float: "right" }}>
-              {startPrice.toFixed(2)} {/* ⭐ 使用安全变量 */}
-            </span>
-          </div>
-        </div>
-
-        <button
-          style={{
-            backgroundColor: "#2ecc71",
-            color: "#fff",
-            padding: "12px 0",
-            width: "90%",
-            borderRadius: 8,
-            marginTop: 20,
-            border: "none",
-            fontSize: 16,
-          }}
-          onClick={() => window.location.reload()}
-        >
-          {t("Continue")}
-        </button>
+      {/* 盈亏框 - 只显示净盈亏 */}
+      <div
+        style={{
+          width: "90%",
+          margin: "20px auto",
+          padding: "25px 0",
+          borderRadius: 8,
+          border: `1px solid ${isWin ? "#2ecc71" : "#e74c3c"}`,
+          background: "#fff",
+          color: isWin ? "#2ecc71" : "#e74c3c",
+          fontSize: 22,
+          fontWeight: "bold",
+        }}
+      >
+        {isWin ? "+" : ""}{netProfit.toFixed(4)} USDT
       </div>
-    );
-  }
+
+      {/* 详细信息框 */}
+      <div
+        style={{
+          width: "90%",
+          margin: "0 auto",
+          border: "1px solid #ccc",
+          borderRadius: 8,
+          padding: 12,
+          fontSize: 14,
+          color: "#555",
+        }}
+      >
+        <div>
+          {t("Closing unit price")}
+          <span style={{ float: "right" }}>
+            {closePrice.toFixed(2)}
+          </span>
+        </div>
+
+        <div>
+          {t("Cycle")}
+          <span style={{ float: "right" }}>{cycle}s</span>
+        </div>
+
+        <div>
+          {t("Type")}
+          <span
+            style={{
+              float: "right",
+              fontWeight: "bold",
+              color: result.type === "Buy Fall" ? "#e74c3c" : "#2ecc71",
+            }}
+          >
+            {t(result.type)}
+          </span>
+        </div>
+
+        <div>
+          {t("Money")}
+          <span style={{ float: "right" }}>
+            {amount.toFixed(2)}
+          </span>
+        </div>
+
+        <div>
+          {t("Buy price")}
+          <span style={{ float: "right" }}>
+            {startPrice.toFixed(2)}
+          </span>
+        </div>
+        
+        {/* 盈利率显示 */}
+        <div>
+          {t("Profit Rate")}
+          <span style={{ 
+            float: "right", 
+            color: isWin ? "#2ecc71" : "#e74c3c",
+            fontWeight: "bold"
+          }}>
+            {isWin ? "+" : ""}{(result.percent * 100).toFixed(0)}%
+          </span>
+        </div>
+      </div>
+
+      <button
+        style={{
+          backgroundColor: "#2ecc71",
+          color: "#fff",
+          padding: "12px 0",
+          width: "90%",
+          borderRadius: 8,
+          marginTop: 20,
+          border: "none",
+          fontSize: 16,
+        }}
+        onClick={() => window.location.reload()}
+      >
+        {t("Continue")}
+      </button>
+    </div>
+  );
+}
 
   // ... 其余代码保持不变
 
