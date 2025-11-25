@@ -77,6 +77,7 @@ const resources = {
 
     "Loading": "Chargement",
     "Price": "Prix",
+    "fastbuy": "Achat rapide", 
     "Unavailable": "Indisponible",
     "Available": "Disponible",
     "Frozen": "Gelé",
@@ -265,6 +266,7 @@ const resources = {
     "Turnover": "Umsatz",
     "Submitting": "Wird gesendet...",
     "No Order": "Keine offenen Orders",
+    "fastbuy": "Schnellkauf", 
 
     "Record": "Aufzeichnung",
     "Time": "Zeit",
@@ -280,6 +282,7 @@ const resources = {
 
     "User Center": "Centro Utente",
     "Introduction": "Introduzione",
+    "fastbuy": "Acquisto rapido",
     "Currency": "Valuta",
     "Futures": "Futures",
     "Market": "Mercato",
@@ -480,6 +483,7 @@ const resources = {
       "Turnover": "거래대금",
       "Submitting": "전송 중...",
       "No Order": "위탁 주문 없음",
+      "fastbuy": "빠른 구매",
 
       /* Record */
       "Record": "기록",
@@ -591,6 +595,7 @@ const resources = {
       "Turnover": "取引額",
       "Submitting": "送信中...",
       "No Order": "委託注文はありません",
+      "fastbuy": "クイック購入",
 
       /* Record */
       "Record": "記録",
@@ -613,6 +618,7 @@ const resources = {
     "Temporarily no data": "暫無數據",
     "Deposit": "充值",
     "Withdraw": "提幣",
+    "fastbuy": "快速購買",
 
     "Buy Crypto": "購買加密貨幣",
     "Money": "資金",
@@ -695,6 +701,7 @@ const resources = {
     "Order Failed": "下單失敗",
     "Turnover": "成交額",
     "Submitting": "提交中...",
+    "fastbuy": "クイック購入", 
     "No Order": "暫無委託訂單",
 
     "Record": "紀錄",
@@ -718,6 +725,7 @@ const resources = {
       "Temporarily no data": "暂无数据",
       "Deposit": "充值",
       "Withdraw": "提币",
+      "fastbuy": "快速购买", 
 
       /* Navigation */
       "User Center": "用户中心",
@@ -835,6 +843,7 @@ const resources = {
     "Temporarily no data": "ไม่มีข้อมูล",
     "Deposit": "ฝาก",
     "Withdraw": "ถอน",
+    "fastbuy": "ซื้อด่วน",
 
     /* 新增导航、页面标题 */
     "User Center": "ศูนย์ผู้ใช้",
@@ -935,6 +944,7 @@ const resources = {
       "Temporarily no data": "Không có dữ liệu",
       "Deposit": "Nạp",
       "Withdraw": "Rút",
+      "fastbuy": "Mua nhanh", 
 
       "Buy Crypto": "Mua Crypto",
       "Money": "Tiền",
@@ -1027,6 +1037,7 @@ const resources = {
 "español": {
   translation: {
     ...commonKeys,
+    
 
     "User Center": "Centro de usuario",
     "Introduction": "Introducción",
@@ -1040,6 +1051,7 @@ const resources = {
     "Withdrawal password setting": "Configuración de contraseña de retiro",
     "MSB Certification": "Certificación MSB",
     "Submit": "Enviar",
+    
 
     "Please enter the confirmation password": "Por favor ingrese la contraseña de confirmación",
     "Please enter a new password": "Por favor ingrese una nueva contraseña",
@@ -1084,6 +1096,9 @@ const resources = {
 
     "Withdrawal Amount": "Monto de retiro",
     "Enter withdrawal quantity": "Ingrese la cantidad de retiro"
+    
+    
+    
   }
 },
 
@@ -1105,6 +1120,7 @@ const resources = {
     "Withdrawal password setting": "Çekim şifresi ayarı",
     "MSB Certification": "MSB Sertifikası",
     "Submit": "Gönder",
+    "fastbuy": "Hızlı Satın Al",
 
     "Please enter the confirmation password": "Lütfen onay şifresini girin",
     "Please enter a new password": "Lütfen yeni bir şifre girin",

@@ -365,21 +365,20 @@ useEffect(() => {
     to-[#E8E8EC]
   "
 >
-
   <div className="relative flex-1 h-full">
-<div className="relative flex-1 h-full">
-  <div
-    className="absolute whitespace-nowrap text-white text-base animate-marquee-LTR"
-    style={{
-      top: "50%",
-      pointerEvents: "none",
-      position: "absolute",
-    }}
-  >
-    {t("Welcome")} Crypto.com
+    <div className="relative flex-1 h-full">
+      <div
+        className="absolute whitespace-nowrap text-white text-base animate-marquee-LTR"
+        style={{
+          top: "50%",
+          pointerEvents: "none",
+          position: "absolute",
+        }}
+      >
+        {t("Welcome to visit Crypto.com")}
+      </div>
+    </div>
   </div>
-</div>
-</div>
 </div>
 
 
