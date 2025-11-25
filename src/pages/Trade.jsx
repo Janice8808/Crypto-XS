@@ -291,7 +291,6 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
   const [result, setResult] = useState(null);
   const [pollingInterval, setPollingInterval] = useState(null);
 
-  // ⭐ 添加 refetch
   const { balances: userBalances, controlMode, refetch } = useUserBalances();
   const currentPrice = price;
   
@@ -303,37 +302,43 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
     { time: 360, percent: 0.7, min: 100001, max: Number.MAX_SAFE_INTEGER },
   ];
 
-  // ========== 辅助函数 ==========
+  // ========== 本地存储相关函数 ==========
   
-  // 获取当前选择周期的金额范围
-  const getCurrentRange = () => {
-    if (!selectedPeriod) return { min: 0, max: 0 };
-    const period = periods.find(p => p.time === selectedPeriod);
-    return period ? { min: period.min, max: period.max } : { min: 0, max: 0 };
+  // 保存倒计时状态到本地存储
+  const saveCountdownToStorage = (countdownData) => {
+    localStorage.setItem('current_countdown', JSON.stringify({
+      ...countdownData,
+      symbol,
+      modalType,
+      timestamp: Date.now()
+    }));
   };
 
-  // 格式化金额范围显示
-  const formatRangeText = () => {
-    const { min, max } = getCurrentRange();
-    if (max === Number.MAX_SAFE_INTEGER) {
-      return `${min}+`;
+  // 从本地存储加载倒计时状态
+  const loadCountdownFromStorage = () => {
+    try {
+      const stored = localStorage.getItem('current_countdown');
+      if (stored) {
+        const countdownData = JSON.parse(stored);
+        
+        // 检查是否过期（超过24小时）
+        const now = Date.now();
+        if (now - countdownData.timestamp > 24 * 60 * 60 * 1000) {
+          localStorage.removeItem('current_countdown');
+          return null;
+        }
+        
+        return countdownData;
+      }
+    } catch (error) {
+      console.error('加载倒计时状态失败:', error);
     }
-    return `${min} - ${max}`;
+    return null;
   };
 
-  // 全部投入按钮点击事件
-  const handleMaxAmount = () => {
-    const { max } = getCurrentRange();
-    const maxAmount = Math.min(localBalance, max);
-    setCustomAmount(maxAmount.toString());
-  };
-
-  // 计算预期收益
-  const calculateExpectedProfit = () => {
-    if (!customAmount || !selectedPeriod) return 0;
-    const amount = Number(customAmount);
-    const period = periods.find(p => p.time === selectedPeriod);
-    return period ? amount * period.percent : 0;
+  // 清除本地存储的倒计时状态
+  const clearCountdownStorage = () => {
+    localStorage.removeItem('current_countdown');
   };
 
   // ========== useEffect hooks ==========
@@ -341,6 +346,17 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
   /* ⭐ 初始界面允许关闭 */
   useEffect(() => {
     onLockChange(false);
+    
+    // ⭐ 页面加载时检查是否有未完成的倒计时
+    const storedCountdown = loadCountdownFromStorage();
+    if (storedCountdown) {
+      // 恢复倒计时状态
+      setCountdown(storedCountdown);
+      // 锁定界面
+      onLockChange(true);
+      // 开始轮询订单状态
+      startPollingOrderStatus(storedCountdown.orderId);
+    }
   }, []);
 
   /* ====== 同步后台余额 ====== */
@@ -362,7 +378,7 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
     }
   }, [result]);
 
-  // 清理轮询
+  // 清理轮询和本地存储
   useEffect(() => {
     return () => {
       if (pollingInterval) {
@@ -385,10 +401,19 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
           handleOrderComplete(status);
         } else {
           // 更新倒计时显示
-          setCountdown(prev => prev ? {
-            ...prev,
-            remainingTime: status.remainingTime
-          } : null);
+          setCountdown(prev => {
+            const updated = prev ? {
+              ...prev,
+              remainingTime: status.remainingTime
+            } : null;
+            
+            // ⭐ 更新本地存储
+            if (updated) {
+              saveCountdownToStorage(updated);
+            }
+            
+            return updated;
+          });
         }
       } catch (error) {
         console.error('获取订单状态失败:', error);
@@ -398,152 +423,340 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
     setPollingInterval(interval);
   };
 
-// 订单完成处理
-const handleOrderComplete = (status) => {
-  // ⭐ 计算净盈亏：盈利时只显示利润，亏损时显示亏损的本金
-  const netProfit = status.isWin ? (status.amount * status.percent) : -status.amount;
-  
-  setResult({
-    isWin: status.isWin,
-    profit: netProfit, // ⭐ 只存储净盈亏
-    netProfit: netProfit, // 用于显示
-    amount: status.amount,
-    startPrice: status.startPrice,
-    closePrice: status.closePrice,
-    percent: status.percent,
-    cycle: status.cycle,
-    type: modalType,
-  });
-  
-  // ⭐ 更新余额：仍然需要加上总到账金额（本金+盈利）
-  setLocalBalance(prev => prev + status.profit);
-  
-  // 更新全局余额
-  if (refetch) {
-    refetch();
-  }
-  
-  // 解锁界面
-  onLockChange(false);
-  setCountdown(null);
-};
+  // 订单完成处理
+  const handleOrderComplete = (status) => {
+    // ⭐ 清除本地存储
+    clearCountdownStorage();
+    
+    // 计算净盈亏
+    const netProfit = status.isWin ? (status.amount * status.percent) : -status.amount;
+    
+    setResult({
+      isWin: status.isWin,
+      profit: status.profit,
+      netProfit: netProfit,
+      amount: status.amount,
+      startPrice: status.startPrice,
+      closePrice: status.closePrice,
+      percent: status.percent,
+      cycle: status.cycle,
+      type: modalType,
+    });
+    
+    // 更新余额
+    setLocalBalance(prev => prev + status.profit);
+    
+    // 更新全局余额
+    if (refetch) {
+      refetch();
+    }
+    
+    // 解锁界面
+    onLockChange(false);
+    setCountdown(null);
+  };
 
-/* ===================== 结算界面 ===================== */
-if (result) {
-  const isWin = result.isWin;
+  /* ====== 确认下单 ====== */
+  const handleConfirm = async () => {
+    if (!selectedPeriod || !customAmount) {
+      alert(t("Please fill in all fields"));
+      return;
+    }
 
-  // ⭐ 安全处理所有数值
-  const closePrice = Number(result.closePrice) || 0;
-  const startPrice = Number(result.startPrice) || 0;
-  const netProfit = Number(result.netProfit) || 0; // ⭐ 使用净盈亏
-  const amount = Number(result.amount) || 0;
-  const cycle = Number(result.cycle) || 0;
+    const amount = Number(customAmount);
+    const { min, max } = getCurrentRange();
+    const period = periods.find(p => p.time === selectedPeriod);
 
-  return (
-    <div style={{ textAlign: "center", padding: 10 }}>
-      <h2 style={{ fontSize: 18, fontWeight: "bold", color: "#555" }}>
-        {symbol}
-      </h2>
+    if (isNaN(amount) || amount <= 0) {
+      alert(t("Invalid amount"));
+      return;
+    }
+    
+    if (amount < min || amount > max) {
+      alert(t(`Amount must be between ${min} and ${max}`));
+      return;
+    }
+    
+    if (localBalance < amount) {
+      alert(t("Insufficient balance"));
+      return;
+    }
 
-      {/* 盈亏框 - 只显示净盈亏 */}
-      <div
-        style={{
-          width: "90%",
-          margin: "20px auto",
-          padding: "25px 0",
-          borderRadius: 8,
-          border: `1px solid ${isWin ? "#2ecc71" : "#e74c3c"}`,
-          background: "#fff",
-          color: isWin ? "#2ecc71" : "#e74c3c",
-          fontSize: 22,
-          fontWeight: "bold",
-        }}
-      >
-        {isWin ? "+" : ""}{netProfit.toFixed(4)} USDT
-      </div>
+    // UI 先扣
+    setLocalBalance((v) => v - amount);
 
-      {/* 详细信息框 */}
-      <div
-        style={{
-          width: "90%",
-          margin: "0 auto",
-          border: "1px solid #ccc",
-          borderRadius: 8,
-          padding: 12,
-          fontSize: 14,
-          color: "#555",
-        }}
-      >
-        <div>
-          {t("Closing unit price")}
-          <span style={{ float: "right" }}>
-            {closePrice.toFixed(2)}
-          </span>
-        </div>
+    try {
+      const data = await createOrder({
+        symbol,
+        amount,
+        direction: modalType === "Buy Up" ? "LONG" : "SHORT",
+        period: selectedPeriod,
+        price: currentPrice,
+        percent: period.percent
+      });
 
-        <div>
-          {t("Cycle")}
-          <span style={{ float: "right" }}>{cycle}s</span>
-        </div>
+      if (!data || data.error) {
+        setLocalBalance((v) => v + amount);
+        alert(data.error || t("Order Failed"));
+        return;
+      }
 
-        <div>
-          {t("Type")}
-          <span
+      const countdownData = {
+        time: selectedPeriod,
+        amount,
+        startPrice: currentPrice,
+        orderId: data.order.id,
+        percent: period.percent,
+        remainingTime: selectedPeriod // 初始剩余时间
+      };
+
+      setCountdown(countdownData);
+      
+      // ⭐ 保存到本地存储
+      saveCountdownToStorage(countdownData);
+      
+      // 开始轮询订单状态
+      startPollingOrderStatus(data.order.id);
+      
+      // 锁定界面
+      onLockChange(true);
+      
+    } catch {
+      setLocalBalance((v) => v + amount);
+      alert(t("Network error, please try again later"));
+    }
+  };
+
+  // ========== 界面渲染 ==========
+
+  /* ===================== 倒计时界面 ===================== */
+  if (countdown) {
+    const progress = ((countdown.time - countdown.remainingTime) / countdown.time) * 100;
+    const arcColor = modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71";
+
+    return (
+      <div style={{ textAlign: "center", padding: 10 }}>
+        <h2 style={{ fontWeight: "bold", fontSize: 18, color: "#555" }}>
+          {symbol}
+        </h2>
+
+        {/* 圆形倒计时 */}
+        <div
+          style={{
+            position: "relative",
+            width: 160,
+            height: 160,
+            borderRadius: "50%",
+            background: `conic-gradient(${arcColor} ${progress * 3.6}deg, #ddd 0deg)`,
+            margin: "20px auto",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div
             style={{
-              float: "right",
+              position: "absolute",
+              width: 120,
+              height: 120,
+              borderRadius: "50%",
+              background: "#fff",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              fontSize: 36,
               fontWeight: "bold",
-              color: result.type === "Buy Fall" ? "#e74c3c" : "#2ecc71",
+              color: "#444",
             }}
           >
-            {t(result.type)}
-          </span>
+            {countdown.remainingTime}
+          </div>
         </div>
 
-        <div>
-          {t("Money")}
-          <span style={{ float: "right" }}>
-            {amount.toFixed(2)}
-          </span>
+        {/* 信息框 */}
+        <div
+          style={{
+            width: "90%",
+            margin: "0 auto",
+            border: "1px solid #ccc",
+            padding: 12,
+            borderRadius: 8,
+            fontSize: 14,
+            color: "#555",
+          }}
+        >
+          <div>
+            {t("Closing unit price")}
+            <span style={{ float: "right" }}>
+              {(countdown.startPrice + (Math.random() * 200 - 100)).toFixed(2)}
+            </span>
+          </div>
+
+          <div>
+            {t("Cycle")}
+            <span style={{ float: "right" }}>{countdown.time}s</span>
+          </div>
+
+          <div>
+            {t("Type")}
+            <span
+              style={{
+                float: "right",
+                fontWeight: "bold",
+                color: modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71",
+              }}
+            >
+              {t(modalType)}
+            </span>
+          </div>
+
+          <div>
+            {t("Money")}
+            <span style={{ float: "right" }}>
+              {countdown.amount.toFixed(2)}
+            </span>
+          </div>
+
+          <div>
+            {t("Buy price")}
+            <span style={{ float: "right" }}>
+              {countdown.startPrice.toFixed(2)}
+            </span>
+          </div>
+
+          <div>
+            {t("Expected")}
+            <span style={{ float: "right" }}>
+              {(countdown.amount * countdown.percent).toFixed(2)}
+            </span>
+          </div>
         </div>
 
-        <div>
-          {t("Buy price")}
-          <span style={{ float: "right" }}>
-            {startPrice.toFixed(2)}
-          </span>
-        </div>
-        
-        {/* ⭐ 添加盈利率显示 */}
-        <div>
-          {t("Profit Rate")}
-          <span style={{ 
-            float: "right", 
-            color: isWin ? "#2ecc71" : "#e74c3c",
-            fontWeight: "bold"
-          }}>
-            {isWin ? "+" : ""}{(result.percent * 100).toFixed(0)}%
-          </span>
-        </div>
+        <button
+          disabled
+          style={{
+            width: "90%",
+            backgroundColor: "#2ecc71",
+            color: "#fff",
+            marginTop: 20,
+            padding: 12,
+            borderRadius: 8,
+            border: "none",
+            fontSize: 16,
+          }}
+        >
+          {t("Loading")}
+        </button>
       </div>
+    );
+  }
 
-      <button
-        style={{
-          backgroundColor: "#2ecc71",
-          color: "#fff",
-          padding: "12px 0",
-          width: "90%",
-          borderRadius: 8,
-          marginTop: 20,
-          border: "none",
-          fontSize: 16,
-        }}
-        onClick={() => window.location.reload()}
-      >
-        {t("Continue")}
-      </button>
-    </div>
-  );
-}
+
+ /* ===================== 结算界面 ===================== */
+  if (result) {
+    const isWin = result.isWin;
+
+    // ⭐ 安全处理所有数值
+    const closePrice = Number(result.closePrice) || 0;
+    const startPrice = Number(result.startPrice) || 0;
+    const profit = Number(result.profit) || 0;
+    const amount = Number(result.amount) || 0;
+    const cycle = Number(result.cycle) || 0;
+
+    return (
+      <div style={{ textAlign: "center", padding: 10 }}>
+        <h2 style={{ fontSize: 18, fontWeight: "bold", color: "#555" }}>
+          {symbol}
+        </h2>
+
+        {/* 盈亏框 */}
+        <div
+          style={{
+            width: "90%",
+            margin: "20px auto",
+            padding: "25px 0",
+            borderRadius: 8,
+            border: `1px solid ${isWin ? "#2ecc71" : "#e74c3c"}`,
+            background: "#fff",
+            color: isWin ? "#2ecc71" : "#e74c3c",
+            fontSize: 22,
+            fontWeight: "bold",
+          }}
+        >
+          {isWin ? "+" : "-"}
+          {Math.abs(profit).toFixed(4)}
+        </div>
+
+        {/* 详细信息框 */}
+        <div
+          style={{
+            width: "90%",
+            margin: "0 auto",
+            border: "1px solid #ccc",
+            borderRadius: 8,
+            padding: 12,
+            fontSize: 14,
+            color: "#555",
+          }}
+        >
+          <div>
+            {t("Closing unit price")}
+            <span style={{ float: "right" }}>
+              {closePrice.toFixed(2)} {/* ⭐ 使用安全变量 */}
+            </span>
+          </div>
+
+          <div>
+            {t("Cycle")}
+            <span style={{ float: "right" }}>{cycle}s</span> {/* ⭐ 使用安全变量 */}
+          </div>
+
+          <div>
+            {t("Type")}
+            <span
+              style={{
+                float: "right",
+                fontWeight: "bold",
+                color: result.type === "Buy Fall" ? "#e74c3c" : "#2ecc71",
+              }}
+            >
+              {t(result.type)}
+            </span>
+          </div>
+
+          <div>
+            {t("Money")}
+            <span style={{ float: "right" }}>
+              {amount.toFixed(2)} {/* ⭐ 使用安全变量 */}
+            </span>
+          </div>
+
+          <div>
+            {t("Buy price")}
+            <span style={{ float: "right" }}>
+              {startPrice.toFixed(2)} {/* ⭐ 使用安全变量 */}
+            </span>
+          </div>
+        </div>
+
+        <button
+          style={{
+            backgroundColor: "#2ecc71",
+            color: "#fff",
+            padding: "12px 0",
+            width: "90%",
+            borderRadius: 8,
+            marginTop: 20,
+            border: "none",
+            fontSize: 16,
+          }}
+          onClick={() => window.location.reload()}
+        >
+          {t("Continue")}
+        </button>
+      </div>
+    );
+  }
 
   // ... 其余代码保持不变
 
@@ -747,6 +960,28 @@ const Trade = () => {
     return () => {
       document.removeEventListener('touchmove', preventPullToRefresh);
     };
+  }, []);
+ // ⭐ 页面加载时检查是否有未完成的倒计时
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('current_countdown');
+      if (stored) {
+        const countdownData = JSON.parse(stored);
+        
+        // 检查是否过期（超过24小时）
+        const now = Date.now();
+        if (now - countdownData.timestamp <= 24 * 60 * 60 * 1000) {
+          // 自动打开订单弹窗
+          setShowModal(true);
+          setModalType(countdownData.modalType);
+        } else {
+          // 清除过期的倒计时
+          localStorage.removeItem('current_countdown');
+        }
+      }
+    } catch (error) {
+      console.error('检查倒计时状态失败:', error);
+    }
   }, []);
 
   /* ⭐ 侧边栏币种列表（完全等于 Market 页） */
