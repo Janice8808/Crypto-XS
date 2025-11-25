@@ -707,19 +707,15 @@ if (result) {
           fontSize: 14,
         }}
       />
-{/* Display Custom Amount Information (new element to be added above the button) */}
-    <div style={{ fontSize: 14, color: "#555", marginTop: 20 }}>
-      <div>
-        <span>{t("Symbol")}: BTC/USDT</span>
-        <span style={{ marginLeft: 20 }}>{t("Direction")}: Buy up</span>
-      </div>
-      <div>
-        <span>{t("Price")}: 88151</span>
-        <span style={{ marginLeft: 20 }}>{t("Money")}: 10 USDT</span>
-        <span style={{ marginLeft: 20 }}>{t("Expected")}: 0 USDT</span>
-      </div>
+   {/* 显示订单信息 */}
+    <div style={{ marginTop: 20, display: "flex", justifyContent: "space-between", fontSize: 14, color: "#555" }}>
+      <div>{t("Symbol")}: BTC/USDT</div>
+      <div>{t("Direction")}: Buy up</div>
+      <div>{t("Price")}: 88151</div>
+      <div>{t("Money")}: 10 USDT</div>
+      <div>{t("Expected")}: 0 USDT</div>
     </div>
-    
+
       <button
         disabled={!selectedPeriod}
         onClick={handleConfirm}
