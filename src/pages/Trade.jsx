@@ -281,8 +281,6 @@ const BottomModal = ({ children, onClose, disableClose }) => (
   </div>
 );
 
-
-
 /* ===================== 下单弹窗 ===================== */
 const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
   const { t } = useTranslation();
@@ -295,7 +293,7 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
   const [timeLeft, setTimeLeft] = useState(0);
 
   const { balances: userBalances, controlMode } = useUserBalances();
-  const currentPrice = price;
+  const currentPrice = price; // 使用正确的变量名
   
   const periods = [
     { time: 60, percent: 0.25, min: 100, max: 5000 },
@@ -304,12 +302,15 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
     { time: 180, percent: 0.5, min: 50001, max: 100000 },
     { time: 360, percent: 0.7, min: 100001, max: Number.MAX_SAFE_INTEGER },
   ];
+
+  // 计算预期收益的函数
   const calculateExpectedProfit = () => {
     if (!customAmount || !selectedPeriod) return 0;
     const amount = Number(customAmount);
     const period = periods.find(p => p.time === selectedPeriod);
     return amount * period.percent;
   };
+
   /* ⭐ 初始界面允许关闭 */
   useEffect(() => {
     onLockChange(false);
@@ -327,7 +328,7 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
     setLocalBalance(usdt);
   }, [userBalances]);
 
-    // 获取当前选择周期的金额范围
+  // 获取当前选择周期的金额范围
   const getCurrentRange = () => {
     if (!selectedPeriod) return { min: 0, max: 0 };
     const period = periods.find(p => p.time === selectedPeriod);
@@ -350,7 +351,6 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
     setCustomAmount(maxAmount.toString());
   };
 
-
   /* ====== 确认下单 ====== */
   const handleConfirm = async () => {
     if (!selectedPeriod || !customAmount) {
@@ -365,10 +365,12 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
       alert(t("Invalid amount"));
       return;
     }
-     if (amount < min || amount > max) {
+    
+    if (amount < min || amount > max) {
       alert(t(`Amount must be between ${min} and ${max}`));
       return;
     }
+    
     if (localBalance < amount) {
       alert(t("Insufficient balance"));
       return;
@@ -395,7 +397,7 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
       setCountdown({
         ...p,
         amount,
-        startPrice: buyPrice,
+        startPrice: currentPrice, // 修复：使用 currentPrice 而不是未定义的 buyPrice
         orderId: data.order.id,
       });
       setTimeLeft(p.time);
@@ -473,230 +475,228 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
     }
   }, [result]);
 
-
   /* ===================== 页面渲染逻辑 ===================== */
 
-/* ===================== 倒计时界面（恢复原版 UI） ===================== */
-if (countdown) {
-  const progress = ((countdown.time - timeLeft) / countdown.time) * 100;
-  const arcColor = modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71";
+  /* ===================== 倒计时界面 ===================== */
+  if (countdown) {
+    const progress = ((countdown.time - timeLeft) / countdown.time) * 100;
+    const arcColor = modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71";
 
-  return (
-    <div style={{ textAlign: "center", padding: 10 }}>
-      <h2 style={{ fontWeight: "bold", fontSize: 18, color: "#555" }}>
-        {symbol}
-      </h2>
+    return (
+      <div style={{ textAlign: "center", padding: 10 }}>
+        <h2 style={{ fontWeight: "bold", fontSize: 18, color: "#555" }}>
+          {symbol}
+        </h2>
 
-      {/* 圆形倒计时 */}
-      <div
-        style={{
-          position: "relative",
-          width: 160,
-          height: 160,
-          borderRadius: "50%",
-          background: `conic-gradient(${arcColor} ${progress * 3.6}deg, #ddd 0deg)`,
-          margin: "20px auto",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+        {/* 圆形倒计时 */}
         <div
           style={{
-            position: "absolute",
-            width: 120,
-            height: 120,
+            position: "relative",
+            width: 160,
+            height: 160,
             borderRadius: "50%",
-            background: "#fff",
+            background: `conic-gradient(${arcColor} ${progress * 3.6}deg, #ddd 0deg)`,
+            margin: "20px auto",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            fontSize: 36,
-            fontWeight: "bold",
-            color: "#444",
           }}
         >
-          {timeLeft}
-        </div>
-      </div>
-
-      {/* ⭐ 恢复你之前的 信息框 */}
-      <div
-        style={{
-          width: "90%",
-          margin: "0 auto",
-          border: "1px solid #ccc",
-          padding: 12,
-          borderRadius: 8,
-          fontSize: 14,
-          color: "#555",
-        }}
-      >
-        <div>
-          {t("Closing unit price")}
-          <span style={{ float: "right" }}>
-            {(countdown.startPrice + (Math.random() * 200 - 100)).toFixed(2)}
-          </span>
-        </div>
-
-        <div>
-          {t("Cycle")}
-          <span style={{ float: "right" }}>{countdown.time}s</span>
-        </div>
-
-        <div>
-          {t("Type")}
-          <span
+          <div
             style={{
-              float: "right",
+              position: "absolute",
+              width: 120,
+              height: 120,
+              borderRadius: "50%",
+              background: "#fff",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              fontSize: 36,
               fontWeight: "bold",
-              color: modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71",
+              color: "#444",
             }}
           >
-            {t(modalType)}
-          </span>
+            {timeLeft}
+          </div>
         </div>
 
-        <div>
-          {t("Money")}
-          <span style={{ float: "right" }}>
-            {countdown.amount.toFixed(2)}
-          </span>
+        {/* 信息框 */}
+        <div
+          style={{
+            width: "90%",
+            margin: "0 auto",
+            border: "1px solid #ccc",
+            padding: 12,
+            borderRadius: 8,
+            fontSize: 14,
+            color: "#555",
+          }}
+        >
+          <div>
+            {t("Closing unit price")}
+            <span style={{ float: "right" }}>
+              {(countdown.startPrice + (Math.random() * 200 - 100)).toFixed(2)}
+            </span>
+          </div>
+
+          <div>
+            {t("Cycle")}
+            <span style={{ float: "right" }}>{countdown.time}s</span>
+          </div>
+
+          <div>
+            {t("Type")}
+            <span
+              style={{
+                float: "right",
+                fontWeight: "bold",
+                color: modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71",
+              }}
+            >
+              {t(modalType)}
+            </span>
+          </div>
+
+          <div>
+            {t("Money")}
+            <span style={{ float: "right" }}>
+              {countdown.amount.toFixed(2)}
+            </span>
+          </div>
+
+          <div>
+            {t("Buy price")}
+            <span style={{ float: "right" }}>
+              {countdown.startPrice.toFixed(2)}
+            </span>
+          </div>
+
+          <div>
+            {t("Expected")}
+            <span style={{ float: "right" }}>
+              {(countdown.amount * countdown.percent).toFixed(2)}
+            </span>
+          </div>
         </div>
 
-        <div>
-          {t("Buy price")}
-          <span style={{ float: "right" }}>
-            {countdown.startPrice.toFixed(2)}
-          </span>
-        </div>
-
-        <div>
-          {t("Expected")}
-          <span style={{ float: "right" }}>
-            {(countdown.amount * countdown.percent).toFixed(2)}
-          </span>
-        </div>
+        <button
+          disabled
+          style={{
+            width: "90%",
+            backgroundColor: "#2ecc71",
+            color: "#fff",
+            marginTop: 20,
+            padding: 12,
+            borderRadius: 8,
+            border: "none",
+            fontSize: 16,
+          }}
+        >
+          {t("Loading")}
+        </button>
       </div>
+    );
+  }
 
-      <button
-        disabled
-        style={{
-          width: "90%",
-          backgroundColor: "#2ecc71",
-          color: "#fff",
-          marginTop: 20,
-          padding: 12,
-          borderRadius: 8,
-          border: "none",
-          fontSize: 16,
-        }}
-      >
-        {t("Loading")}
-      </button>
-    </div>
-  );
-}
+  /* ===================== 结算界面 ===================== */
+  if (result) {
+    const isWin = result.isWin;
 
-/* ===================== 结算界面（恢复原版） ===================== */
-if (result) {
-  const isWin = result.isWin;
+    return (
+      <div style={{ textAlign: "center", padding: 10 }}>
+        <h2 style={{ fontSize: 18, fontWeight: "bold", color: "#555" }}>
+          {symbol}
+        </h2>
 
-  return (
-    <div style={{ textAlign: "center", padding: 10 }}>
-      <h2 style={{ fontSize: 18, fontWeight: "bold", color: "#555" }}>
-        {symbol}
-      </h2>
+        {/* 盈亏框 */}
+        <div
+          style={{
+            width: "90%",
+            margin: "20px auto",
+            padding: "25px 0",
+            borderRadius: 8,
+            border: `1px solid ${isWin ? "#2ecc71" : "#e74c3c"}`,
+            background: "#fff",
+            color: isWin ? "#2ecc71" : "#e74c3c",
+            fontSize: 22,
+            fontWeight: "bold",
+          }}
+        >
+          {isWin ? "+" : "-"}
+          {Math.abs(result.profit).toFixed(4)}
+        </div>
 
-      {/* 盈亏框 */}
-      <div
-        style={{
-          width: "90%",
-          margin: "20px auto",
-          padding: "25px 0",
-          borderRadius: 8,
-          border: `1px solid ${isWin ? "#2ecc71" : "#e74c3c"}`,
-          background: "#fff",
-          color: isWin ? "#2ecc71" : "#e74c3c",
-          fontSize: 22,
-          fontWeight: "bold",
-        }}
-      >
-        {isWin ? "+" : "-"}
-        {Math.abs(result.profit).toFixed(4)}
+        {/* 详细信息框 */}
+        <div
+          style={{
+            width: "90%",
+            margin: "0 auto",
+            border: "1px solid #ccc",
+            borderRadius: 8,
+            padding: 12,
+            fontSize: 14,
+            color: "#555",
+          }}
+        >
+          <div>
+            {t("Closing unit price")}
+            <span style={{ float: "right" }}>
+              {result.closePrice.toFixed(2)}
+            </span>
+          </div>
+
+          <div>
+            {t("Cycle")}
+            <span style={{ float: "right" }}>{result.cycle}s</span>
+          </div>
+
+          <div>
+            {t("Type")}
+            <span
+              style={{
+                float: "right",
+                fontWeight: "bold",
+                color: result.type === "Buy Fall" ? "#e74c3c" : "#2ecc71",
+              }}
+            >
+              {t(result.type)}
+            </span>
+          </div>
+
+          <div>
+            {t("Money")}
+            <span style={{ float: "right" }}>
+              {result.amount.toFixed(2)}
+            </span>
+          </div>
+
+          <div>
+            {t("Buy price")}
+            <span style={{ float: "right" }}>
+              {result.startPrice.toFixed(2)}
+            </span>
+          </div>
+        </div>
+
+        <button
+          style={{
+            backgroundColor: "#2ecc71",
+            color: "#fff",
+            padding: "12px 0",
+            width: "90%",
+            borderRadius: 8,
+            marginTop: 20,
+            border: "none",
+            fontSize: 16,
+          }}
+          onClick={() => window.location.reload()}
+        >
+          {t("Continue")}
+        </button>
       </div>
-
-      {/* ⭐ 恢复你之前的详细信息框 */}
-      <div
-        style={{
-          width: "90%",
-          margin: "0 auto",
-          border: "1px solid #ccc",
-          borderRadius: 8,
-          padding: 12,
-          fontSize: 14,
-          color: "#555",
-        }}
-      >
-        <div>
-          {t("Closing unit price")}
-          <span style={{ float: "right" }}>
-            {result.closePrice.toFixed(2)}
-          </span>
-        </div>
-
-        <div>
-          {t("Cycle")}
-          <span style={{ float: "right" }}>{result.cycle}s</span>
-        </div>
-
-        <div>
-          {t("Type")}
-          <span
-            style={{
-              float: "right",
-              fontWeight: "bold",
-              color: result.type === "Buy Fall" ? "#e74c3c" : "#2ecc71",
-            }}
-          >
-            {t(result.type)}
-          </span>
-        </div>
-
-        <div>
-          {t("Money")}
-          <span style={{ float: "right" }}>
-            {result.amount.toFixed(2)}
-          </span>
-        </div>
-
-        <div>
-          {t("Buy price")}
-          <span style={{ float: "right" }}>
-            {result.startPrice.toFixed(2)}
-          </span>
-        </div>
-      </div>
-
-      <button
-        style={{
-          backgroundColor: "#2ecc71",
-          color: "#fff",
-          padding: "12px 0",
-          width: "90%",
-          borderRadius: 8,
-          marginTop: 20,
-          border: "none",
-          fontSize: 16,
-        }}
-        onClick={() => window.location.reload()}
-      >
-        {t("Continue")}
-      </button>
-    </div>
-  );
-}
-
+    );
+  }
 
   /* 3. 初始下单界面 */
   return (
@@ -826,7 +826,7 @@ if (result) {
             
             {/* Price: 显示实时价格 */}
             <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>
-              {buyPrice.toFixed(2)}
+              {currentPrice.toFixed(2)} {/* 修复：使用 currentPrice 而不是未定义的 buyPrice */}
             </td>
             
             {/* Money: 显示用户输入的金额 */}
@@ -836,10 +836,7 @@ if (result) {
             
             {/* Expected: 根据金额和选择的百分比计算预期收益 */}
             <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>
-              {selectedPeriod && customAmount 
-                ? (Number(customAmount) * periods.find(p => p.time === selectedPeriod).percent).toFixed(2)
-                : "0"
-              } USDT
+              {calculateExpectedProfit().toFixed(2)} USDT {/* 使用计算函数 */}
             </td>
           </tr>
         </tbody>
