@@ -707,14 +707,27 @@ if (result) {
           fontSize: 14,
         }}
       />
-   {/* 显示订单信息 */}
-    <div style={{ marginTop: 20, display: "flex", justifyContent: "space-between", fontSize: 14, color: "#555" }}>
-      <div>{t("Symbol")}: BTC/USDT</div>
-      <div>{t("Direction")}: Buy up</div>
-      <div>{t("Price")}: 88151</div>
-      <div>{t("Money")}: 10 USDT</div>
-      <div>{t("Expected")}: 0 USDT</div>
-    </div>
+    {/* 使用表格显示订单信息 */}
+    <table style={{ width: "100%", marginTop: 20, borderCollapse: "collapse" }}>
+      <thead>
+        <tr>
+          <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Symbol")}</th>
+          <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Direction")}</th>
+          <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Price")}</th>
+          <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Money")}</th>
+          <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Expected")}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>BTC/USDT</td>
+          <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>Buy up</td>
+          <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>88151</td>
+          <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>10 USDT</td>
+          <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>0 USDT</td>
+        </tr>
+      </tbody>
+    </table>
 
       <button
         disabled={!selectedPeriod}
