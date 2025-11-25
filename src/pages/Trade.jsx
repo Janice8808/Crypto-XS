@@ -782,7 +782,7 @@ const periods = [
       {/* 可用余额显示 */}
 <div style={{ 
   fontSize: 14, 
-  color: "#666",
+  color: "#7e7777ff",
   // 去掉flex布局，改为普通文本
 }}>
   {t("Available Balance")}: <span style={{ fontWeight: "bold", color: "#696868ff" }}>{localBalance.toFixed(2)} USDT</span>
@@ -829,7 +829,7 @@ const periods = [
       
       {/* Expected: 根据金额和选择的百分比计算预期收益 */}
       <td style={{ padding: "10px", textAlign: "left", fontSize: 11, color: "#5c5b5bff" }}>
-        {calculateExpectedProfit().toFixed(2)} USDT
+        {calculateExpectedProfit().toFixed(2)} 
       </td>
     </tr>
   </tbody>
