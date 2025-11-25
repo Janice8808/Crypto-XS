@@ -789,52 +789,69 @@ const periods = [
   {t("Available Balance")}: <span style={{ fontWeight: "bold", color: "#696868ff" }}>{localBalance.toFixed(2)} USDT</span>
 </div>
 
-{/* 使用表格显示订单信息 */}
-<table style={{ width: "100%", marginTop: 10, borderCollapse: "collapse" }}>
-  <thead>
-    <tr>
-      <th style={{ padding: "8px", textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Symbol")}</th>
-      <th style={{ padding: "8px", textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Direction")}</th>
-      <th style={{ padding: "8px", textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Price")}</th>
-      <th style={{ padding: "8px", textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Money")}</th>
-      <th style={{ padding: "8px", textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Expected")}</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      {/* Symbol: 显示当前币种，如 BTC/USDT */}
-      <td style={{ padding: "8px", textAlign: "left", fontSize: 12, color: "#5c5b5bff" }}>
-        {symbol.replace("USDT", "/USDT")}
-      </td>
-      
-      {/* Direction: 显示 Buy up 或 Buy fall */}
-      <td style={{ 
-        padding: "8px", 
-        textAlign: "center", 
-        fontSize: 12, 
-        color: modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71",
-        fontWeight: "bold"
-      }}>
-        {t(modalType)}
-      </td>
-      
-      {/* Price: 显示实时价格 */}
-      <td style={{ padding: "8px", textAlign: "left", fontSize: 11, color: "#5c5b5bff" }}>
-        {currentPrice.toFixed(2)}
-      </td>
-      
-      {/* Money: 显示用户输入的金额 */}
-      <td style={{ padding: "8px", textAlign: "left", fontSize: 11, color: "#5c5b5bff" }}>
-        {customAmount || "0"} 
-      </td>
-      
-      {/* Expected: 根据金额和选择的百分比计算预期收益 */}
-      <td style={{ padding: "8px", textAlign: "left", fontSize: 11, color: "#5c5b5bff" }}>
-        {calculateExpectedProfit().toFixed(2)} USDT
-      </td>
-    </tr>
-  </tbody>
-</table>
+{/* 使用 div 布局显示订单信息 */}
+<div style={{ width: "100%", marginTop: 10 }}>
+  {/* 表头 */}
+  <div style={{ 
+    display: "flex", 
+    justifyContent: "space-between",
+    padding: "8px 0",
+    borderBottom: "1px solid #eee"
+  }}>
+    <div style={{ flex: 1, textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Symbol")}</div>
+    <div style={{ flex: 1, textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Direction")}</div>
+    <div style={{ flex: 1, textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Price")}</div>
+    <div style={{ flex: 1, textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Money")}</div>
+    <div style={{ flex: 1, textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Expected")}</div>
+  </div>
+  
+  {/* 数据行 */}
+  <div style={{ 
+    display: "flex", 
+    justifyContent: "space-between",
+    padding: "8px 0"
+  }}>
+    {/* Symbol */}
+    <div style={{ flex: 1, textAlign: "left", fontSize: 12, color: "#5c5b5bff" }}>
+      {symbol.replace("USDT", "/USDT")}
+    </div>
+    
+    {/* Direction */}
+    <div style={{ 
+      flex: 1, 
+      textAlign: "center", 
+      fontSize: 12, 
+      color: modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71",
+      fontWeight: "bold"
+    }}>
+      {t(modalType)}
+    </div>
+    
+    {/* Price */}
+    <div style={{ flex: 1, textAlign: "left", fontSize: 11, color: "#5c5b5bff" }}>
+      {currentPrice.toFixed(2)}
+    </div>
+    
+    {/* Money */}
+    <div style={{ flex: 1, textAlign: "left", fontSize: 11, color: "#5c5b5bff" }}>
+      {customAmount || "0"}
+    </div>
+    
+    {/* Expected */}
+    <div style={{ flex: 1, textAlign: "left", fontSize: 11, color: "#5c5b5bff" }}>
+      {calculateExpectedProfit().toFixed(2)} USDT
+    </div>
+  </div>
+</div>
+
+{/* 可用余额显示 */}
+<div style={{ 
+  fontSize: 14, 
+  color: "#7e7777ff",
+  marginTop: 5,
+}}>
+  {t("Available Balance")}: <span style={{ fontWeight: "bold", color: "#696868ff" }}>{localBalance.toFixed(2)} USDT</span>
+</div>
 
       <button
         disabled={!selectedPeriod}
