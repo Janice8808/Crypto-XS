@@ -17,6 +17,7 @@ export default function Withdraw() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(true);
 
   // 每个币种的充值信息配置
   const depositInfo = {
@@ -64,7 +65,39 @@ export default function Withdraw() {
       qr: "/images/xrp.png",
     },
   };
+  // 获取用户余额
+const fetchBalance = async () => {
+  try {
+    setLoading(true);
+    const token = localStorage.getItem("token");
+    
+    const res = await fetch("https://pankouhoutai.shop/api/wallet/balance", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
 
+    const data = await res.json();
+    
+    if (res.ok && data.data) {
+      // 根据币种 symbol 查找对应的余额
+      const asset = data.data.find(item => item.symbol === symbol);
+      if (asset) {
+        setAvailable(asset.balance || 0);
+      } else {
+        setAvailable(0);
+      }
+    } else {
+      setError(data.error || t("Failed to fetch balance"));
+    }
+  } catch (err) {
+    console.error("Fetch balance failed:", err);
+    setError(t("Network error, please try again later"));
+  } finally {
+    setLoading(false);
+  }
+};
   const current = depositInfo[symbol] || depositInfo.USDT; // 默认使用 USDT 配置
   const activeNetwork = network || current.networks[0]; // 默认为第一个网络
   const depositAddress = current.addresses[activeNetwork];
@@ -72,7 +105,10 @@ export default function Withdraw() {
   useEffect(() => {
     // 每次加载时，更新支持的网络
     setNetwork(current.networks[0]); // 默认选择第一个网络
+    fetchBalance();
   }, [symbol]);
+
+
 
   const handleSubmit = async () => {
     setError("");
