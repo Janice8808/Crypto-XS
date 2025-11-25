@@ -80,14 +80,10 @@ const fetchBalance = async () => {
 
     const data = await res.json();
     
-    if (res.ok && data.data) {
-      // 根据币种 symbol 查找对应的余额
-      const asset = data.data.find(item => item.symbol === symbol);
-      if (asset) {
-        setAvailable(asset.balance || 0);
-      } else {
-        setAvailable(0);
-      }
+    if (res.ok && data.balances) {
+      // 直接从 balances 对象中获取对应币种的余额
+      const balance = data.balances[symbol];
+      setAvailable(balance || 0);
     } else {
       setError(data.error || t("Failed to fetch balance"));
     }
