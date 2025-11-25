@@ -766,7 +766,7 @@ const periods = [
             right: "8px",
             top: "50%",
             transform: "translateY(-50%)",
-            backgroundColor: "#1ab682ff",
+            backgroundColor: "#2ecc71",
             color: "white",
             border: "none",
             borderRadius: "4px",
@@ -828,7 +828,7 @@ const periods = [
     </div>
     
     {/* Price */}
-    <div style={{ flex: 1, textAlign: "center", fontSize: 11, color: "#5c5b5bff" }}>
+    <div style={{ flex: 1, textAlign: "center", fontSize: 11, color: "#2ecc71" }}>
       {currentPrice.toFixed(2)}
     </div>
     
