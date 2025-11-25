@@ -20,17 +20,8 @@ export function settleOrder(data) {
     body: JSON.stringify(data),
   });
 }
-// 在前端的 api/order.js 中
-export const createOrder = async (orderData) => {
-  return await apiFetch("/api/order/create", {
-    method: "POST",
-    body: JSON.stringify({
-      symbol: orderData.symbol,
-      amount: orderData.amount,
-      direction: orderData.direction,
-      period: orderData.period,      // 新增
-      price: orderData.price,        // 新增
-      percent: orderData.percent     // 新增
-    }),
-  });
-};
+
+// 订单状态查询（新增）
+export function getOrderStatus(orderId) {
+  return apiFetch(`/api/order/status/${orderId}`);
+}
