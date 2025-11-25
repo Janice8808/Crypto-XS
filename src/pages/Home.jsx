@@ -437,16 +437,6 @@ useEffect(() => {
   </div>
 </div>
 </div>
-{/* 在返回的 JSX 中的任意位置添加这个测试按钮 */}
-<button 
-  onClick={() => {
-    console.log('测试按钮点击');
-    navigate('/deposit1');
-  }}
-  className="bg-blue-500 text-white p-2 rounded mb-4"
->
-  测试跳转到 Deposit1
-</button>
 
         {/* 热门 Top3 当前价格 */}
 <div className="grid grid-cols-3 gap-4">
