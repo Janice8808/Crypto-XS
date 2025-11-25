@@ -38,27 +38,21 @@ export default function Introduction() {
       {/* ===== 文本内容 ===== */}
       <div className="px-4 mt-6 leading-relaxed text-[15px] text-gray-800">
 
-        <p className="mb-6">
-          Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. 
-          The platform has established operation centers across multiple countries and regions, including the United States and Europe, 
-          expanding its business presence worldwide.
-        </p>
+<p className="mb-6">
+  {t("Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.")}
+</p>
 
-        <p className="mb-6">
-          Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users 
-          and more than 80 million user interactions across its ecosystem.
-        </p>
+<p className="mb-6">
+  {t("Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.")}
+</p>
 
-        <p className="mb-6">
-          As a comprehensive digital asset trading platform, Crypto.com supports over 800 high-quality cryptocurrencies 
-          and more than 1,000 trading pairs. The platform offers a rich selection of trading services, including spot trading, 
-          leveraged trading, OTC trading, contract trading, and credit-card-based cryptocurrency purchases.
-        </p>
+<p className="mb-6">
+  {t("As a comprehensive digital asset trading platform, Crypto.com supports over 800 high-quality cryptocurrencies and more than 1,000 trading pairs. The platform offers a rich selection of trading services, including spot trading, leveraged trading, OTC trading, contract trading, and credit-card-based cryptocurrency purchases.")}
+</p>
 
-        <p className="mb-6">
-          By combining advanced technology with rigorous security standards, Crypto.com is committed to providing users 
-          with the safest, most efficient, and most professional digital asset investment experience available.
-        </p>
+<p className="mb-6">
+  {t("By combining advanced technology with rigorous security standards, Crypto.com is committed to providing users with the safest, most efficient, and most professional digital asset investment experience available.")}
+</p>
 
       </div>
 
