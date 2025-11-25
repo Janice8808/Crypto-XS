@@ -792,25 +792,25 @@ const periods = [
 <table style={{ width: "100%", marginTop: 20, borderCollapse: "collapse" }}>
   <thead>
     <tr>
-      <th style={{ padding: "10px", textAlign: "left", fontSize: 13, color: "#5c5b5bff" }}>{t("Symbol")}</th>
-      <th style={{ padding: "10px", textAlign: "left", fontSize: 13, color: "#5c5b5bff" }}>{t("Direction")}</th>
-      <th style={{ padding: "10px", textAlign: "left", fontSize: 13, color: "#5c5b5bff" }}>{t("Price")}</th>
-      <th style={{ padding: "10px", textAlign: "left", fontSize: 13, color: "#5c5b5bff" }}>{t("Money")}</th>
-      <th style={{ padding: "10px", textAlign: "left", fontSize: 13, color: "#5c5b5bff" }}>{t("Expected")}</th>
+      <th style={{ padding: "10px", textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Symbol")}</th>
+      <th style={{ padding: "10px", textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Direction")}</th>
+      <th style={{ padding: "10px", textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Price")}</th>
+      <th style={{ padding: "10px", textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Money")}</th>
+      <th style={{ padding: "10px", textAlign: "center", fontSize: 12, color: "#5c5b5bff" }}>{t("Expected")}</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       {/* Symbol: 显示当前币种，如 BTC/USDT */}
-      <td style={{ padding: "10px", textAlign: "left", fontSize: 13, color: "#5c5b5bff" }}>
+      <td style={{ padding: "10px", textAlign: "left", fontSize: 12, color: "#5c5b5bff" }}>
         {symbol.replace("USDT", "/USDT")}
       </td>
       
       {/* Direction: 显示 Buy up 或 Buy fall */}
       <td style={{ 
         padding: "10px", 
-        textAlign: "left", 
-        fontSize: 13, 
+        textAlign: "center", 
+        fontSize: 12, 
         color: modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71",
         fontWeight: "bold"
       }}>
@@ -818,17 +818,17 @@ const periods = [
       </td>
       
       {/* Price: 显示实时价格 */}
-      <td style={{ padding: "10px", textAlign: "left", fontSize: 13, color: "#5c5b5bff" }}>
+      <td style={{ padding: "10px", textAlign: "left", fontSize: 11, color: "#5c5b5bff" }}>
         {currentPrice.toFixed(2)}
       </td>
       
       {/* Money: 显示用户输入的金额 */}
-      <td style={{ padding: "10px", textAlign: "left", fontSize: 13, color: "#5c5b5bff" }}>
+      <td style={{ padding: "10px", textAlign: "left", fontSize: 11, color: "#5c5b5bff" }}>
         {customAmount || "0"} USDT
       </td>
       
       {/* Expected: 根据金额和选择的百分比计算预期收益 */}
-      <td style={{ padding: "10px", textAlign: "left", fontSize: 13, color: "#5c5b5bff" }}>
+      <td style={{ padding: "10px", textAlign: "left", fontSize: 11, color: "#5c5b5bff" }}>
         {calculateExpectedProfit().toFixed(2)} USDT
       </td>
     </tr>
