@@ -785,7 +785,7 @@ const periods = [
   color: "#666",
   // 去掉flex布局，改为普通文本
 }}>
-  {t("Available Balance")}: <span style={{ fontWeight: "bold", color: "#333" }}>{localBalance.toFixed(2)} USDT</span>
+  {t("Available Balance")}: <span style={{ fontWeight: "bold", color: "#696868ff" }}>{localBalance.toFixed(2)} USDT</span>
 </div>
 
 {/* 使用表格显示订单信息 */}
