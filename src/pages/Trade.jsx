@@ -297,12 +297,12 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
   const { balances: userBalances, controlMode } = useUserBalances();
   const currentPrice = price;
   
- const periods = [
-    { time: 60, percent: 0.25 },
-    { time: 90, percent: 0.3 },
-    { time: 120, percent: 0.37 },
-    { time: 180, percent: 0.5 },
-    { time: 360, percent: 0.7 },
+  const periods = [
+    { time: 60, percent: 0.25, min: 100, max: 5000 },
+    { time: 90, percent: 0.3, min: 5001, max: 10000 },
+    { time: 120, percent: 0.37, min: 10001, max: 50000 },
+    { time: 180, percent: 0.5, min: 50001, max: 100000 },
+    { time: 360, percent: 0.7, min: 100001, max: Number.MAX_SAFE_INTEGER },
   ];
   const calculateExpectedProfit = () => {
     if (!customAmount || !selectedPeriod) return 0;
@@ -327,6 +327,30 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
     setLocalBalance(usdt);
   }, [userBalances]);
 
+    // 获取当前选择周期的金额范围
+  const getCurrentRange = () => {
+    if (!selectedPeriod) return { min: 0, max: 0 };
+    const period = periods.find(p => p.time === selectedPeriod);
+    return period ? { min: period.min, max: period.max } : { min: 0, max: 0 };
+  };
+
+  // 格式化金额范围显示
+  const formatRangeText = () => {
+    const { min, max } = getCurrentRange();
+    if (max === Number.MAX_SAFE_INTEGER) {
+      return `${min}+`;
+    }
+    return `${min} - ${max}`;
+  };
+
+  // 全部投入按钮点击事件
+  const handleMaxAmount = () => {
+    const { max } = getCurrentRange();
+    const maxAmount = Math.min(localBalance, max);
+    setCustomAmount(maxAmount.toString());
+  };
+
+
   /* ====== 确认下单 ====== */
   const handleConfirm = async () => {
     if (!selectedPeriod || !customAmount) {
@@ -335,8 +359,14 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
     }
 
     const amount = Number(customAmount);
+    const { min, max } = getCurrentRange();
+
     if (isNaN(amount) || amount <= 0) {
       alert(t("Invalid amount"));
+      return;
+    }
+     if (amount < min || amount > max) {
+      alert(t(`Amount must be between ${min} and ${max}`));
       return;
     }
     if (localBalance < amount) {
@@ -699,65 +729,121 @@ if (result) {
         })}
       </div>
 
-      <input
-        type="number"
-        placeholder={t("Please enter amount")}
-        value={customAmount}
-        onChange={(e) => setCustomAmount(e.target.value)}
-        style={{
-          border: "1px solid #ccc",
-          padding: 12,
-          borderRadius: 8,
-          width: "100%",
-          fontSize: 14,
-        }}
-      />
-  {/* 使用表格显示订单信息 */}
-  <table style={{ width: "100%", marginTop: 20, borderCollapse: "collapse" }}>
-    <thead>
-      <tr>
-        <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Symbol")}</th>
-        <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Direction")}</th>
-        <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Price")}</th>
-        <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Money")}</th>
-        <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Expected")}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        {/* Symbol: 显示当前币种，如 BTC/USDT */}
-        <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>
-          {symbol.replace("USDT", "/USDT")}
-        </td>
-        
-        {/* Direction: 显示 Buy up 或 Buy fall */}
-        <td style={{ 
-          padding: "10px", 
-          textAlign: "center", 
+      {/* 添加金额范围提示 */}
+      {selectedPeriod && (
+        <div style={{ 
           fontSize: 14, 
-          color: modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71",
-          fontWeight: "bold"
+          color: "#666",
+          textAlign: "center",
+          padding: "8px",
+          backgroundColor: "#f8f9fa",
+          borderRadius: "8px",
+          border: "1px solid #e9ecef"
         }}>
-          {t(modalType)}
-        </td>
-        
-        {/* Price: 显示实时价格 */}
-        <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>
-          {currentPrice.toFixed(2)}
-        </td>
-        
-        {/* Money: 显示用户输入的金额 */}
-        <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>
-          {customAmount || "0"} USDT
-        </td>
-        
-        {/* Expected: 根据金额和选择的百分比计算预期收益 */}
-        <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>
-          {calculateExpectedProfit().toFixed(2)} USDT
-        </td>
-      </tr>
-    </tbody>
-  </table>
+          <strong>Custom amount:</strong> {formatRangeText()} USDT
+        </div>
+      )}
+
+      {/* 金额输入框 */}
+      <div style={{ position: "relative" }}>
+        <input
+          type="number"
+          placeholder={t("Please enter amount")}
+          value={customAmount}
+          onChange={(e) => setCustomAmount(e.target.value)}
+          style={{
+            border: "1px solid #ccc",
+            padding: "12px 80px 12px 12px",
+            borderRadius: 8,
+            width: "100%",
+            fontSize: 14,
+            boxSizing: "border-box",
+          }}
+        />
+        {/* 全部按钮 */}
+        <button
+          onClick={handleMaxAmount}
+          style={{
+            position: "absolute",
+            right: "8px",
+            top: "50%",
+            transform: "translateY(-50%)",
+            backgroundColor: "#6c757d",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            padding: "4px 8px",
+            fontSize: "12px",
+            cursor: "pointer",
+          }}
+        >
+          {t("MAX")}
+        </button>
+      </div>
+
+      {/* 可用余额显示 */}
+      <div style={{ 
+        fontSize: 14, 
+        color: "#666",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center"
+      }}>
+        <span>{t("Available Balance")}:</span>
+        <span style={{ fontWeight: "bold", color: "#333" }}>
+          {localBalance.toFixed(2)} USDT
+        </span>
+      </div>
+
+      {/* 使用表格显示订单信息 */}
+      <table style={{ width: "100%", marginTop: 20, borderCollapse: "collapse" }}>
+        <thead>
+          <tr>
+            <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Symbol")}</th>
+            <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Direction")}</th>
+            <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Price")}</th>
+            <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Money")}</th>
+            <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Expected")}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {/* Symbol: 显示当前币种，如 BTC/USDT */}
+            <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>
+              {symbol.replace("USDT", "/USDT")}
+            </td>
+            
+            {/* Direction: 显示 Buy up 或 Buy fall */}
+            <td style={{ 
+              padding: "10px", 
+              textAlign: "center", 
+              fontSize: 14, 
+              color: modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71",
+              fontWeight: "bold"
+            }}>
+              {t(modalType)}
+            </td>
+            
+            {/* Price: 显示实时价格 */}
+            <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>
+              {buyPrice.toFixed(2)}
+            </td>
+            
+            {/* Money: 显示用户输入的金额 */}
+            <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>
+              {customAmount || "0"} USDT
+            </td>
+            
+            {/* Expected: 根据金额和选择的百分比计算预期收益 */}
+            <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>
+              {selectedPeriod && customAmount 
+                ? (Number(customAmount) * periods.find(p => p.time === selectedPeriod).percent).toFixed(2)
+                : "0"
+              } USDT
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
       <button
         disabled={!selectedPeriod}
@@ -778,8 +864,6 @@ if (result) {
     </div>
   );
 };
-
-
 /* ===================== 主交易页面 ===================== */
 const Trade = () => {
   const { t } = useTranslation();
