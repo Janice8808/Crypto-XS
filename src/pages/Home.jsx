@@ -10,7 +10,25 @@ const maskAddress = (addr) => {
   if (addr.length < 16) return addr;
   return `0x${addr.slice(0, 6)}…${addr.slice(-4)}`; // 在地址前加上 "0x"
 };
-
+// ============ 价格格式化函数 ============
+const formatPrice = (price) => {
+  if (price === "--" || price === undefined || price === null) return "--";
+  
+  const num = Number(price);
+  if (isNaN(num)) return "--";
+  
+  if (num >= 1000) {
+    return num.toFixed(0); // 千元以上显示整数
+  } else if (num >= 100) {
+    return num.toFixed(1); // 100-1000显示1位小数
+  } else if (num >= 1) {
+    return num.toFixed(2); // 1-100显示2位小数
+  } else if (num >= 0.01) {
+    return num.toFixed(4); // 0.01-1显示4位小数
+  } else {
+    return num.toFixed(6); // 小于0.01显示6位小数
+  }
+};
 
 /* ---------------- SVG ICONS ---------------- */
 const iconUser = (
@@ -438,7 +456,7 @@ useEffect(() => {
 </div>
 </div>
 
-        {/* 热门 Top3 当前价格 */}
+{/* 热门 Top3 当前价格 */}
 <div className="grid grid-cols-3 gap-4">
   {top3.map((coin) => {
     const up = coin.change >= 0;
@@ -449,15 +467,11 @@ useEffect(() => {
         to={`/trade?symbol=${coin.base}USDT`}
         className="text-center py-2"
       >
-        {/* 名称更小 */}
         <div className="text-gray-500 text-xs">{coin.symbol}</div>
-
-        {/* 价格稍微大一点，主视觉 */}
+        {/* 这里使用 formatPrice */}
         <div className="font-bold text-gray-600 text-sm">
-          ${Number(coin.price).toFixed(1)}
+          ${formatPrice(coin.price)}
         </div>
-
-        {/* 涨幅也偏小一点 */}
         <div className="text-gray-500 text-xs">
           {up ? "+" : ""}
           {coin.change}%
@@ -467,19 +481,7 @@ useEffect(() => {
   })}
 </div>
 
-      </div>
-
-      {/* 实时行情 Popular list */}
-      <div className="mt-4 bg-white rounded-lg shadow mx-2 p-2">
-        <div className="px-2 py-1 font-semibold text-gray-500">
-          {t("Popular list")}
-        </div>
-
-        <div className="flex items-center px-2 py-2 border-b font-semibold text-gray-500">
-          <span className="w-1/3">{t("Symbol")}</span>
-          <span className="w-1/3 text-center">{t("Latest Price")}</span>
-          <span className="w-1/3 text-right">{t("24h")}</span>
-        </div>
+{/* 实时行情列表 */}
 {list.map((coin) => {
   if (!coin) return null;
   const up = coin.change >= 0;
@@ -498,8 +500,9 @@ useEffect(() => {
         <span className="text-gray-600 text-sm">{coin.symbol}</span>
       </div>
 
+      {/* 这里使用 formatPrice */}
       <div className="w-1/3 text-center text-gray-600 text-sm">
-        ${Number(coin.price).toFixed(1)}
+        ${formatPrice(coin.price)}
       </div>
 
       <div className="w-1/3 flex justify-end items-center">
