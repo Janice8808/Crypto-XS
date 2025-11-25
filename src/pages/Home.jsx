@@ -408,16 +408,20 @@ useEffect(() => {
           ))}
         </div>
 
-        {/* 两个广告图 */}
-        <div className="flex gap-2 mb-6 px-1">
-          <div className="w-1/3">
-            <img src="/images/online.jpg" className="w-full h-[70px] rounded-lg object-fill" />
-          </div>
+{/* 两个广告图 */}
+<div className="flex gap-2 mb-6 px-1">
+  <div className="w-1/3">
+    <img src="/images/online.jpg" className="w-full h-[70px] rounded-lg object-fill" />
+  </div>
 
-          <div className="w-2/3">
-            <img src="/images/fastbuy.jpg" className="w-full h-[70px] rounded-lg object-fill" />
-          </div>
-        </div>
+  <div className="w-2/3">
+    <img 
+      src="/images/fastbuy.jpg" 
+      className="w-full h-[70px] rounded-lg object-fill cursor-pointer"
+      onClick={() => navigate('/deposit1')}
+    />
+  </div>
+</div>
 
         {/* 热门 Top3 当前价格 */}
 <div className="grid grid-cols-3 gap-4">
