@@ -4,8 +4,21 @@ export default function Splash({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500); // 可调时间
-    return () => clearTimeout(timer);
+    // 检查是否已经显示过启动页
+    const hasSeenSplash = sessionStorage.getItem("hasSeenSplash");
+    
+    if (hasSeenSplash) {
+      // 如果已经显示过，立即隐藏启动页
+      setLoading(false);
+    } else {
+      // 第一次显示，设置计时器并标记为已显示
+      const timer = setTimeout(() => {
+        setLoading(false);
+        sessionStorage.setItem("hasSeenSplash", "true");
+      }, 1500);
+      
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   if (loading) {
@@ -21,7 +34,7 @@ export default function Splash({ children }) {
         }}
       >
         <img
-          src="/logo.png"     // ⭐ 只显示图标
+          src="/logo.png"
           alt="logo"
           style={{
             width: 90,
