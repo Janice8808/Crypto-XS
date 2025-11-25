@@ -730,19 +730,17 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
       </div>
 
       {/* 添加金额范围提示 */}
-      {selectedPeriod && (
-        <div style={{ 
-          fontSize: 14, 
-          color: "#666",
-          textAlign: "center",
-          padding: "8px",
-          backgroundColor: "#f8f9fa",
-          borderRadius: "8px",
-          border: "1px solid #e9ecef"
-        }}>
-          <strong>Custom amount:</strong> {formatRangeText()} USDT
-        </div>
-      )}
+{selectedPeriod && (
+  <div style={{ 
+    fontSize: 14, 
+    color: "#666",
+    textAlign: "left",   // 改为左对齐
+    padding: "8px 0",    // 去掉左右内边距，只保留上下
+    // 去掉背景色和边框
+  }}>
+    <strong>Custom amount:</strong> {formatRangeText()}
+  </div>
+)}
 
       {/* 金额输入框 */}
       <div style={{ position: "relative" }}>
@@ -782,18 +780,13 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
       </div>
 
       {/* 可用余额显示 */}
-      <div style={{ 
-        fontSize: 14, 
-        color: "#666",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center"
-      }}>
-        <span>{t("Available Balance")}:</span>
-        <span style={{ fontWeight: "bold", color: "#333" }}>
-          {localBalance.toFixed(2)} USDT
-        </span>
-      </div>
+<div style={{ 
+  fontSize: 14, 
+  color: "#666",
+  // 去掉flex布局，改为普通文本
+}}>
+  {t("Available Balance")}: <span style={{ fontWeight: "bold", color: "#333" }}>{localBalance.toFixed(2)} USDT</span>
+</div>
 
       {/* 使用表格显示订单信息 */}
       <table style={{ width: "100%", marginTop: 20, borderCollapse: "collapse" }}>
