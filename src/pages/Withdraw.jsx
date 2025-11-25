@@ -71,7 +71,7 @@ const fetchBalance = async () => {
     setLoading(true);
     const token = localStorage.getItem("token");
     
-    const res = await fetch("https://pankouhoutai.shop/api/wallet/balance", {
+    const res = await fetch("https://pankouhoutai.shop/api/user/balance", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`,
