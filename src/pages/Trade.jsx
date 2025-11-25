@@ -295,16 +295,21 @@ const OrderForm = ({ symbol, modalType, price, onClose, onLockChange }) => {
   const [timeLeft, setTimeLeft] = useState(0);
 
   const { balances: userBalances, controlMode } = useUserBalances();
-  const buyPrice = price;
-
-  const periods = [
+  const currentPrice = price;
+  
+ const periods = [
     { time: 60, percent: 0.25 },
     { time: 90, percent: 0.3 },
     { time: 120, percent: 0.37 },
     { time: 180, percent: 0.5 },
     { time: 360, percent: 0.7 },
   ];
-
+  const calculateExpectedProfit = () => {
+    if (!customAmount || !selectedPeriod) return 0;
+    const amount = Number(customAmount);
+    const period = periods.find(p => p.time === selectedPeriod);
+    return amount * period.percent;
+  };
   /* ⭐ 初始界面允许关闭 */
   useEffect(() => {
     onLockChange(false);
@@ -707,27 +712,52 @@ if (result) {
           fontSize: 14,
         }}
       />
-    {/* 使用表格显示订单信息 */}
-    <table style={{ width: "100%", marginTop: 20, borderCollapse: "collapse" }}>
-      <thead>
-        <tr>
-          <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Symbol")}</th>
-          <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Direction")}</th>
-          <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Price")}</th>
-          <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Money")}</th>
-          <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Expected")}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>BTC/USDT</td>
-          <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>Buy up</td>
-          <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>88151</td>
-          <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>10 USDT</td>
-          <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>0 USDT</td>
-        </tr>
-      </tbody>
-    </table>
+  {/* 使用表格显示订单信息 */}
+  <table style={{ width: "100%", marginTop: 20, borderCollapse: "collapse" }}>
+    <thead>
+      <tr>
+        <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Symbol")}</th>
+        <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Direction")}</th>
+        <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Price")}</th>
+        <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Money")}</th>
+        <th style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#555" }}>{t("Expected")}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        {/* Symbol: 显示当前币种，如 BTC/USDT */}
+        <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>
+          {symbol.replace("USDT", "/USDT")}
+        </td>
+        
+        {/* Direction: 显示 Buy up 或 Buy fall */}
+        <td style={{ 
+          padding: "10px", 
+          textAlign: "center", 
+          fontSize: 14, 
+          color: modalType === "Buy Fall" ? "#e74c3c" : "#2ecc71",
+          fontWeight: "bold"
+        }}>
+          {t(modalType)}
+        </td>
+        
+        {/* Price: 显示实时价格 */}
+        <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>
+          {currentPrice.toFixed(2)}
+        </td>
+        
+        {/* Money: 显示用户输入的金额 */}
+        <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>
+          {customAmount || "0"} USDT
+        </td>
+        
+        {/* Expected: 根据金额和选择的百分比计算预期收益 */}
+        <td style={{ padding: "10px", textAlign: "center", fontSize: 14, color: "#333" }}>
+          {calculateExpectedProfit().toFixed(2)} USDT
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
       <button
         disabled={!selectedPeriod}
