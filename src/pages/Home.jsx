@@ -411,8 +411,11 @@ useEffect(() => {
 <div className="flex gap-2 mb-6 px-1">
   <div className="w-1/3 relative">
     <img src="/images/online.jpg" className="w-full h-[70px] rounded-lg object-fill" />
-    <div className="absolute bottom-1 left-0 right-0 text-center text-white text-xs font-bold bg-black bg-opacity-50 py-1 rounded">
-      {t("online")}
+    {/* 在图片上叠加可翻译的文字 */}
+    <div className="absolute inset-0 flex items-center justify-center">
+      <span className="text-gray-600 text-sm font-bold bg-white bg-opacity-80 px-2 py-1 rounded">
+        {t("Online Service")}
+      </span>
     </div>
   </div>
 
@@ -422,8 +425,10 @@ useEffect(() => {
       className="w-full h-[70px] rounded-lg object-fill cursor-pointer"
       onClick={() => navigate('/deposit1')}
     />
-    <div className="absolute bottom-1 left-0 right-0 text-center text-white text-xs font-bold bg-black bg-opacity-50 py-1 rounded">
-      {t("fastbuy")}
+    <div className="absolute inset-0 flex items-center justify-center">
+      <span className="text-gray-600 text-sm font-bold bg-white bg-opacity-80 px-2 py-1 rounded">
+        {t("Fast buying coin")}
+      </span>
     </div>
   </div>
 </div>
