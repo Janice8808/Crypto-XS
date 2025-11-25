@@ -18,13 +18,13 @@ const formatPrice = (price) => {
   if (isNaN(num)) return "--";
   
   if (num >= 1000) {
-    return num.toFixed(0); // 千元以上显示整数
+    return num.toFixed(2); // 千元以上显示2位小数
   } else if (num >= 100) {
-    return num.toFixed(1); // 100-1000显示1位小数
+    return num.toFixed(3); // 100-1000显示3位小数
   } else if (num >= 1) {
-    return num.toFixed(2); // 1-100显示2位小数
+    return num.toFixed(4); // 1-100显示4位小数
   } else if (num >= 0.01) {
-    return num.toFixed(4); // 0.01-1显示4位小数
+    return num.toFixed(5); // 0.01-1显示5位小数
   } else {
     return num.toFixed(6); // 小于0.01显示6位小数
   }
