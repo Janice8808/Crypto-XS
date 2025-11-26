@@ -121,12 +121,21 @@ const shortAddress =
   return (
     <div className="min-h-screen bg-white pb-20">
 
-      {/* 返回箭头 */}
- <div className="p-4 bg-white/90 backdrop-blur">
-  <button onClick={() => navigate(-1)}>
-    <BackIcon />
-  </button>
-</div>
+        {/* ⭐ 左侧返回键 - 绝对贴左 */}
+        <button
+          onClick={() => window.history.back()}
+          style={{
+            background: "none",
+            border: "none",
+            fontSize: 20,
+            color: "#666",
+            width: "45px",
+            textAlign: "left",
+            paddingLeft: "12px",
+          }}
+        >
+          ←
+        </button>
 
 
       {/* 用户信息 */}
