@@ -38,8 +38,7 @@ import Notice from "./pages/Notice";
 import AdminPanel from "./pages/AdminPanel";
 import AdminSimple from "./pages/AdminSimple";
 
-// 下拉刷新包装组件
-// 下拉刷新包装组件
+// 下拉刷新包装组件 - 极低灵敏度版本
 const PullToRefreshWrapper = ({ children }) => {
   const refreshContainerRef = useRef(null);
   const refreshIndicatorRef = useRef(null);
@@ -48,13 +47,14 @@ const PullToRefreshWrapper = ({ children }) => {
   let startY = 0;
   let currentY = 0;
   let isRefreshing = false;
-  const refreshThreshold = 200; // 大幅提高触发阈值到200px
+  const refreshThreshold = 350; // 极高触发阈值 - 需要下拉350px
 
   const handleTouchStart = (e) => {
     if (isRefreshing) return;
     const container = refreshContainerRef.current;
     
-    if (container && container.scrollTop === 0) {
+    // 只有在页面最顶部时才启用下拉刷新
+    if (container && container.scrollTop <= 0) {
       startY = e.touches[0].pageY;
       container.style.transition = 'none';
     }
@@ -63,34 +63,46 @@ const PullToRefreshWrapper = ({ children }) => {
   const handleTouchMove = (e) => {
     if (isRefreshing) return;
     
-    if (startY && refreshContainerRef.current?.scrollTop === 0) {
+    if (startY && refreshContainerRef.current?.scrollTop <= 0) {
       currentY = e.touches[0].pageY;
       const diff = currentY - startY;
       
+      // 只有在下拉时才处理
       if (diff > 0) {
+        // 阻止默认行为，禁用浏览器下拉刷新
         e.preventDefault();
         
-        // 进一步降低灵敏度：使用更小的系数和阻力
-        const resistance = 0.25; // 更小的系数，增加阻力感
+        // 极强的阻力效果
+        const resistance = 0.15; // 极小的系数
+        // 使用平方函数增加阻力，下拉越多阻力越大
         const pullDistance = Math.min(
-          Math.pow(diff * resistance, 0.8), // 使用幂函数增加阻力
-          refreshThreshold * 1.1 // 限制最大距离
+          Math.pow(diff * resistance, 0.6),
+          refreshThreshold * 1.05
         );
         
-        // 更新图标位置和透明度
+        // 更新指示器位置
         if (refreshIndicatorRef.current) {
           refreshIndicatorRef.current.style.transform = `translateY(${pullDistance}px)`;
         }
         
-        // 根据下拉距离更新图标透明度 - 使用非线性变化
+        // 非常缓慢的图标显示 - 只有在下拉很远后才开始显示
         if (refreshIconRef.current) {
           let opacity = 0;
-          if (pullDistance > refreshThreshold * 0.5) {
-            // 只有在下拉到阈值一半以上时才开始显示
-            opacity = Math.pow((pullDistance - refreshThreshold * 0.5) / (refreshThreshold * 0.5), 2) * 0.6;
+          if (pullDistance > refreshThreshold * 0.7) { // 70%阈值后才开始显示
+            opacity = Math.pow(
+              (pullDistance - refreshThreshold * 0.7) / (refreshThreshold * 0.3), 
+              2
+            ) * 0.8;
           }
           refreshIconRef.current.style.opacity = opacity.toString();
           
+          // 图标颜色渐变
+          if (pullDistance > refreshThreshold * 0.8) {
+            refreshIconRef.current.style.borderColor = `rgba(100, 108, 255, ${opacity})`;
+            refreshIconRef.current.style.borderTopColor = 'transparent';
+          }
+          
+          // 准备状态
           if (pullDistance >= refreshThreshold) {
             refreshIndicatorRef.current?.classList.add('ready');
           } else {
@@ -106,13 +118,17 @@ const PullToRefreshWrapper = ({ children }) => {
     
     if (startY) {
       const diff = currentY - startY;
-      const resistance = 0.25;
-      const effectiveDistance = Math.pow(diff * resistance, 0.8);
+      const resistance = 0.15;
+      const effectiveDistance = Math.pow(diff * resistance, 0.6);
       
-      // 使用更高的阈值检查
+      console.log(`下拉距离: ${diff}px, 有效距离: ${effectiveDistance.toFixed(1)}px, 阈值: ${refreshThreshold}px`);
+      
+      // 只有达到极高阈值才触发刷新
       if (effectiveDistance >= refreshThreshold) {
+        console.log("触发刷新");
         startRefresh();
       } else {
+        console.log("未达到刷新阈值，复位");
         resetRefresh();
       }
       
@@ -148,6 +164,7 @@ const PullToRefreshWrapper = ({ children }) => {
       }
       if (refreshIconRef.current) {
         refreshIconRef.current.style.opacity = '0';
+        refreshIconRef.current.style.borderColor = 'rgba(100, 108, 255, 0)';
       }
     }, 300);
   };
@@ -159,6 +176,7 @@ const PullToRefreshWrapper = ({ children }) => {
     refreshIndicatorRef.current?.classList.remove('ready');
     if (refreshIconRef.current) {
       refreshIconRef.current.style.opacity = '0';
+      refreshIconRef.current.style.borderColor = 'rgba(100, 108, 255, 0)';
     }
   };
 
@@ -170,7 +188,7 @@ const PullToRefreshWrapper = ({ children }) => {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* 下拉刷新指示器 - 只保留图标，无文字 */}
+      {/* 下拉刷新指示器 - 极隐蔽 */}
       <div ref={refreshIndicatorRef} className="refresh-indicator">
         <div ref={refreshIconRef} className="refresh-icon"></div>
       </div>
