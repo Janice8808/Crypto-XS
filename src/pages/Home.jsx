@@ -449,11 +449,10 @@ useEffect(() => {
     className="w-full h-[70px] rounded-lg object-fill"
   />
   <div className="absolute inset-0 flex items-center justify-center">
-    <span className="text-gray-600 text-sm font-bold text-center">
+    <span className="text-gray-600 text-sm font-bold text-center ml-2">
       {t("Fast buying coin")}
     </span>
   </div>
-</div>
 </div>
 
 {/* 热门 Top3 当前价格 */}
