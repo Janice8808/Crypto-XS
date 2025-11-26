@@ -316,7 +316,7 @@ const features = [
 <div
   className="
     relative overflow-hidden 
-    h-20 px-3 flex items-center
+    h-25 px-3 flex items-center
     bg-gradient-to-b
     from-[#FFFFFF]
     via-[#F3F3F3]
