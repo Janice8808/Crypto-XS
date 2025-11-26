@@ -366,7 +366,7 @@ const features = [
         </div>
 
 {/* 两个广告图 - 自定义宽度 */}
-<div className="flex gap-2 mb-6 w-full max-w-[96vw] mx-auto"> 
+<div className="flex gap-2 mb-6 w-full"> 
   <div className="w-1/3 relative">
     <div 
       className="w-full h-[80px] rounded-lg bg-cover bg-center"
