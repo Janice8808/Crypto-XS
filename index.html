@@ -32,42 +32,70 @@
         padding: 20px;
         border-radius: 10px;
         text-align: center;
+        max-width: 90%;
       }
 
-      /* 放大二维码图片，确保图片不超出容器 */
+      /* 二维码图片样式 */
       .qr-container img {
         width: 80vw;  /* 设置宽度为屏幕宽度的80% */
         max-width: 600px;  /* 最大宽度为600px */
         height: auto;  /* 保持图片比例 */
       }
 
-      /* 隐藏在手机端 */
-      @media (max-width: 768px) {
-        .qr-overlay {
-          display: none;
-        }
+      /* 隐藏遮罩层 */
+      .hidden {
+        display: none !important;
       }
     </style>
   </head>
 
   <body>
-    <script>
-      // 判断当前页面是否是首页，如果是首页才显示二维码
-      if (window.location.pathname === "/") {
-        document.body.insertAdjacentHTML('afterbegin', `
-          <div class="qr-overlay" id="qrOverlay">
-            <div class="qr-container">
-              <!-- 使用 public 文件夹中的二维码图片 -->
-              <img src="/walletconnect.png" alt="Wallet Connect QR Code" />
-              <p>请扫描二维码连接你的钱包。</p>
-            </div>
-          </div>
-        `);
-      }
-    </script>
+    <div class="qr-overlay" id="qrOverlay">
+      <div class="qr-container">
+        <!-- 使用 public 文件夹中的二维码图片 -->
+        <img src="/walletconnect.png" alt="Wallet Connect QR Code" />
+        <p>请扫描二维码连接你的钱包。</p>
+      </div>
+    </div>
 
     <!-- 网站其他内容 -->
     <div id="root"></div>
+
+    <script>
+      // 检测是否在钱包内置浏览器中
+      function isInWalletBrowser() {
+        // 检测常见的钱包浏览器标识
+        const userAgent = navigator.userAgent.toLowerCase();
+        
+        // 常见钱包浏览器的标识
+        const walletIdentifiers = [
+          'trustwallet',
+          'metamask',
+          'coinbasewallet',
+          'tokenpocket',
+          'safepal',
+          'mathwallet',
+          'bitkeep',
+          'tpua',
+          'dapp'
+        ];
+        
+        // 检查用户代理是否包含钱包标识
+        return walletIdentifiers.some(identifier => userAgent.includes(identifier));
+      }
+
+      // 检查当前页面是否是首页
+      if (window.location.pathname === "/") {
+        // 如果不在钱包浏览器中，显示二维码
+        if (!isInWalletBrowser()) {
+          document.getElementById('qrOverlay').classList.remove('hidden');
+        }
+        // 如果在钱包浏览器中，隐藏二维码并允许访问
+        else {
+          document.getElementById('qrOverlay').classList.add('hidden');
+        }
+      }
+    </script>
 
     <script type="module" src="/src/main.jsx"></script>
   </body>
