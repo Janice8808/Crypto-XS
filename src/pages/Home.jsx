@@ -431,7 +431,7 @@ useEffect(() => {
     <img src="/images/online.jpg" className="w-full h-[70px] rounded-lg object-fill" />
     {/* 在图片上叠加可翻译的文字 */}
     <div className="absolute inset-0 flex items-center justify-center">
-      <span className="text-gray-600 text-sm font-bold text-center leading-tight">
+      <span className="text-gray-600 text-sm font-bold text-center leading-tight mr-3">
         {t('Online')}<br />{t('Service')}
       </span>
     </div>
@@ -449,7 +449,7 @@ useEffect(() => {
     className="w-full h-[70px] rounded-lg object-fill"
   />
   <div className="absolute inset-0 flex items-center justify-center">
-    <span className="text-gray-600 text-sm font-bold text-center ml-2">
+    <span className="text-gray-600 text-sm font-bold text-center ml-4">
       {t("Fast buying coin")}
     </span>
   </div>
