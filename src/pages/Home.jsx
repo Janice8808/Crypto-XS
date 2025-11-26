@@ -3,6 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { coinIcons } from "../assets/coinIcons";
 import { useOkxTickers } from "../hooks/useOkxTickers";
+import userIcon from '../assets/icons/user.png';
+import msbIcon from '../assets/icons/msb.png';
+import introIcon from '../assets/icons/intro.png';
+import currencyIcon from '../assets/icons/currency.png';
+import depositIcon from '../assets/icons/deposit.png';
+import defiIcon from '../assets/icons/defi.png';
+import futuresIcon from '../assets/icons/futures.png';
+import withdrawIcon from '../assets/icons/withdraw.png';
 
 // ============ 地址遮挡函数 ============
 const maskAddress = (addr) => {
@@ -31,74 +39,6 @@ const formatPrice = (price) => {
 };
 
 /* ---------------- SVG ICONS ---------------- */
-const iconUser = (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-    stroke="#444" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="7" r="4" />
-    <path d="M5 21c0-4 3-7 7-7s7 3 7 7" />
-  </svg>
-);
-
-const iconMSB = (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-    stroke="#444" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="12 2 20 7 20 17 12 22 4 17 4 7" />
-    <circle cx="12" cy="12" r="3" />
-  </svg>
-);
-
-const iconIntro = (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-    stroke="#444" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="4" y="3" width="16" height="18" rx="2" />
-    <line x1="8" y1="9" x2="16" y2="9" />
-    <line x1="8" y1="13" x2="16" y2="13" />
-  </svg>
-);
-
-const iconCurrency = (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-    stroke="#444" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="3 17 9 11 13 15 21 7" />
-    <circle cx="21" cy="7" r="1.5" fill="#444" />
-  </svg>
-);
-
-const iconDeposit = (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-    stroke="#444" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="7" width="18" height="12" rx="2" />
-    <path d="M12 3v8" />
-    <path d="M8 7h8" />
-  </svg>
-);
-
-const iconDefi = (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-    stroke="#444" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 2c2 3 4 5 4 8a4 4 0 1 1-8 0c0-3 2-5 4-8z" />
-    <path d="M12 15v7" />
-  </svg>
-);
-
-const iconFutures = (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-    stroke="#444" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="3 17 9 11 13 15 21 7" />
-    <path d="M17 7h4v4" />
-  </svg>
-);
-
-const iconWithdraw = (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-    stroke="#444" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="7" width="18" height="12" rx="2" />
-    <path d="M12 3v8" />
-    <path d="M12 3l-3 3" />
-    <path d="M12 3l3 3" />
-  </svg>
-);
-
 const MailIcon = () => (
   <svg width="24" height="24" fill="none" stroke="#fff" strokeWidth="2"
     strokeLinecap="round" strokeLinejoin="round">
@@ -235,16 +175,16 @@ useEffect(() => {
 
 
   // 多语言 features
-  const features = [
-    { key: "User Center", icon: iconUser },
-    { key: "MSb", icon: iconMSB },
-    { key: "Introduction", icon: iconIntro },
-    { key: "Currency", icon: iconCurrency },
-    { key: "Deposit", icon: iconDeposit },
-    { key: "DeFi", icon: iconDefi },
-    { key: "Futures", icon: iconFutures },
-    { key: "Withdraw", icon: iconWithdraw },
-  ];
+const features = [
+  { key: "User Center", icon: <img src={userIcon} className="w-7 h-7" alt="user" /> },
+  { key: "MSb", icon: <img src={msbIcon} className="w-7 h-7" alt="msb" /> },
+  { key: "Introduction", icon: <img src={introIcon} className="w-7 h-7" alt="intro" /> },
+  { key: "Currency", icon: <img src={currencyIcon} className="w-7 h-7" alt="currency" /> },
+  { key: "Deposit", icon: <img src={depositIcon} className="w-7 h-7" alt="deposit" /> },
+  { key: "DeFi", icon: <img src={defiIcon} className="w-7 h-7" alt="defi" /> },
+  { key: "Futures", icon: <img src={futuresIcon} className="w-7 h-7" alt="futures" /> },
+  { key: "Withdraw", icon: <img src={withdrawIcon} className="w-7 h-7" alt="withdraw" /> },
+];
 
   const images = ["/images/banner1.jpg", "/images/banner2.jpg", "/images/banner3.jpg"];
   const [currentBanner, setCurrentBanner] = useState(0);
