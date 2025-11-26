@@ -342,7 +342,7 @@ const features = [
 
 {/* 功能区 - 平衡间距 */}
 <div className="bg-white mx-2 rounded-xl p-4 shadow relative z-20 -mt-5">
-  <div className="grid grid-cols-4 gap-4 px-4 py-3"> {/* 恢复正常的py-3 */}
+  <div className="grid grid-cols-4 gap-4 px-4 pt-1 pb-3">{/* 恢复正常的py-3 */}
     {features.map((feature, index) => (
       <div 
         key={index}
