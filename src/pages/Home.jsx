@@ -3,14 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { coinIcons } from "../assets/coinIcons";
 import { useOkxTickers } from "../hooks/useOkxTickers";
-import {userIcon} from '../assets/icons/user.png';
-import {msbIcon} from '../assets/icons/msb.png';
-import {introIcon} from '../assets/icons/intro.png';
-import {currencyIcon} from '../assets/icons/currency.png';
-import {depositIcon} from '../assets/icons/deposit.png';
-import {defiIcon} from '../assets/icons/defi.png';
-import {futuresIcon} from '../assets/icons/futures.png';
-import {withdrawIcon} from '../assets/icons/withdraw.png';
+import userIcon from '../assets/icons/user.png';
+import msbIcon from '../assets/icons/msb.png';
+import introIcon from '../assets/icons/intro.png';
+import currencyIcon from '../assets/icons/currency.png';
+import depositIcon from '../assets/icons/deposit.png';
+import defiIcon from '../assets/icons/defi.png';
+import futuresIcon from '../assets/icons/futures.png';
+import withdrawIcon from '../assets/icons/withdraw.png';
 
 // ============ 地址遮挡函数 ============
 const maskAddress = (addr) => {
