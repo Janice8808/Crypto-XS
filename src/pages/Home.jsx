@@ -454,7 +454,7 @@ useEffect(() => {
         {t("Fast buying coin")}
       </span>
       {/* 新增的可翻译小字行 */}
-      <div className="text-gray-400 text-xs mt-1">
+       <div className="text-gray-400 text-[10px] mt-1">
         {t("Zero fees. Get started now")}
       </div>
     </div>
