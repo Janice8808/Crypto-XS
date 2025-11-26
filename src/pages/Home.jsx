@@ -340,22 +340,23 @@ const features = [
         </div>
       </div>
 
-{/* 功能区 - 最小调整 */}
-<div className="grid grid-cols-4 gap-4 px-4 py-3">
-  {features.map((feature, index) => (
-    <div 
-      key={index}
-      className="flex flex-col items-center"
-    >
-      <div className="mb-1"> {/* 只保留很小的下边距 */}
-        {feature.icon}
+{/* 功能区 - 平衡间距 */}
+<div className="mt-2 bg-white mx-2 rounded-xl p-4 shadow relative z-20 -mt-4">
+  <div className="grid grid-cols-4 gap-4 px-4 py-3"> {/* 恢复正常的py-3 */}
+    {features.map((feature, index) => (
+      <div 
+        key={index}
+        className="flex flex-col items-center justify-center h-20" // 适中的高度
+      >
+        <div className="flex items-center justify-center mb-1"> {/* 轻微下边距 */}
+          {feature.icon}
+        </div>
+        <span className="text-gray-500 text-xs text-center leading-tight mt-1"> {/* 轻微上边距 */}
+          {t(feature.key)}
+        </span>
       </div>
-      <span className="text-gray-500 text-xs text-center">
-        {t(feature.key)}
-      </span>
-    </div>
-  ))}
-</div>
+    ))}
+  </div>
 
 
 {/* 两个广告图 */}
