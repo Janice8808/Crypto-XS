@@ -367,8 +367,9 @@ const features = [
 
 
 {/* 两个广告图 */}
-<div className="flex gap-2 mb-6 w-screen -ml-4 pr-4">
-  <div className="w-1/3 relative">
+<div className="flex gap-2 mb-6 w-full">
+  {/* 左卡片 */}
+  <div className="w-1/3 relative -ml-4">
     <div 
       className="w-full h-[80px] rounded-lg bg-cover bg-center bg-no-repeat"
       style={{backgroundImage: "url(/images/online.jpg)"}}
@@ -380,6 +381,7 @@ const features = [
     </div>
   </div>
 
+  {/* 右卡片 */}
   <div 
     className="w-2/3 relative cursor-pointer"
     onClick={() => navigate('/deposit1')}
