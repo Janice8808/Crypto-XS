@@ -86,7 +86,7 @@ const resources = {
     "Temporarily no data": "Pas de données",
     "Deposit": "Dépôt",
     "Withdraw": "Retrait",
-      "Online Service": "Service en ligne",
+    
       "Fast buying coin": "Achat rapide de crypto",
       "Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com a été fondée en 2016 et est enregistrée à Singapour, son siège opérationnel étant situé à Dubaï. La plateforme a établi des centres d'opération dans plusieurs pays et régions, y compris les États-Unis et l'Europe, étendant sa présence commerciale dans le monde entier.",
       "Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "Aujourd'hui, Crypto.com dessert plus de 50 millions d'utilisateurs enregistrés dans le monde, avec plus de 3 millions d'utilisateurs actifs mensuels et plus de 80 millions d'interactions utilisateur à travers son écosystème.",
@@ -150,7 +150,8 @@ const resources = {
     "Confirm password": "Confirmer le mot de passe",
     "Change Password": "Changer le mot de passe",
 
-    "Online Service": "Service en ligne",
+      "Online": "En ligne",
+      "Service": "Service",
     "Announcement center": "Centre d'annonces",
     "Recharge": "Recharger",
     "Buy Cryptocurrency": "Acheter des cryptomonnaies",
@@ -209,7 +210,7 @@ const resources = {
     "Withdrawal password setting": "Auszahlungs-Passworteinstellung",
     "MSB Certification": "MSB-Zertifizierung",
     "Submit": "Absenden",
-      "Online Service": "Online-Service",
+    
       "Fast buying coin": "Schneller Münzkauf",
       "Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com wurde 2016 gegründet und ist in Singapur registriert, wobei sich der operative Hauptsitz in Dubai befindet. Die Plattform hat Betriebszentren in mehreren Ländern und Regionen eingerichtet, einschließlich der USA und Europa, und erweitert ihre Geschäftspräsenz weltweit.",
       "Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "Heute bedient Crypto.com weltweit mehr als 50 Millionen registrierte Benutzer, mit über 3 Millionen monatlich aktiven Benutzern und mehr als 80 Millionen Benutzerinteraktionen in seinem Ökosystem.",
@@ -223,7 +224,8 @@ const resources = {
     "Change Password": "Passwort ändern",
     
 
-    "Online Service": "Online-Service",
+      "Online": "Online",
+      "Service": "Service",
     "Announcement center": "Ankündigungszentrum",
     "Recharge": "Aufladen",
     "Buy Cryptocurrency": "Kryptowährung kaufen",
@@ -325,7 +327,7 @@ const resources = {
     "Withdrawal password setting": "Impostazione password di prelievo",
     "MSB Certification": "Certificazione MSB",
     "Submit": "Invia",
-      "Online Service": "Servizio online",
+    
       "Fast buying coin": "Acquisto rapido di cripto",
       "Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com è stata fondata nel 2016 ed è registrata a Singapore, con la sua sede operativa situata a Dubai. La piattaforma ha stabilito centri operativi in più paesi e regioni, inclusi Stati Uniti ed Europa, espandendo la sua presenza commerciale in tutto il mondo.",
       "Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "Oggi, Crypto.com serve più di 50 milioni di utenti registrati a livello globale, con oltre 3 milioni di utenti attivi mensili e più di 80 milioni di interazioni utente nel suo ecosistema.",
@@ -340,7 +342,8 @@ const resources = {
       "Transfer amount": "Importo del trasferimento",
       "Please enter the transfer amount": "Inserisci l'importo del trasferimento",
       "Upload transfer voucher": "Carica ricevuta di trasferimento",
-    "Online Service": "Servizio online",
+      "Online": "Online",
+      "Service": "Servizio",
     "Announcement center": "Centro annunci",
     "Recharge": "Ricarica",
     "Buy Cryptocurrency": "Acquista criptovalute",
@@ -481,7 +484,7 @@ const resources = {
 "Confirm password": "비밀번호 확인",
 "Change Password": "비밀번호 변경",
 
-"Online Service": "온라인 고객센터",
+
 "Announcement center": "공지 센터",
 "Recharge": "충전",
 "Buy Cryptocurrency": "암호화폐 구매",
@@ -526,7 +529,8 @@ const resources = {
 
 "Withdrawal Amount": "출금 금액",
 "Enter withdrawal quantity": "출금 수량을 입력하세요",
-      "Online Service": "온라인 서비스",
+      "Online": "온라인",
+      "Service": "서비스",
       "Fast buying coin": "빠른 코인 구매",
       "Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com은 2016년에 설립되었으며 싱가포르에 등록되어 있고, 운영 본부는 두바이에 위치해 있습니다. 이 플랫폼은 미국과 유럽을 포함한 여러 국가와 지역에 운영 센터를 설립하여 전 세계적으로 비즈니스 존재를 확장하고 있습니다.",
       "Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "오늘날 Crypto.com은 전 세계적으로 5천만 명 이상의 등록 사용자에게 서비스를 제공하며, 월간 활성 사용자는 3백만 명 이상이고 그 생태계 전체에서 8천만 건 이상의 사용자 상호 작용이 있습니다.",
@@ -569,7 +573,7 @@ const resources = {
       "Temporarily no data": "データなし",
       "Deposit": "入金",
       "Withdraw": "出金",
-      "Online Service": "オンラインサービス",
+     
       "Fast buying coin": "高速コイン購入",
       "Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.comは2016年に設立され、シンガポールに登録され、その運営本部はドバイにあります。このプラットフォームは、アメリカやヨーロッパを含む複数の国と地域に運営センターを設立し、世界中にビジネスプレゼンスを拡大しています。",
       "Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "現在、Crypto.comは世界中で5000万人以上の登録ユーザーにサービスを提供しており、月間アクティブユーザーは300万人以上、そのエコシステム全体でのユーザーインタラクションは8000万回以上にのぼります。",
@@ -596,7 +600,8 @@ const resources = {
       "Confirm password": "パスワード確認",
       "Change Password": "パスワード変更",
 
-      "Online Service": "オンラインサービス",
+      "Online": "オンライン",
+      "Service": "サービス",
       "Announcement center": "お知らせセンター",
       "Recharge": "チャージ",
       "Buy Cryptocurrency": "暗号資産の購入",
@@ -724,7 +729,7 @@ const resources = {
     "Confirm password": "確認密碼",
     "Change Password": "修改密碼",
 
-    "Online Service": "在線客服",
+    
     "Announcement center": "公告中心",
     "Recharge": "充值",
     "Buy Cryptocurrency": "購買加密貨幣",
@@ -775,7 +780,8 @@ const resources = {
     "No notification record": "暫無通知",
     "Popular list": "熱門列表",
     "24h": "24小時",
-
+      "Online": "線上",
+      "Service": "客服", 
     "Please fill in all fields": "請填寫所有欄位",
     "Network error, please try again later": "網絡錯誤，請稍後再試",
       "Online Service": "線上客服",
@@ -819,7 +825,7 @@ const resources = {
       "Deposit": "充值",
       "Withdraw": "提币",
       "fastbuy": "快速购买", 
-      "Online Service": "在线客服",
+      
       "Fast buying coin": "快速买币",
       "Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com 成立于2016年，注册于新加坡，运营总部位于迪拜。该平台已在美国和欧洲等多个国家和地区设立运营中心，将业务扩展到全球范围。",
       "Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "如今，Crypto.com 在全球为超过5000万注册用户提供服务，月活跃用户超过300万，其生态系统中的用户互动超过8000万次。",
@@ -849,7 +855,8 @@ const resources = {
       "Change Password": "修改密码",
 
       /* Home */
-      "Online Service": "在线客服",
+       "Online": "在线",
+      "Service": "客服",
       "Announcement center": "公告中心",
       "Recharge": "充值",
       "Buy Cryptocurrency": "购买加密货币",
@@ -952,7 +959,7 @@ const resources = {
     "Deposit": "ฝาก",
     "Withdraw": "ถอน",
     "fastbuy": "ซื้อด่วน",
-      "Online Service": "บริการออนไลน์",
+     
       "Fast buying coin": "ซื้อเหรียญอย่างรวดเร็ว",
       "Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com ก่อตั้งขึ้นในปี 2016 และจดทะเบียนในสิงคโปร์ โดยมีสำนักงานใหญ่ด้านการดำเนินงานตั้งอยู่ในดูไบ แพลตฟอร์มนี้ได้จัดตั้งศูนย์ดำเนินงานในหลายประเทศและภูมิภาค รวมถึงสหรัฐอเมริกาและยุโรป ขยายการมีอยู่ของธุรกิจไปทั่วโลก",
       "Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "ปัจจุบัน Crypto.com ให้บริการผู้ใช้ที่ลงทะเบียนมากกว่า 50 ล้านคนทั่วโลก โดยมีผู้ใช้ประจำเดือนมากกว่า 3 ล้านคนและการโต้ตอบของผู้ใช้มากกว่า 80 ล้านครั้งทั่วทั้งระบบนิเวศของมัน",
@@ -972,7 +979,8 @@ const resources = {
     "Withdrawal password setting": "ตั้งรหัสผ่านการถอน",
     "MSB Certification": "การรับรอง MSB",
     "Submit": "ยืนยัน",
-
+      "Online": "ออนไลน์",
+      "Service": "บริการ",
     /* 密码设置 */
     "Please enter the confirmation password": "กรุณากรอกรหัสผ่านยืนยัน",
     "Please enter a new password": "กรุณากรอกรหัสผ่านใหม่",
@@ -1069,7 +1077,8 @@ const resources = {
       "Deposit": "Nạp",
       "Withdraw": "Rút",
       "fastbuy": "Mua nhanh", 
-      "Online Service": "Dịch vụ trực tuyến",
+      "Online": "Trực tuyến",
+      "Service": "Dịch vụ",      
       "Fast buying coin": "Mua coin nhanh",
       "Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com được thành lập vào năm 2016 và đăng ký tại Singapore, với trụ sở điều hành đặt tại Dubai. Nền tảng này đã thiết lập các trung tâm vận hành trên nhiều quốc gia và khu vực, bao gồm Hoa Kỳ và Châu Âu, mở rộng sự hiện diện kinh doanh trên toàn thế giới.",
       "Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "Ngày nay, Crypto.com phục vụ hơn 50 triệu người dùng đã đăng ký trên toàn cầu, với hơn 3 triệu người dùng hoạt động hàng tháng và hơn 80 triệu tương tác người dùng trên toàn bộ hệ sinh thái của nó.",
@@ -1192,7 +1201,7 @@ const resources = {
     "Withdrawal password setting": "Configuración de contraseña de retiro",
     "MSB Certification": "Certificación MSB",
     "Submit": "Enviar",
-       "Online Service": "Servicio en línea",
+     
       "Fast buying coin": "Compra rápida de monedas",
       "Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com fue fundada en 2016 y está registrada en Singapur, con su sede operativa ubicada en Dubái. La plataforma ha establecido centros de operaciones en múltiples países y regiones, incluidos Estados Unidos y Europa, expandiendo su presencia comercial en todo el mundo.",
       "Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "Hoy, Crypto.com sirve a más de 50 millones de usuarios registrados a nivel global, con más de 3 millones de usuarios activos mensuales y más de 80 millones de interacciones de usuarios en su ecosistema.",
@@ -1206,7 +1215,8 @@ const resources = {
     "Confirm password": "Confirmar contraseña",
     "Change Password": "Cambiar contraseña",
 
-    "Online Service": "Servicio en línea",
+      "Online": "En línea",
+      "Service": "Servicio",
     "Announcement center": "Centro de anuncios",
     "Recharge": "Recargar",
     "Buy Cryptocurrency": "Comprar criptomonedas",
@@ -1279,7 +1289,7 @@ const resources = {
     "MSB Certification": "MSB Sertifikası",
     "Submit": "Gönder",
     "fastbuy": "Hızlı Satın Al",
-      "Online Service": "Çevrimiçi Hizmet",
+     
       "Fast buying coin": "Hızlı coin satın alma",
       "Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com 2016 yılında kuruldu ve Singapur'da kayıtlı olup, operasyonel merkezi Dubai'de bulunmaktadır. Platform, Amerika Birleşik Devletleri ve Avrupa dahil olmak üzere birçok ülke ve bölgede operasyon merkezleri kurarak dünya çapında iş varlığını genişletmektedir.",
       "Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "Bugün, Crypto.com küresel olarak 50 milyondan fazla kayıtlı kullanıcıya hizmet vermekte, aylık 3 milyondan fazla aktif kullanıcıya sahip olmakta ve ekosistemi boyunca 80 milyondan fazla kullanıcı etkileşimi gerçekleşmektedir.",
@@ -1292,7 +1302,8 @@ const resources = {
     "Confirm password": "Şifreyi doğrulayın",
     "Change Password": "Şifreyi Değiştir",
 
-    "Online Service": "Canlı Destek",
+      "Online": "Çevrimiçi",
+      "Service": "Hizmet",
     "Announcement center": "Duyuru Merkezi",
     "Recharge": "Yeniden Yükle",
     "Buy Cryptocurrency": "Kripto Para Satın Al",
