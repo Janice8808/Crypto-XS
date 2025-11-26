@@ -4,8 +4,31 @@ export default function MSBCertification() {
   return (
     <div className="min-h-screen bg-white pb-10">
 
-      {/* 全局统一返回头部 */}
-      <Header title="MSB Certification" />
+      {/* 自定义 Header 包含返回键 */}
+      <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
+        <div className="flex items-center h-12">
+          {/* 左侧返回键 - 绝对贴左 */}
+          <button
+            onClick={() => window.history.back()}
+            style={{
+              background: "none",
+              border: "none",
+              fontSize: 20,
+              color: "#666",
+              width: "45px",
+              textAlign: "left",
+              paddingLeft: "12px",
+            }}
+          >
+            ←
+          </button>
+          
+          {/* 标题居中 */}
+          <div className="flex-1 text-center font-medium text-gray-900 pr-12">
+            MSB Certification
+          </div>
+        </div>
+      </div>
 
       {/* 内容区 */}
       <div className="p-4">
