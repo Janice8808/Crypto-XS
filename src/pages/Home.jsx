@@ -348,12 +348,12 @@ const features = [
         key={index}
         className="flex flex-col items-center justify-center h-20" // 适中的高度
       >
-        <div className="flex items-center justify-center mb-1"> {/* 轻微下边距 */}
-          {feature.icon}
-        </div>
-        <span className="text-gray-500 text-xs text-center leading-tight mt-1"> {/* 轻微上边距 */}
-          {t(feature.key)}
-        </span>
+<div className="flex items-center justify-center mb-0.5"> {/* 使用更小的间距单位 */}
+  {feature.icon}
+</div>
+<span className="text-gray-500 text-xs text-center leading-tight mt-0.5">
+  {t(feature.key)}
+</span>
       </div>
     ))}
   </div>
