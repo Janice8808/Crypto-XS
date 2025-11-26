@@ -449,9 +449,15 @@ useEffect(() => {
     className="w-full h-[70px] rounded-lg object-fill"
   />
   <div className="absolute inset-0 flex items-center justify-center">
-    <span className="text-gray-600 text-sm font-bold text-center ml-4">
-      {t("Fast buying coin")}
-    </span>
+    <div className="text-center ml-4">
+      <span className="text-gray-600 text-sm font-bold">
+        {t("Fast buying coin")}
+      </span>
+      {/* 新增的可翻译小字行 */}
+      <div className="text-gray-400 text-xs mt-1">
+        {t("Zero fees. Get started now.")}
+      </div>
+    </div>
   </div>
 </div>
 </div>
