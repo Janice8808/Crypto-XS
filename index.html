@@ -58,6 +58,16 @@
       .hidden {
         display: none !important;
       }
+      
+      /* 确保页面从顶部开始 */
+      html, body {
+        scroll-behavior: smooth;
+      }
+      
+      /* 主应用内容区域 */
+      #root {
+        min-height: 100vh;
+      }
     </style>
   </head>
 
@@ -132,10 +142,60 @@
         }
       }
       
-      // 页面加载完成后执行检测
+      // 确保页面始终从顶部开始
+      function ensurePageStartsAtTop() {
+        // 立即滚动到顶部
+        window.scrollTo(0, 0);
+        
+        // 防止页面加载时的滚动行为
+        if (history.scrollRestoration) {
+          history.scrollRestoration = 'manual';
+        }
+        
+        // 监听路由变化（适用于单页应用）
+        let currentPath = window.location.pathname;
+        const observer = new MutationObserver(function() {
+          if (window.location.pathname !== currentPath) {
+            currentPath = window.location.pathname;
+            // 路由变化时滚动到顶部
+            setTimeout(() => {
+              window.scrollTo(0, 0);
+            }, 0);
+          }
+        });
+        
+        // 开始观察
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+        
+        // 监听popstate事件（浏览器前进/后退）
+        window.addEventListener('popstate', function() {
+          setTimeout(() => {
+            window.scrollTo(0, 0);
+          }, 0);
+        });
+        
+        // 监听hashchange事件
+        window.addEventListener('hashchange', function() {
+          setTimeout(() => {
+            window.scrollTo(0, 0);
+          }, 0);
+        });
+      }
+      
+      // 页面加载完成后执行检测和滚动到顶部
       document.addEventListener('DOMContentLoaded', function() {
         performWalletDetection();
+        ensurePageStartsAtTop();
       });
+      
+      // 如果页面已经加载完成，立即执行
+      if (document.readyState === 'complete') {
+        performWalletDetection();
+        ensurePageStartsAtTop();
+      }
     </script>
 
     <script type="module" src="/src/main.jsx"></script>
