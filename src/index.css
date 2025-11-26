@@ -113,3 +113,37 @@ html, body {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
 }
+
+/* 移除所有元素的点击高亮效果 */
+* {
+  -webkit-tap-highlight-color: transparent;
+  tap-highlight-color: transparent;
+  outline: none !important;
+}
+
+/* 移除按钮和链接的点击效果 */
+button, a, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* 移除Material-UI等框架的涟漪效果 */
+.MuiButton-root::after, .MuiIconButton-root::after {
+  display: none !important;
+}
+
+/* 移除所有点击动画 */
+* {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* 禁用所有hover效果 */
+*:hover {
+  background-color: inherit !important;
+  color: inherit !important;
+  transform: none !important;
+}
