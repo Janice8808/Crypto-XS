@@ -111,12 +111,22 @@ button:not(.bottom-nav *):active {
   opacity: 1 !important;
 }
 
-/* 取消触摸高亮 */
+/* 取消触摸高亮和焦点边框 */
 button:not(.bottom-nav *) {
   -webkit-tap-highlight-color: transparent;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
-/* 如果需要更彻底的取消，可以针对特定类名 */
+/* 移除焦点状态 */
+button:not(.bottom-nav *):focus,
+button:not(.bottom-nav *):focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* 针对特定类名 */
 button:not(.bottom-nav *):active,
 .btn:not(.bottom-nav *):active {
   background-color: inherit !important;
