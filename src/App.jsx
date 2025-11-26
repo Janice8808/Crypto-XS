@@ -39,15 +39,16 @@ import AdminPanel from "./pages/AdminPanel";
 import AdminSimple from "./pages/AdminSimple";
 
 // 下拉刷新包装组件
+// 下拉刷新包装组件
 const PullToRefreshWrapper = ({ children }) => {
   const refreshContainerRef = useRef(null);
   const refreshIndicatorRef = useRef(null);
-  const refreshIconRef = useRef(null); // 新增图标引用
+  const refreshIconRef = useRef(null);
   
   let startY = 0;
   let currentY = 0;
   let isRefreshing = false;
-  const refreshThreshold = 120; // 提高触发阈值到120px，降低灵敏度
+  const refreshThreshold = 200; // 大幅提高触发阈值到200px
 
   const handleTouchStart = (e) => {
     if (isRefreshing) return;
@@ -69,17 +70,25 @@ const PullToRefreshWrapper = ({ children }) => {
       if (diff > 0) {
         e.preventDefault();
         
-        // 降低灵敏度：减小下拉距离系数
-        const pullDistance = Math.min(diff * 0.4, refreshThreshold * 1.2);
+        // 进一步降低灵敏度：使用更小的系数和阻力
+        const resistance = 0.25; // 更小的系数，增加阻力感
+        const pullDistance = Math.min(
+          Math.pow(diff * resistance, 0.8), // 使用幂函数增加阻力
+          refreshThreshold * 1.1 // 限制最大距离
+        );
         
         // 更新图标位置和透明度
         if (refreshIndicatorRef.current) {
           refreshIndicatorRef.current.style.transform = `translateY(${pullDistance}px)`;
         }
         
-        // 根据下拉距离更新图标透明度
+        // 根据下拉距离更新图标透明度 - 使用非线性变化
         if (refreshIconRef.current) {
-          const opacity = Math.min(pullDistance / refreshThreshold, 0.6);
+          let opacity = 0;
+          if (pullDistance > refreshThreshold * 0.5) {
+            // 只有在下拉到阈值一半以上时才开始显示
+            opacity = Math.pow((pullDistance - refreshThreshold * 0.5) / (refreshThreshold * 0.5), 2) * 0.6;
+          }
           refreshIconRef.current.style.opacity = opacity.toString();
           
           if (pullDistance >= refreshThreshold) {
@@ -97,9 +106,11 @@ const PullToRefreshWrapper = ({ children }) => {
     
     if (startY) {
       const diff = currentY - startY;
+      const resistance = 0.25;
+      const effectiveDistance = Math.pow(diff * resistance, 0.8);
       
       // 使用更高的阈值检查
-      if (diff > 0 && diff * 0.4 >= refreshThreshold) {
+      if (effectiveDistance >= refreshThreshold) {
         startRefresh();
       } else {
         resetRefresh();
