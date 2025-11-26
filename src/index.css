@@ -33,9 +33,7 @@ body {
   display: block; /* 这里不使用 flex */
   background-color: #ffffff !important;
   color: #000000 !important;
-  /* 彻底禁用浏览器下拉刷新 */
-  overscroll-behavior-y: none !important;
-  overflow: hidden;
+  /* 移除禁用下拉刷新的代码 */
 }
 
 h1 {
@@ -103,12 +101,11 @@ button:focus-visible {
 
 /* 确保根元素正确设置 */
 html, body {
-  overscroll-behavior-y: none !important;
+  /* 移除禁用下拉刷新的代码 */
   margin: 0;
   padding: 0;
   height: 100%;
-  position: fixed;
-  width: 100%;
+  /* 移除 position: fixed 以允许下拉刷新 */
 }
 
 #root {
