@@ -174,8 +174,16 @@ const fetchBalance = async () => {
       {/* 顶部导航 */}
       <div className="mb-4">
         <button
-          onClick={() => navigate(-1)}
-          className="text-gray-500 text-lg mb-1 block text-left"
+          onClick={() => window.history.back()}
+          style={{
+            background: "none",
+            border: "none",
+            fontSize: 20,
+            color: "#666",
+            width: "45px",
+            textAlign: "left",
+            paddingLeft: "12px",
+          }}
         >
           ←
         </button>
