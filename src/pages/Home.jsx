@@ -318,11 +318,11 @@ const features = [
     relative overflow-hidden 
     h-20 px-3 flex items-center
     bg-gradient-to-b
-    from-[#1A1A1C]
-    via-[#2C2C30]
-    via-[#4A4A50]
-    via-[#7A7A82]
-    to-[#E8E8EC]
+    from-[#2A2A2D]
+    via-[#3A3A3F]
+    via-[#5A5A60]
+    via-[#8A8A92]
+    to-[#F2F2F4]
     py-3
   "
 >
