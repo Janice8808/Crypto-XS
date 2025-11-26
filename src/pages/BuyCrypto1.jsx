@@ -10,12 +10,20 @@ export default function BuyCrypto1() {
     <div className="min-h-screen bg-gray-50 pb-24">
       {/* 顶部返回与标题 */}
       <div className="flex items-center px-4 py-3 bg-white border-b">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-gray-600 text-2xl mr-3"
-        >
-          ←
-        </button>
+          <button
+            onClick={() => window.history.back()}
+            style={{
+              background: "none",
+              border: "none",
+              fontSize: 20,
+              color: "#666",
+              width: "45px",
+              textAlign: "left",
+              paddingLeft: "12px",
+            }}
+          >
+            ←
+          </button>
         <h1 className="text-gray-800 font-semibold text-lg">
           {t("Buy Crypto")}
         </h1>
