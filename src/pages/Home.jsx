@@ -454,6 +454,7 @@ useEffect(() => {
     </span>
   </div>
 </div>
+</div>
 
 {/* 热门 Top3 当前价格 */}
 <div className="grid grid-cols-3 gap-4">
