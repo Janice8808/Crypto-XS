@@ -108,27 +108,70 @@ const shortAddress =
             ≈ ${totalAsset.toFixed(2)}
           </div>
 
-          <div className="flex justify-between mt-3">
-            <Button
-              onClick={() => navigate("/deposit1")}
-              className="flex-1 mx-1 bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg"
-            >
-              {t("Deposit")}
-            </Button>
+<div className="flex justify-between mt-3">
+  <Button
+    onClick={() => navigate("/deposit1")}
+    className="flex-1 mx-1 bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg"
+    style={{
+      outline: 'none',
+      boxShadow: 'none',
+      border: 'none',
+      WebkitTapHighlightColor: 'transparent'
+    }}
+    onMouseDown={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    }}
+    onTouchStart={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    }}
+  >
+    {t("Deposit")}
+  </Button>
 
-            <Button
-              onClick={() => navigate("/withdraw1")}
-              className="flex-1 mx-1 bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg"
-            >
-              {t("Withdraw")}
-            </Button>
+  <Button
+    onClick={() => navigate("/withdraw1")}
+    className="flex-1 mx-1 bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg"
+    style={{
+      outline: 'none',
+      boxShadow: 'none',
+      border: 'none',
+      WebkitTapHighlightColor: 'transparent'
+    }}
+    onMouseDown={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    }}
+    onTouchStart={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    }}
+  >
+    {t("Withdraw")}
+  </Button>
 
-            <Button
-              onClick={() => navigate("/buycrypto1")}
-              className="flex-1 mx-1 bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg"
-            >
-              {t("Buy Crypto")}
-            </Button>
+  <Button
+    onClick={() => navigate("/buycrypto1")}
+    className="flex-1 mx-1 bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg"
+    style={{
+      outline: 'none',
+      boxShadow: 'none',
+      border: 'none',
+      WebkitTapHighlightColor: 'transparent'
+    }}
+    onMouseDown={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    }}
+    onTouchStart={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    }}
+  >
+    {t("Buy Crypto")}
+  </Button>
+
           </div>
         </CardContent>
       </Card>
