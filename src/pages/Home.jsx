@@ -343,16 +343,16 @@ const features = [
       {/* 功能区 - 添加负margin-top压在公告下方 */}
       <div className="mt-2 bg-white mx-2 rounded-xl p-4 shadow relative z-20 -mt-4">
 
-<div className="grid grid-cols-4 gap-4 px-4 py-4">
+<div className="grid grid-cols-4 gap-4 px-4 py-3">
   {features.map((feature, index) => (
     <div 
       key={index}
-      className="flex flex-col items-center justify-start h-28" // 减少容器高度
+      className="flex flex-col items-center justify-start h-28" // 保持合适高度
     >
-      <div className="flex items-center justify-center mb-1"> {/* 减少下边距 */}
+      <div className="flex items-center justify-center mb-0"> {/* 去掉图标下边距 */}
         {feature.icon}
       </div>
-      <span className="text-gray-500 text-xs text-center mt-1 leading-tight"> {/* 减少上边距，调整行高 */}
+      <span className="text-gray-500 text-xs text-center mt-1 leading-tight"> {/* 减少文字上边距 */}
         {t(feature.key)}
       </span>
     </div>
