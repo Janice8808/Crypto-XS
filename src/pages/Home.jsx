@@ -316,7 +316,7 @@ const features = [
 <div
   className="
     relative overflow-hidden 
-    h-20 px-3 flex items-center
+    h-[100px] px-3 flex items-center
     bg-gradient-to-b
     from-[#1A1A1C]
     via-[#2C2C30]
@@ -326,21 +326,24 @@ const features = [
     py-3
   "
 >
-        <div className="relative flex-1 h-full">
-          <div className="relative flex-1 h-full">
-            <div
-              className="absolute whitespace-nowrap text-white text-base animate-marquee-LTR"
-              style={{
-                top: "50%",
-                pointerEvents: "none",
-                position: "absolute",
-              }}
-            >
-              {t("Welcome to visit Crypto.com")}
-            </div>
-          </div>
-        </div>
-      </div>
+  {/* 渐变内部内容 */}
+  <div className="relative flex-1 h-full">
+    <div
+      className="absolute whitespace-nowrap text-white text-base animate-marquee-LTR"
+      style={{
+        top: "50%",
+        pointerEvents: "none",
+        position: "absolute",
+      }}
+    >
+      {t("Welcome to visit Crypto.com")}
+    </div>
+  </div>
+
+  {/* 加在渐变底部的纯白条 */}
+  <div className="absolute bottom-0 left-0 w-full h-6 bg-white"></div>
+</div>
+
 
 {/* 功能区 - 平衡间距 */}
 <div className="bg-white mx-2 rounded-xl p-4 shadow relative z-20 -mt-5">
