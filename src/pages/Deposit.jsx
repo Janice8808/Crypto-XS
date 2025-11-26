@@ -93,9 +93,20 @@ const handleCopy = () => {
     <div className="min-h-screen bg-white p-4 pb-24">
       {/* 返回 */}
       <div className="flex items-center mb-3">
-        <button onClick={() => navigate(-1)} className="text-gray-500 text-lg mr-2">
-          ←
-        </button>
+          <button
+            onClick={() => window.history.back()}
+            style={{
+              background: "none",
+              border: "none",
+              fontSize: 20,
+              color: "#666",
+              width: "45px",
+              textAlign: "left",
+              paddingLeft: "12px",
+            }}
+          >
+            ←
+          </button>
       </div>
 
       {/* 标题 */}
