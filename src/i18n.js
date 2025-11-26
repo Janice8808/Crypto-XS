@@ -86,7 +86,7 @@ const resources = {
     "Temporarily no data": "Pas de données",
     "Deposit": "Dépôt",
     "Withdraw": "Retrait",
-    
+    "Zero fees. Get started now": "Frais zéro. Commencez maintenant",
       "Fast buying coin": "Achat rapide de crypto",
       "Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com a été fondée en 2016 et est enregistrée à Singapour, son siège opérationnel étant situé à Dubaï. La plateforme a établi des centres d'opération dans plusieurs pays et régions, y compris les États-Unis et l'Europe, étendant sa présence commerciale dans le monde entier.",
       "Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "Aujourd'hui, Crypto.com dessert plus de 50 millions d'utilisateurs enregistrés dans le monde, avec plus de 3 millions d'utilisateurs actifs mensuels et plus de 80 millions d'interactions utilisateur à travers son écosystème.",
@@ -210,7 +210,7 @@ const resources = {
     "Withdrawal password setting": "Auszahlungs-Passworteinstellung",
     "MSB Certification": "MSB-Zertifizierung",
     "Submit": "Absenden",
-    
+    "Zero fees. Get started now": "Keine Gebühren. Jetzt starten",
       "Fast buying coin": "Schneller Münzkauf",
       "Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com wurde 2016 gegründet und ist in Singapur registriert, wobei sich der operative Hauptsitz in Dubai befindet. Die Plattform hat Betriebszentren in mehreren Ländern und Regionen eingerichtet, einschließlich der USA und Europa, und erweitert ihre Geschäftspräsenz weltweit.",
       "Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "Heute bedient Crypto.com weltweit mehr als 50 Millionen registrierte Benutzer, mit über 3 Millionen monatlich aktiven Benutzern und mehr als 80 Millionen Benutzerinteraktionen in seinem Ökosystem.",
@@ -349,6 +349,7 @@ const resources = {
     "Buy Cryptocurrency": "Acquista criptovalute",
     "Search currency": "Cerca valuta",
     "Cancel": "Annulla",
+    "Zero fees. Get started now": "Zero commissioni. Inizia ora",
 
     "Symbol": "Simbolo",
     "Latest Price": "Ultimo prezzo",
@@ -537,7 +538,7 @@ const resources = {
       "As a comprehensive digital asset trading platform, Crypto.com supports over 800 high-quality cryptocurrencies and more than 1,000 trading pairs. The platform offers a rich selection of trading services, including spot trading, leveraged trading, OTC trading, contract trading, and credit-card-based cryptocurrency purchases.": "종합 디지털 자산 거래 플랫폼으로서 Crypto.com은 800개 이상의 고품질 암호화폐와 1,000개 이상의 거래 쌍을 지원합니다. 이 플랫폼은 현물 거래, 레버리지 거래, 장외 거래, 계약 거래 및 신용 카드 기반 암호화폐 구매를 포함한 다양한 거래 서비스를 제공합니다.",
       "By combining advanced technology with rigorous security standards, Crypto.com is committed to providing users with the safest, most efficient, and most professional digital asset investment experience available.": "선진 기술과 엄격한 보안 기준을 결합함으로써 Crypto.com은 사용자에게 가장 안전하고 효율적이며 전문적인 디지털 자산 투자 경험을 제공하기 위해 최선을 다하고 있습니다.",
       "Home": "홈", 
-
+      "Zero fees. Get started now": "수수료 무료. 지금 시작하세요",
       /* CoinDetail */
       "Buy": "매수",
       "Sell": "매도",
@@ -599,7 +600,7 @@ const resources = {
       "New password": "新しいパスワード",
       "Confirm password": "パスワード確認",
       "Change Password": "パスワード変更",
-
+      "Zero fees. Get started now": "手数料無料。今すぐ始めましょう",
       "Online": "オンライン",
       "Service": "サービス",
       "Announcement center": "お知らせセンター",
@@ -775,7 +776,7 @@ const resources = {
 
     "Withdrawal Amount": "提幣金額",
     "Enter withdrawal quantity": "請輸入提幣數量",
-
+    "Zero fees. Get started now": "零手續費。立即開始",
     "Notice": "通知",
     "No notification record": "暫無通知",
     "Popular list": "熱門列表",
@@ -865,6 +866,7 @@ const resources = {
 
       "Symbol": "币种",
       "Latest Price": "最新价格",
+      "Zero fees. Get started now": "零手续费。立即开始",
 
       /* Intro paragraphs */
       "The world's first social trading platform": "全球首个社交交易平台",
@@ -987,7 +989,7 @@ const resources = {
     "New password": "รหัสผ่านใหม่",
     "Confirm password": "ยืนยันรหัสผ่าน",
     "Change Password": "เปลี่ยนรหัสผ่าน",
-
+    "Zero fees. Get started now": "ไม่มีค่าธรรมเนียม เริ่มต้นได้ทันที",
     /* 其他功能项 */
     "Online Service": "บริการออนไลน์",
     "Announcement center": "ศูนย์ประกาศ",
@@ -1095,7 +1097,7 @@ const resources = {
       "Name": "Tên",
       "Card number": "Số thẻ",
       "Bank name": "Tên ngân hàng",
-
+      "Zero fees. Get started now": "Không phí. Bắt đầu ngay",
       "Notice": "Thông báo",
       "No notification record": "Không có thông báo",
       "Popular list": "Danh sách phổ biến",
@@ -1222,6 +1224,7 @@ const resources = {
     "Buy Cryptocurrency": "Comprar criptomonedas",
     "Search currency": "Buscar moneda",
     "Cancel": "Cancelar",
+    "Zero fees. Get started now": "Cero comisiones. Empieza ahora",
 
     "Symbol": "Símbolo",
     "Latest Price": "Precio reciente",
@@ -1309,7 +1312,7 @@ const resources = {
     "Buy Cryptocurrency": "Kripto Para Satın Al",
     "Search currency": "Para birimi ara",
     "Cancel": "İptal",
-
+    "Zero fees. Get started now": "Sıfır ücret. Hemen başlayın",
     "Symbol": "Sembol",
     "Latest Price": "Son Fiyat",
 
