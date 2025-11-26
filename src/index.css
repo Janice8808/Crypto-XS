@@ -33,6 +33,7 @@ body {
   display: block; /* 这里不使用 flex */
   background-color: #ffffff !important;
   color: #000000 !important;
+  overscroll-behavior-y: contain; /* 确保在这里也设置 */
 }
 
 h1 {
@@ -59,8 +60,6 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-
-
 @keyframes marquee-LTR {
   0% {
     transform: translateX(-120%) translateY(-50%); /* 左侧屏幕外 */
@@ -73,7 +72,6 @@ button:focus-visible {
 .animate-marquee-LTR {
   animation: marquee-LTR 18s linear infinite;
 }
-
 
 /* ===== 仅影响 Deposit1 页面的彻底无高亮模式 ===== */
 
@@ -99,4 +97,17 @@ button:focus-visible {
 /* 移除 hover 背景变亮（重点） */
 .no-tap .hover\:bg-gray-200:hover {
   background-color: inherit !important;
+}
+
+/* 确保根元素正确设置 */
+html, body {
+  overscroll-behavior-y: contain;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+  overflow: auto;
 }
