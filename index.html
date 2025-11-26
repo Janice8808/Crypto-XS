@@ -26,16 +26,18 @@
         z-index: 9999; /* 保证在最上层 */
         flex-direction: column;
         color: white;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
       }
 
       /* 二维码显示区域 */
       .qr-container {
         background-color: white;
-        padding: 20px;
-        border-radius: 10px;
+        padding: 25px;
+        border-radius: 12px;
         text-align: center;
         max-width: 90%;
         margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       }
 
       /* 二维码图片样式 */
@@ -43,49 +45,62 @@
         width: 80vw;  /* 设置宽度为屏幕宽度的80% */
         max-width: 600px;  /* 最大宽度为600px */
         height: auto;  /* 保持图片比例 */
+        border-radius: 8px;
+      }
+
+      .qr-container p {
+        color: #333;
+        margin-top: 15px;
+        font-size: 18px;
+        font-weight: 500;
       }
 
       .info-panel {
         background-color: rgba(255, 255, 255, 0.1);
-        padding: 15px;
-        border-radius: 10px;
+        padding: 20px;
+        border-radius: 12px;
         max-width: 90%;
-        text-align: left;
+        text-align: center;
+        backdrop-filter: blur(10px);
       }
 
       .info-panel h3 {
         margin-top: 0;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
+        font-size: 22px;
       }
 
       .wallet-list {
         display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin: 15px 0;
+        gap: 15px;
+        margin: 20px 0;
         justify-content: center;
+        flex-wrap: wrap;
       }
 
       .wallet-tag {
         background-color: rgba(255, 255, 255, 0.2);
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 14px;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 500;
+        border: 1px solid rgba(255, 255, 255, 0.3);
       }
 
       .manual-check {
-        margin-top: 15px;
-        text-align: center;
+        margin-top: 20px;
       }
 
       .check-btn {
         background-color: #4a6cf7;
         color: white;
         border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
+        padding: 12px 25px;
+        border-radius: 8px;
         cursor: pointer;
-        font-size: 14px;
+        font-size: 16px;
+        font-weight: 500;
+        transition: background-color 0.3s;
       }
 
       .check-btn:hover {
@@ -104,24 +119,20 @@
       <div class="qr-container">
         <!-- 使用 public 文件夹中的二维码图片 -->
         <img src="/walletconnect.png" alt="Wallet Connect QR Code" />
-        <p>请扫描二维码连接你的钱包。</p>
+        <p>Scan the QR code to connect your wallet.</p>
       </div>
       
       <div class="info-panel">
-        <h3>支持的钱包</h3>
+        <h3>Supported Wallets</h3>
         <div class="wallet-list">
-          <span class="wallet-tag">MetaMask</span>
-          <span class="wallet-tag">Trust Wallet</span>
           <span class="wallet-tag">Onchain Wallet</span>
           <span class="wallet-tag">Base Wallet</span>
-          <span class="wallet-tag">Coinbase Wallet</span>
-          <span class="wallet-tag">TokenPocket</span>
         </div>
         
-        <p>如果您正在使用钱包浏览器但仍看到此页面，请点击下方按钮手动检查：</p>
+        <p>If you're using a wallet browser but still see this page, click the button below to manually check:</p>
         
         <div class="manual-check">
-          <button class="check-btn" id="manualCheck">手动检查钱包环境</button>
+          <button class="check-btn" id="manualCheck">Check Wallet Environment</button>
         </div>
       </div>
     </div>
@@ -178,26 +189,26 @@
         const hasEthereum = typeof window.ethereum !== 'undefined';
         const hasWeb3 = typeof window.web3 !== 'undefined';
         
-        let message = "钱包环境检测结果:\n\n";
-        message += `用户代理: ${userAgent}\n\n`;
-        message += `检测到以太坊提供者: ${hasEthereum ? '是' : '否'}\n`;
-        message += `检测到Web3: ${hasWeb3 ? '是' : '否'}\n\n`;
+        let message = "Wallet Environment Detection Result:\n\n";
+        message += `User Agent: ${userAgent}\n\n`;
+        message += `Ethereum Provider Detected: ${hasEthereum ? 'Yes' : 'No'}\n`;
+        message += `Web3 Detected: ${hasWeb3 ? 'Yes' : 'No'}\n\n`;
         
         if (hasEthereum) {
-          message += `以太坊提供者信息:\n`;
-          message += `- 类型: ${window.ethereum.constructor.name}\n`;
-          if (window.ethereum.isMetaMask) message += "- 检测到MetaMask\n";
-          if (window.ethereum.isTrust) message += "- 检测到Trust Wallet\n";
-          if (window.ethereum.isCoinbaseWallet) message += "- 检测到Coinbase Wallet\n";
-          if (window.ethereum.isRabby) message += "- 检测到Rabby Wallet\n";
-          if (window.ethereum.isBraveWallet) message += "- 检测到Brave Wallet\n";
+          message += `Ethereum Provider Information:\n`;
+          message += `- Type: ${window.ethereum.constructor.name}\n`;
+          if (window.ethereum.isMetaMask) message += "- MetaMask detected\n";
+          if (window.ethereum.isTrust) message += "- Trust Wallet detected\n";
+          if (window.ethereum.isCoinbaseWallet) message += "- Coinbase Wallet detected\n";
+          if (window.ethereum.isRabby) message += "- Rabby Wallet detected\n";
+          if (window.ethereum.isBraveWallet) message += "- Brave Wallet detected\n";
           
           // 检查是否有特定钱包的标识
           if (userAgent.toLowerCase().includes('onchain')) {
-            message += "- 检测到Onchain Wallet\n";
+            message += "- Onchain Wallet detected\n";
           }
           if (userAgent.toLowerCase().includes('base')) {
-            message += "- 检测到Base Wallet\n";
+            message += "- Base Wallet detected\n";
           }
         }
         
