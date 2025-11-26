@@ -132,3 +132,14 @@ button:not(.bottom-nav *):active,
   background-color: inherit !important;
   color: inherit !important;
 }
+
+/* 在全局 CSS 文件中添加 */
+.feature-item {
+  color: #666 !important; /* 灰色字体 */
+}
+
+.feature-item:hover,
+.feature-item:active,
+.feature-item:focus {
+  color: #666 !important; /* 保持灰色，不变成蓝色 */
+}
