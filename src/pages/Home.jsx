@@ -340,18 +340,18 @@ const features = [
         </div>
       </div>
 
-      {/* 功能区 - 添加负margin-top压在公告下方 */}
+{/* 功能区 - 进一步压缩间距 */}
 <div className="mt-2 bg-white mx-2 rounded-xl p-4 shadow relative z-20 -mt-4">
-  <div className="grid grid-cols-4 gap-4 px-4 py-3">
+  <div className="grid grid-cols-4 gap-4 px-4 py-2"> {/* 减少py-3到py-2 */}
     {features.map((feature, index) => (
       <div 
         key={index}
-        className="flex flex-col items-center justify-center h-20" // 减少高度
+        className="flex flex-col items-center justify-center h-16" // 进一步减少高度到h-16
       >
-        <div className="flex items-center justify-center mb-1"> {/* 减少图标下边距 */}
+        <div className="flex items-center justify-center mb-0"> {/* 完全去掉图标下边距 */}
           {feature.icon}
         </div>
-        <span className="text-gray-500 text-xs text-center leading-tight"> {/* 移除上边距 */}
+        <span className="text-gray-500 text-xs text-center leading-tight mt-0"> {/* 完全去掉文字上边距 */}
           {t(feature.key)}
         </span>
       </div>
