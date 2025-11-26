@@ -174,16 +174,17 @@ useEffect(() => {
 
 
 
-  // 多语言 features
+
+// 多语言 features
 const features = [
-  { key: "User Center", icon: <img src={userIcon} className="w-7 h-7" alt="user" /> },
-  { key: "MSb", icon: <img src={msbIcon} className="w-7 h-7" alt="msb" /> },
-  { key: "Introduction", icon: <img src={introIcon} className="w-7 h-7" alt="intro" /> },
-  { key: "Currency", icon: <img src={currencyIcon} className="w-7 h-7" alt="currency" /> },
-  { key: "Deposit", icon: <img src={depositIcon} className="w-7 h-7" alt="deposit" /> },
-  { key: "DeFi", icon: <img src={defiIcon} className="w-7 h-7" alt="defi" /> },
-  { key: "Futures", icon: <img src={futuresIcon} className="w-7 h-7" alt="futures" /> },
-  { key: "Withdraw", icon: <img src={withdrawIcon} className="w-7 h-7" alt="withdraw" /> },
+  { key: "User Center", icon: <img src={userIcon} className="w-12 h-12" alt="user" /> },
+  { key: "MSb", icon: <img src={msbIcon} className="w-12 h-12" alt="msb" /> },
+  { key: "Introduction", icon: <img src={introIcon} className="w-12 h-12" alt="intro" /> },
+  { key: "Currency", icon: <img src={currencyIcon} className="w-12 h-12" alt="currency" /> },
+  { key: "Deposit", icon: <img src={depositIcon} className="w-12 h-12" alt="deposit" /> },
+  { key: "DeFi", icon: <img src={defiIcon} className="w-12 h-12" alt="defi" /> },
+  { key: "Futures", icon: <img src={futuresIcon} className="w-12 h-12" alt="futures" /> },
+  { key: "Withdraw", icon: <img src={withdrawIcon} className="w-12 h-12" alt="withdraw" /> },
 ];
 
   const images = ["/images/banner1.jpg", "/images/banner2.jpg", "/images/banner3.jpg"];
