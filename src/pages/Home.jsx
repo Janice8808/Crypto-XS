@@ -368,7 +368,7 @@ const features = [
 {/* 两个广告图 */}
 <div className="flex gap-2 mb-6 px-1">
   <div className="w-1/3 relative">
-    <img src="/images/online.jpg" className="w-full h-[70px] rounded-lg object-fill" />
+    <img src="/images/online.jpg" className="w-full h-[90px] rounded-lg object-fill" />
     {/* 在图片上叠加可翻译的文字 */}
     <div className="absolute inset-0 flex items-center justify-center">
       <span className="text-gray-600 text-sm font-bold text-center leading-tight mr-3">
@@ -386,7 +386,7 @@ const features = [
 >
   <img 
     src="/images/fastbuy.jpg" 
-    className="w-full h-[70px] rounded-lg object-fill"
+    className="w-full h-[90px] rounded-lg object-fill"
   />
   <div className="absolute inset-0 flex items-center justify-center">
     <div className="text-center ml-4">
