@@ -89,12 +89,20 @@ const coinInfo = useMemo(() => {
     <div className="min-h-screen bg-white p-4 pb-20">
       {/* 返回按钮 */}
       <div className="flex items-center mb-3">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-gray-500 text-lg mr-2"
-        >
-          ←
-        </button>
+          <button
+            onClick={() => window.history.back()}
+            style={{
+              background: "none",
+              border: "none",
+              fontSize: 20,
+              color: "#666",
+              width: "45px",
+              textAlign: "left",
+              paddingLeft: "12px",
+            }}
+          >
+            ←
+          </button>
       </div>
 
       {/* 币种信息 */}
