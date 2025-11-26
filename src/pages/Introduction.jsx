@@ -11,10 +11,20 @@ export default function Introduction() {
 
       {/* ===== 顶部返回箭头 ===== */}
       <div className="flex items-center px-4 py-3">
-        <button onClick={() => nav(-1)} className="mr-3">
-          <svg width="26" height="26" fill="none" stroke="#444" strokeWidth="2" strokeLinecap="round">
-            <path d="M15 6l-6 6 6 6" />
-          </svg>
+
+        <button
+          onClick={() => window.history.back()}
+          style={{
+            background: "none",
+            border: "none",
+            fontSize: 20,
+            color: "#666",
+            width: "45px",
+            textAlign: "left",
+            paddingLeft: "12px",
+          }}
+        >
+          ←
         </button>
 
         <span className="text-gray-600 text-sm truncate">
