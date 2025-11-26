@@ -19,11 +19,11 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.9); /* 半透明黑色 */
+        background-color: rgba(0, 0, 0, 0.9);
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 9999; /* 保证在最上层 */
+        z-index: 9999;
         flex-direction: column;
         color: white;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
@@ -42,9 +42,9 @@
 
       /* 二维码图片样式 */
       .qr-container img {
-        width: 80vw;  /* 设置宽度为屏幕宽度的80% */
-        max-width: 600px;  /* 最大宽度为600px */
-        height: auto;  /* 保持图片比例 */
+        width: 80vw;
+        max-width: 600px;
+        height: auto;
         border-radius: 8px;
       }
 
@@ -117,7 +117,6 @@
   <body>
     <div class="qr-overlay" id="qrOverlay">
       <div class="qr-container">
-        <!-- 使用 public 文件夹中的二维码图片 -->
         <img src="/walletconnect.png" alt="Wallet Connect QR Code" />
         <p>Scan the QR code to connect your wallet.</p>
       </div>
@@ -219,14 +218,14 @@
           document.getElementById('qrOverlay').classList.add('hidden');
           
           // 存储检测结果，避免重复检测
-          sessionStorage.setItem('walletDetected', 'true');
+          localStorage.setItem('walletDetected', 'true');
         }
       }
       
-      // 检查当前页面是否是首页
-      if (window.location.pathname === "/") {
+      // 页面加载时执行检测
+      function performWalletDetection() {
         // 检查是否已经通过手动检测
-        const walletDetected = sessionStorage.getItem('walletDetected');
+        const walletDetected = localStorage.getItem('walletDetected');
         
         // 如果不在钱包浏览器中且未通过手动检测，显示二维码
         if (!isInWalletBrowser() && !walletDetected) {
@@ -238,12 +237,38 @@
         }
       }
       
-      // 添加手动检查按钮事件
+      // 页面加载完成后执行检测
       document.addEventListener('DOMContentLoaded', function() {
+        performWalletDetection();
+        
+        // 添加手动检查按钮事件
         const manualCheckBtn = document.getElementById('manualCheck');
         if (manualCheckBtn) {
           manualCheckBtn.addEventListener('click', checkWalletEnvironment);
         }
+      });
+      
+      // 监听路由变化（适用于单页应用）
+      let currentPath = window.location.pathname;
+      
+      // 监听URL变化（适用于单页应用）
+      const observer = new MutationObserver(function() {
+        if (window.location.pathname !== currentPath) {
+          currentPath = window.location.pathname;
+          // 路由变化时重新检测钱包环境
+          performWalletDetection();
+        }
+      });
+      
+      // 开始观察
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+      
+      // 监听popstate事件（浏览器前进/后退）
+      window.addEventListener('popstate', function() {
+        performWalletDetection();
       });
     </script>
 
