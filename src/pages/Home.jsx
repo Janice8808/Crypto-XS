@@ -365,14 +365,13 @@ const features = [
           ))}
         </div>
 
-{/* 两个广告图 */}
+{/* 两个广告图 - 自定义宽度 */}
 <div className="flex gap-2 mb-6 px-1">
-  <div className="w-1/3 relative">
+  <div className="w-[100px] relative"> {/* 固定宽度 */}
     <div 
-      className="w-full h-[70px] rounded-lg bg-cover bg-center"
+      className="w-full h-[80px] rounded-lg bg-cover bg-center"
       style={{backgroundImage: "url(/images/online.jpg)"}}
     />
-    {/* 在图片上叠加可翻译的文字 */}
     <div className="absolute inset-0 flex items-center justify-center">
       <span className="text-gray-600 text-sm font-bold text-center leading-tight mr-3">
         {t('Online')}<br />{t('Service')}
@@ -381,14 +380,11 @@ const features = [
   </div>
 
   <div 
-    className="w-2/3 relative cursor-pointer"
-    onClick={() => {
-      console.log('点击事件触发 - 外层div');
-      navigate('/deposit1');
-    }}
+    className="flex-1 relative cursor-pointer" /* 占据剩余所有空间 */
+    onClick={() => navigate('/deposit1')}
   >
     <div 
-      className="w-full h-[70px] rounded-lg bg-cover bg-center"
+      className="w-full h-[80px] rounded-lg bg-cover bg-center"
       style={{backgroundImage: "url(/images/fastbuy.jpg)"}}
     />
     <div className="absolute inset-0 flex items-center justify-center">
@@ -396,7 +392,6 @@ const features = [
         <span className="text-gray-600 text-sm font-bold">
           {t("Fast buying coin")}
         </span>
-        {/* 新增的可翻译小字行 */}
         <div className="text-gray-400 text-[10px] mt-1">
           {t("Zero fees. Get started now")}
         </div>
