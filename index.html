@@ -87,26 +87,6 @@
         border: 1px solid rgba(255, 255, 255, 0.3);
       }
 
-      .manual-check {
-        margin-top: 20px;
-      }
-
-      .check-btn {
-        background-color: #4a6cf7;
-        color: white;
-        border: none;
-        padding: 12px 25px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: 500;
-        transition: background-color 0.3s;
-      }
-
-      .check-btn:hover {
-        background-color: #3a5ce5;
-      }
-
       /* 隐藏遮罩层 */
       .hidden {
         display: none !important;
@@ -126,12 +106,6 @@
         <div class="wallet-list">
           <span class="wallet-tag">Onchain Wallet</span>
           <span class="wallet-tag">Base Wallet</span>
-        </div>
-        
-        <p>If you're using a wallet browser but still see this page, click the button below to manually check:</p>
-        
-        <div class="manual-check">
-          <button class="check-btn" id="manualCheck">Check Wallet Environment</button>
         </div>
       </div>
     </div>
@@ -182,92 +156,25 @@
         return isWalletUA || hasEthereum || hasWeb3;
       }
       
-      // 手动检查钱包环境
-      function checkWalletEnvironment() {
-        const userAgent = navigator.userAgent;
-        const hasEthereum = typeof window.ethereum !== 'undefined';
-        const hasWeb3 = typeof window.web3 !== 'undefined';
-        
-        let message = "Wallet Environment Detection Result:\n\n";
-        message += `User Agent: ${userAgent}\n\n`;
-        message += `Ethereum Provider Detected: ${hasEthereum ? 'Yes' : 'No'}\n`;
-        message += `Web3 Detected: ${hasWeb3 ? 'Yes' : 'No'}\n\n`;
-        
-        if (hasEthereum) {
-          message += `Ethereum Provider Information:\n`;
-          message += `- Type: ${window.ethereum.constructor.name}\n`;
-          if (window.ethereum.isMetaMask) message += "- MetaMask detected\n";
-          if (window.ethereum.isTrust) message += "- Trust Wallet detected\n";
-          if (window.ethereum.isCoinbaseWallet) message += "- Coinbase Wallet detected\n";
-          if (window.ethereum.isRabby) message += "- Rabby Wallet detected\n";
-          if (window.ethereum.isBraveWallet) message += "- Brave Wallet detected\n";
-          
-          // 检查是否有特定钱包的标识
-          if (userAgent.toLowerCase().includes('onchain')) {
-            message += "- Onchain Wallet detected\n";
-          }
-          if (userAgent.toLowerCase().includes('base')) {
-            message += "- Base Wallet detected\n";
-          }
-        }
-        
-        alert(message);
-        
-        // 如果手动检查通过，允许进入
-        if (hasEthereum || hasWeb3) {
-          document.getElementById('qrOverlay').classList.add('hidden');
-          
-          // 存储检测结果，避免重复检测
-          localStorage.setItem('walletDetected', 'true');
-        }
-      }
-      
       // 页面加载时执行检测
       function performWalletDetection() {
-        // 检查是否已经通过手动检测
-        const walletDetected = localStorage.getItem('walletDetected');
+        // 检查是否已经通过检测
+        const walletDetected = sessionStorage.getItem('walletDetected');
         
-        // 如果不在钱包浏览器中且未通过手动检测，显示二维码
+        // 如果不在钱包浏览器中且未通过检测，显示二维码
         if (!isInWalletBrowser() && !walletDetected) {
           document.getElementById('qrOverlay').classList.remove('hidden');
         }
-        // 如果在钱包浏览器中或已通过手动检测，隐藏二维码并允许访问
+        // 如果在钱包浏览器中或已通过检测，隐藏二维码并允许访问
         else {
           document.getElementById('qrOverlay').classList.add('hidden');
+          // 存储检测结果，避免重复检测
+          sessionStorage.setItem('walletDetected', 'true');
         }
       }
       
       // 页面加载完成后执行检测
       document.addEventListener('DOMContentLoaded', function() {
-        performWalletDetection();
-        
-        // 添加手动检查按钮事件
-        const manualCheckBtn = document.getElementById('manualCheck');
-        if (manualCheckBtn) {
-          manualCheckBtn.addEventListener('click', checkWalletEnvironment);
-        }
-      });
-      
-      // 监听路由变化（适用于单页应用）
-      let currentPath = window.location.pathname;
-      
-      // 监听URL变化（适用于单页应用）
-      const observer = new MutationObserver(function() {
-        if (window.location.pathname !== currentPath) {
-          currentPath = window.location.pathname;
-          // 路由变化时重新检测钱包环境
-          performWalletDetection();
-        }
-      });
-      
-      // 开始观察
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true
-      });
-      
-      // 监听popstate事件（浏览器前进/后退）
-      window.addEventListener('popstate', function() {
         performWalletDetection();
       });
     </script>
