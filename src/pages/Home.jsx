@@ -365,8 +365,9 @@ const features = [
           ))}
         </div>
 
-{/* 两个广告图 - 自定义宽度 */}
-<div className="flex gap-2 mb-6 w-full"> 
+
+{/* 两个广告图 - 满屏贴边 */}
+<div className="flex gap-2 mb-6 w-screen -mx-4 px-4">
   <div className="w-1/3 relative">
     <div 
       className="w-full h-[80px] rounded-lg bg-cover bg-center"
@@ -399,6 +400,7 @@ const features = [
     </div>
   </div>
 </div>
+
 
 {/* 热门 Top3 当前价格 */}
 <div className="grid grid-cols-3 gap-4">
