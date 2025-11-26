@@ -343,27 +343,21 @@ const features = [
       {/* 功能区 - 添加负margin-top压在公告下方 */}
       <div className="mt-2 bg-white mx-2 rounded-xl p-4 shadow relative z-20 -mt-4">
 
-        <div className="grid grid-cols-4 gap-4 mb-5">
-          {features.map((item) => (
-            <Link
-              key={item.key}
-              to={
-                item.key === "User Center" ? "/user" :
-                item.key === "MSb" ? "/user/msb" :
-                item.key === "Introduction" ? "/intro" :
-                item.key === "Currency" ? "/coin/BTCUSDT" :
-                item.key === "Deposit" ? "/deposit1" :
-                item.key === "DeFi" ? "/defi" :
-                item.key === "Futures" ? "/trade" :
-                "/wallet/USDT/withdraw"
-              }
-              className="flex flex-col items-center text-gray-700 text-xs"
-            >
-              <div className="mb-1">{item.icon}</div>
-              {t(item.key)}
-            </Link>
-          ))}
-        </div>
+<div className="grid grid-cols-4 gap-4 px-4 py-4">
+  {features.map((feature, index) => (
+    <div 
+      key={index}
+      className="flex flex-col items-center justify-start h-28" // 减少容器高度
+    >
+      <div className="flex items-center justify-center mb-1"> {/* 减少下边距 */}
+        {feature.icon}
+      </div>
+      <span className="text-gray-500 text-xs text-center mt-1 leading-tight"> {/* 减少上边距，调整行高 */}
+        {t(feature.key)}
+      </span>
+    </div>
+  ))}
+</div>
 
 
 {/* 两个广告图 */}
