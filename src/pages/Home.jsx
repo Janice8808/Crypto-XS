@@ -316,13 +316,13 @@ const features = [
 <div
   className="
     relative overflow-hidden 
-    h-25 px-3 flex items-center
+    h-20 px-3 flex items-center
     bg-gradient-to-b
-    from-[#FFFFFF]
-    via-[#F3F3F3]
-    via-[#CFCFCF]
+    from-[#1A1A1C]
+    via-[#2C2C30]
+    via-[#4A4A50]
     via-[#7A7A82]
-    to-[#1E1E22]
+    to-[#E8E8EC]
     py-3
   "
 >
