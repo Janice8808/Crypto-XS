@@ -42,12 +42,12 @@ import AdminSimple from "./pages/AdminSimple";
 const PullToRefreshWrapper = ({ children }) => {
   const refreshContainerRef = useRef(null);
   const refreshIndicatorRef = useRef(null);
-  const refreshTextRef = useRef(null);
+  const refreshIconRef = useRef(null); // 新增图标引用
   
   let startY = 0;
   let currentY = 0;
   let isRefreshing = false;
-  const refreshThreshold = 80;
+  const refreshThreshold = 120; // 提高触发阈值到120px，降低灵敏度
 
   const handleTouchStart = (e) => {
     if (isRefreshing) return;
@@ -69,17 +69,22 @@ const PullToRefreshWrapper = ({ children }) => {
       if (diff > 0) {
         e.preventDefault();
         
-        const pullDistance = Math.min(diff * 0.6, refreshThreshold * 1.5);
+        // 降低灵敏度：减小下拉距离系数
+        const pullDistance = Math.min(diff * 0.4, refreshThreshold * 1.2);
+        
+        // 更新图标位置和透明度
         if (refreshIndicatorRef.current) {
           refreshIndicatorRef.current.style.transform = `translateY(${pullDistance}px)`;
         }
         
-        if (refreshTextRef.current) {
+        // 根据下拉距离更新图标透明度
+        if (refreshIconRef.current) {
+          const opacity = Math.min(pullDistance / refreshThreshold, 0.6);
+          refreshIconRef.current.style.opacity = opacity.toString();
+          
           if (pullDistance >= refreshThreshold) {
-            refreshTextRef.current.textContent = '释放刷新';
             refreshIndicatorRef.current?.classList.add('ready');
           } else {
-            refreshTextRef.current.textContent = '下拉刷新';
             refreshIndicatorRef.current?.classList.remove('ready');
           }
         }
@@ -93,7 +98,8 @@ const PullToRefreshWrapper = ({ children }) => {
     if (startY) {
       const diff = currentY - startY;
       
-      if (diff > 0 && diff * 0.6 >= refreshThreshold) {
+      // 使用更高的阈值检查
+      if (diff > 0 && diff * 0.4 >= refreshThreshold) {
         startRefresh();
       } else {
         resetRefresh();
@@ -107,9 +113,7 @@ const PullToRefreshWrapper = ({ children }) => {
   const startRefresh = () => {
     isRefreshing = true;
     refreshIndicatorRef.current?.classList.add('refreshing');
-    if (refreshTextRef.current) {
-      refreshTextRef.current.textContent = '刷新中...';
-    }
+    
     if (refreshIndicatorRef.current) {
       refreshIndicatorRef.current.style.transform = `translateY(${refreshThreshold}px)`;
     }
@@ -131,8 +135,8 @@ const PullToRefreshWrapper = ({ children }) => {
       if (refreshIndicatorRef.current) {
         refreshIndicatorRef.current.style.transform = 'translateY(-100%)';
       }
-      if (refreshTextRef.current) {
-        refreshTextRef.current.textContent = '下拉刷新';
+      if (refreshIconRef.current) {
+        refreshIconRef.current.style.opacity = '0';
       }
     }, 300);
   };
@@ -142,8 +146,8 @@ const PullToRefreshWrapper = ({ children }) => {
       refreshIndicatorRef.current.style.transform = 'translateY(-100%)';
     }
     refreshIndicatorRef.current?.classList.remove('ready');
-    if (refreshTextRef.current) {
-      refreshTextRef.current.textContent = '下拉刷新';
+    if (refreshIconRef.current) {
+      refreshIconRef.current.style.opacity = '0';
     }
   };
 
@@ -155,10 +159,9 @@ const PullToRefreshWrapper = ({ children }) => {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* 下拉刷新指示器 */}
+      {/* 下拉刷新指示器 - 只保留图标，无文字 */}
       <div ref={refreshIndicatorRef} className="refresh-indicator">
-        <div className="refresh-icon"></div>
-        <div ref={refreshTextRef} className="refresh-text">下拉刷新</div>
+        <div ref={refreshIconRef} className="refresh-icon"></div>
       </div>
 
       {children}

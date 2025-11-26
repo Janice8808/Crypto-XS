@@ -63,15 +63,15 @@
   transform: translateY(-100%);
   transition: transform 0.3s ease;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+  /* 移除背景色 */
+  background: transparent;
+  /* 移除模糊效果 */
+  backdrop-filter: none;
 }
 
 .refresh-text {
-  font-size: 14px;
-  color: #666;
-  margin-left: 10px;
-  font-weight: 500;
+  /* 隐藏文字 */
+  display: none;
 }
 
 .refresh-icon {
@@ -81,6 +81,8 @@
   border-top-color: transparent;
   border-radius: 50%;
   transition: all 0.3s;
+  /* 初始状态完全透明 */
+  opacity: 0;
 }
 
 .refreshing .refresh-icon {
@@ -90,7 +92,7 @@
 
 .ready .refresh-icon {
   transform: rotate(180deg);
-  opacity: 1;
+  opacity: 0.6; /* 半透明状态 */
 }
 
 @keyframes spin {
