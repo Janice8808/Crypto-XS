@@ -270,9 +270,9 @@ const features = [
       {/* Header */}
       <div className="w-full bg-[#FFB800] px-4 py-2 flex items-center justify-between">
         <div className="flex items-center space-x-2 flex-1">
-          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-            {iconUser}
-          </div>
+         <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+  <img src={userIcon} className="w-6 h-6" alt="user" />
+</div>
 
           <div className="flex-1">
             <div className="bg-white px-3 py-1 rounded text-gray-700 text-sm font-medium truncate w-full">
