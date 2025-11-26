@@ -312,37 +312,36 @@ const features = [
         ))}
       </div>
 
-{/* 滚动公告 */}
-<div
-  className="
-    relative overflow-hidden 
-    h-12 px-3 flex items-center
-    bg-gradient-to-b
-    from-[#1E1E22]
-    via-[#3C3C42]
-    via-[#7A7A82]
-    to-[#E8E8EC]
-  "
->
-  <div className="relative flex-1 h-full">
-    <div className="relative flex-1 h-full">
+      {/* 滚动公告 */}
       <div
-        className="absolute whitespace-nowrap text-white text-base animate-marquee-LTR"
-        style={{
-          top: "50%",
-          pointerEvents: "none",
-          position: "absolute",
-        }}
+        className="
+          relative overflow-hidden 
+          h-12 px-3 flex items-center
+          bg-gradient-to-b
+          from-[#1E1E22]
+          via-[#3C3C42]
+          via-[#7A7A82]
+          to-[#E8E8EC]
+        "
       >
-        {t("Welcome to visit Crypto.com")}
+        <div className="relative flex-1 h-full">
+          <div className="relative flex-1 h-full">
+            <div
+              className="absolute whitespace-nowrap text-white text-base animate-marquee-LTR"
+              style={{
+                top: "50%",
+                pointerEvents: "none",
+                position: "absolute",
+              }}
+            >
+              {t("Welcome to visit Crypto.com")}
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
 
-
-      {/* 功能区 */}
-      <div className="mt-2 bg-white mx-2 rounded-xl p-4 shadow relative z-20">
+      {/* 功能区 - 添加负margin-top压在公告下方 */}
+      <div className="mt-2 bg-white mx-2 rounded-xl p-4 shadow relative z-20 -mt-4">
 
         <div className="grid grid-cols-4 gap-4 mb-5">
           {features.map((item) => (
