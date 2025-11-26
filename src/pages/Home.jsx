@@ -366,13 +366,11 @@ const features = [
         </div>
 
 
-{/* 两个广告图 - 满屏贴边 */}
+{/* 两个广告图 */}
 <div className="flex gap-2 mb-6 w-screen -mx-4 px-4">
   <div className="w-1/3 relative">
-    <div 
-      className="w-full h-[80px] rounded-lg bg-cover bg-center"
-      style={{backgroundImage: "url(/images/online.jpg)"}}
-    />
+    <img src="/images/online.jpg" className="w-full h-[80px] rounded-lg object-fill" />
+    {/* 在图片上叠加可翻译的文字 */}
     <div className="absolute inset-0 flex items-center justify-center">
       <span className="text-gray-600 text-sm font-bold text-center leading-tight mr-3">
         {t('Online')}<br />{t('Service')}
@@ -380,25 +378,29 @@ const features = [
     </div>
   </div>
 
-  <div 
-    className="w-2/3 relative cursor-pointer"
-    onClick={() => navigate('/deposit1')}
-  >
-    <div 
-      className="w-full h-[80px] rounded-lg bg-cover bg-center"
-      style={{backgroundImage: "url(/images/fastbuy.jpg)"}}
-    />
-    <div className="absolute inset-0 flex items-center justify-center">
-      <div className="text-center ml-4">
-        <span className="text-gray-600 text-sm font-bold">
-          {t("Fast buying coin")}
-        </span>
-        <div className="text-gray-400 text-[10px] mt-1">
-          {t("Zero fees. Get started now")}
-        </div>
+<div 
+  className="w-2/3 relative cursor-pointer"
+  onClick={() => {
+    console.log('点击事件触发 - 外层div');
+    navigate('/deposit1');
+  }}
+>
+  <img 
+    src="/images/fastbuy.jpg" 
+    className="w-full h-[80px] rounded-lg object-fill"
+  />
+  <div className="absolute inset-0 flex items-center justify-center">
+    <div className="text-center ml-4">
+      <span className="text-gray-600 text-sm font-bold">
+        {t("Fast buying coin")}
+      </span>
+      {/* 新增的可翻译小字行 */}
+       <div className="text-gray-400 text-[10px] mt-1">
+        {t("Zero fees. Get started now")}
       </div>
     </div>
   </div>
+</div>
 </div>
 
 
