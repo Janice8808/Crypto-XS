@@ -363,7 +363,7 @@ const features = [
 <div className="flex gap-2 mb-6 w-screen -ml-4 pr-4">
   <div className="w-1/3 relative">
     <div 
-      className="w-full h-[70px] rounded-lg bg-contain bg-center bg-no-repeat bg-gray-100"
+      className="w-full h-[70px] rounded-lg bg-contain bg-right bg-no-repeat bg-gray-100"
       style={{backgroundImage: "url(/images/online.jpg)"}}
     />
     <div className="absolute inset-0 flex items-center justify-center">
