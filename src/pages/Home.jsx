@@ -366,8 +366,8 @@ const features = [
         </div>
 
 {/* 两个广告图 - 自定义宽度 */}
-<div className="flex gap-2 mb-6 px-1">
-  <div className="w-[100px] relative"> {/* 固定宽度 */}
+<div className="flex gap-2 mb-6 w-full max-w-[96vw] mx-auto"> 
+  <div className="w-1/3 relative">
     <div 
       className="w-full h-[80px] rounded-lg bg-cover bg-center"
       style={{backgroundImage: "url(/images/online.jpg)"}}
@@ -380,7 +380,7 @@ const features = [
   </div>
 
   <div 
-    className="flex-1 relative cursor-pointer" /* 占据剩余所有空间 */
+    className="w-2/3 relative cursor-pointer"
     onClick={() => navigate('/deposit1')}
   >
     <div 
