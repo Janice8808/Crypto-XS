@@ -59,6 +59,20 @@ const GlobeIcon = () => (
 const Home = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  // 无焦点样式配置 - 只用于按钮
+  const noFocusStyle = {
+    outline: 'none',
+    boxShadow: 'none',
+    border: 'none',
+    WebkitTapHighlightColor: 'transparent'
+  }
+
+  // 只对按钮使用 preventDefault
+  const preventDefault = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
   
 
   // 币种订阅
@@ -158,7 +172,7 @@ useEffect(() => {
         // 调试输出查看userId
         console.log("Original userId:", userId);
 
-        // 格式化用户ID，前4位 + “...” + 后4位
+        // 格式化用户ID，前4位 + "..." + 后4位
         const shortUserId =
           userId.length > 10
             ? `0x${userId.slice(2, 6)}…${userId.slice(-4)}`
@@ -284,7 +298,13 @@ const features = [
         </div>
 
         <div className="flex items-center space-x-4 ml-3 text-white">
-          <button className="relative p-0 bg-transparent" onClick={() => navigate("/notice")}>
+          <button 
+            className="relative p-0 bg-transparent" 
+            onClick={() => navigate("/notice")}
+            style={noFocusStyle}
+            onMouseDown={preventDefault}
+            onTouchStart={preventDefault}
+          >
             <MailIcon />
             {unread > 0 && (
               <span className="absolute -top-1 -right-2 bg-red-600 text-[10px] px-1 rounded-full">
@@ -293,7 +313,13 @@ const features = [
             )}
           </button>
 
-          <button className="p-0 bg-transparent" onClick={() => navigate("/user/language")}>
+          <button 
+            className="p-0 bg-transparent" 
+            onClick={() => navigate("/user/language")}
+            style={noFocusStyle}
+            onMouseDown={preventDefault}
+            onTouchStart={preventDefault}
+          >
             <GlobeIcon />
           </button>
         </div>
@@ -383,6 +409,9 @@ const features = [
   <div 
     className="w-2/3 relative cursor-pointer"
     onClick={() => navigate('/deposit1')}
+    style={noFocusStyle}
+    onMouseDown={preventDefault}
+    onTouchStart={preventDefault}
   >
     <div 
       className="w-full h-[70px] rounded-lg bg-contain bg-center bg-no-repeat bg-gray-100"
