@@ -180,8 +180,9 @@ const Home = () => {
   const address = userInfo?.wallet || localStorage.getItem("address") || "";
   const userId = userInfo?.userId || localStorage.getItem("userId") || "";
 
+  // 修复这里的变量名错误：将 addr 改为 address
   const shortAddress = address && address.length > 10
-    ? `0x${address.slice(0, 6)}…${addr.slice(-4)}`
+    ? `0x${address.slice(0, 6)}…${address.slice(-4)}`  // 这里改为 address
     : address || "--";
 
   const formattedUid = userId && userId.length > 10
