@@ -177,15 +177,16 @@ useEffect(() => {
 
 // 多语言 features - 更大尺寸和灰色字体
 const features = [
-  { key: "User Center", icon: <img src={userIcon} className="w-16 h-16" alt="user" /> },
-  { key: "MSb", icon: <img src={msbIcon} className="w-16 h-16" alt="msb" /> },
-  { key: "Introduction", icon: <img src={introIcon} className="w-16 h-16" alt="intro" /> },
-  { key: "Currency", icon: <img src={currencyIcon} className="w-16 h-16" alt="currency" /> },
-  { key: "Deposit", icon: <img src={depositIcon} className="w-16 h-16" alt="deposit" /> },
-  { key: "DeFi", icon: <img src={defiIcon} className="w-16 h-16" alt="defi" /> },
-  { key: "Futures", icon: <img src={futuresIcon} className="w-16 h-16" alt="futures" /> },
-  { key: "Withdraw", icon: <img src={withdrawIcon} className="w-16 h-16" alt="withdraw" /> },
+  { key: "User Center", icon: <img src={userIcon} className="w-16 h-16" />, path: "/user" },
+  { key: "MSb", icon: <img src={msbIcon} className="w-16 h-16" />, path: "/user/msb" },
+  { key: "Introduction", icon: <img src={introIcon} className="w-16 h-16" />, path: "/intro" },
+  { key: "Currency", icon: <img src={currencyIcon} className="w-16 h-16" />, path: "/coin/BTCUSDT" },
+  { key: "Deposit", icon: <img src={depositIcon} className="w-16 h-16" />, path: "/deposit1" },
+  { key: "DeFi", icon: <img src={defiIcon} className="w-16 h-16" />, path: "/defi" },
+  { key: "Futures", icon: <img src={futuresIcon} className="w-16 h-16" />, path: "/trade" },
+  { key: "Withdraw", icon: <img src={withdrawIcon} className="w-16 h-16" />, path: "/wallet/USDT/withdraw" },
 ];
+
 
   const images = ["/images/banner1.jpg", "/images/banner2.jpg", "/images/banner3.jpg"];
   const [currentBanner, setCurrentBanner] = useState(0);
@@ -347,19 +348,21 @@ const features = [
 {/* 功能区 - 平衡间距 */}
 <div className="bg-white mx-2 rounded-xl p-4 shadow relative z-20 -mt-5">
   <div className="grid grid-cols-4 gap-4 px-4 pt-1 pb-3">{/* 恢复正常的py-3 */}
-    {features.map((feature, index) => (
-      <div 
-        key={index}
-        className="flex flex-col items-center justify-center h-20" // 适中的高度
-      >
-<div className="flex items-center justify-center mb-0.5"> {/* 使用更小的间距单位 */}
-  {feature.icon}
-</div>
-<span className="text-gray-500 text-xs text-center leading-tight mt-0.5">
-  {t(feature.key)}
-</span>
-      </div>
-    ))}
+{features.map((feature, index) => (
+  <Link
+    key={index}
+    to={feature.path}
+    className="flex flex-col items-center justify-center h-20 active:scale-95 transition"
+  >
+    <div className="flex items-center justify-center mb-0.5">
+      {feature.icon}
+    </div>
+    <span className="text-gray-500 text-xs text-center leading-tight mt-0.5">
+      {t(feature.key)}
+    </span>
+  </Link>
+))}
+
   </div>
 
 
