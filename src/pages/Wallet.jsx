@@ -39,10 +39,14 @@ export default function Wallet() {
   const address = userInfo?.wallet || localStorage.getItem("address") || "";
   const userId = userInfo?.userId || localStorage.getItem("userId") || "";
 
+// 清理 0x，避免重复
+const clean = address.startsWith("0x") ? address.slice(2) : address;
+
+// 生成短地址（前 8 + 后 12）
 const shortAddress =
-    address && address.length > 10
-      ? `0x${address.slice(0, 6)}…${address.slice(-4)}`
-      : `0x${address}` || "--";
+  clean && clean.length >= 20
+    ? `0x${clean.slice(0, 8)}…${clean.slice(-12)}`
+    : address || "--";
 
 
   const coinList = Array.isArray(allCoins) ? allCoins : [];

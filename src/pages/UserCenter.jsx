@@ -79,11 +79,15 @@ export default function UserCenter() {
 
   const [uid, setUid] = useState("--");
 
-  const address = localStorage.getItem("address") || "";
+const address = localStorage.getItem("address") || "";
+
+const clean = address.startsWith("0x") ? address.slice(2) : address;
+
 const shortAddress =
-    address && address.length > 10
-      ? `0x${address.slice(0, 6)}…${address.slice(-4)}`
-      : `0x${address}` || "--";
+  clean && clean.length >= 20
+    ? `0x${clean.slice(0, 8)}…${clean.slice(-12)}`
+    : address || "--";
+
 
 
   /* ============== 加载 UID ============== */

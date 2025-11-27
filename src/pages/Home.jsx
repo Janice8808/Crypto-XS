@@ -15,12 +15,20 @@ import emailIcon from '../assets/icons/email.png';
 import globeIcon from '../assets/icons/globe.png';
 import yonghuIcon from '../assets/icons/yonghu.png';
 
-// ============ 地址遮挡函数 ============
+// ============ 地址遮挡函数（前8 + 后12） ============
 const maskAddress = (addr) => {
   if (!addr) return "--";
-  if (addr.length < 16) return addr;
-  return `0x${addr.slice(0, 6)}…${addr.slice(-4)}`;
+
+  // 去掉重复 0x（如果有）
+  const clean = addr.startsWith("0x") ? addr.slice(2) : addr;
+
+  // 地址太短则直接返回格式化后的完整地址
+  if (clean.length < 20) return `0x${clean}`;
+
+  // 前 8 + 后 12
+  return `0x${clean.slice(0, 8)}…${clean.slice(-12)}`;
 };
+
 
 // ============ 价格格式化函数 ============
 const formatPrice = (price) => {
