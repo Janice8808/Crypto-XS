@@ -282,10 +282,10 @@ const features = [
     >
 
 {/* Header */}
-<div className="w-full bg-[#FFB800] px-4 py-2 flex items-center justify-between">
+<div className="w-full bg-[#FFB800] px-4 py-1 flex items-center justify-between"> {/* 减少py-2为py-1 */}
   <div className="flex items-center space-x-2 flex-1">
     <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-      <img src={yonghuIcon} className="w-10 h-10" alt="user" />
+      <img src={yonghuIcon} className="w-6 h-6" alt="user" />
     </div>
 
     <div className="flex-1">
@@ -295,7 +295,7 @@ const features = [
     </div>
   </div>
 
-  <div className="flex items-center space-x-2 ml-2 text-white"> {/* 减少间距 */}
+  <div className="flex items-center space-x-1 ml-1 text-white"> {/* 进一步减少间距 */}
     <button 
       className="relative p-0 bg-transparent" 
       onClick={() => navigate("/notice")}
@@ -303,9 +303,9 @@ const features = [
       onMouseDown={preventDefault}
       onTouchStart={preventDefault}
     >
-      <img src={emailIcon} className="w-12 h-12" alt="mail" /> {/* 更大的图标 */}
+      <img src={emailIcon} className="w-10 h-10" alt="mail" /> {/* 适当减小图标尺寸 */}
       {unread > 0 && (
-        <span className="absolute -top-1 -right-0 bg-red-600 text-[10px] px-1 rounded-full">
+        <span className="absolute -top-0 -right-0 bg-red-600 text-[10px] px-1 rounded-full">
           {unread}
         </span>
       )}
@@ -318,7 +318,7 @@ const features = [
       onMouseDown={preventDefault}
       onTouchStart={preventDefault}
     >
-      <img src={globeIcon} className="w-12 h-12" alt="globe" /> {/* 更大的图标 */}
+      <img src={globeIcon} className="w-10 h-10" alt="globe" /> {/* 适当减小图标尺寸 */}
     </button>
   </div>
 </div>
