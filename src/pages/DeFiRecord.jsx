@@ -7,6 +7,20 @@ export default function DeFiRecord() {
   const nav = useNavigate();
   const { t } = useTranslation();
 
+  // 无焦点样式配置 - 只用于按钮
+  const noFocusStyle = {
+    outline: 'none',
+    boxShadow: 'none',
+    border: 'none',
+    WebkitTapHighlightColor: 'transparent'
+  }
+
+  // 只对按钮使用 preventDefault
+  const preventDefault = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -35,21 +49,22 @@ export default function DeFiRecord() {
 
       {/* 顶部导航 */}
       <div className="flex items-center px-4 py-3 bg-white shadow-sm">
-          <button
-  onClick={() => window.history.back()}
-  style={{
-    background: "none",
-    border: "none",
-    fontSize: 20,
-    color: "#666",
-    width: "45px",
-    textAlign: "left",
-    paddingLeft: "12px",
-  }}
->
-  ←
-</button>
-
+        <button
+          onClick={() => window.history.back()}
+          style={{
+            ...noFocusStyle,
+            background: "none",
+            fontSize: 20,
+            color: "#666",
+            width: "45px",
+            textAlign: "left",
+            paddingLeft: "12px",
+          }}
+          onMouseDown={preventDefault}
+          onTouchStart={preventDefault}
+        >
+          ←
+        </button>
 
         <span className="text-lg font-medium">{t("Record")}</span>
       </div>
