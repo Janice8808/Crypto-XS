@@ -74,14 +74,13 @@ const Home = () => {
     e.stopPropagation()
   }
 
-  // 禁止滚动样式
-  const noScrollStyle = {
-    overflow: 'hidden',
+  // 禁止左右滚动但允许上下滚动的样式
+  const scrollStyle = {
+    overflowX: 'hidden', // 禁止水平滚动
+    overflowY: 'auto',   // 允许垂直滚动
     height: '100vh',
-    position: 'fixed',
     width: '100%',
-    top: 0,
-    left: 0
+    position: 'relative'
   }
   
 
@@ -293,7 +292,7 @@ const features = [
   return (
     <div 
       className="w-full max-w-5xl mx-auto bg-gray-100 min-h-screen text-black relative"
-      style={noScrollStyle}
+      style={scrollStyle}
     >
 
       {/* Header */}
