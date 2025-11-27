@@ -145,72 +145,59 @@ const btc = mergedTickers["BTC"] || { price: "--", change: 0 };
 const eth = mergedTickers["ETH"] || { price: "--", change: 0 };
 const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
 
-  // ============ 关键修改：初始化地址逻辑 ============
-  const [address, setAddress] = useState("");
-  const [uid, setUid] = useState("--");
+  // ============ 关键修改：按照 Wallet 组件方式获取用户信息 ============
+  const [userInfo, setUserInfo] = useState(null);
 
-  // 初始化地址和用户信息
+  // 获取用户信息（与 Wallet 组件相同的方式）
   useEffect(() => {
-    // 从 localStorage 获取地址
-    const savedAddress = localStorage.getItem("address") || "";
-    setAddress(savedAddress);
+    async function loadUserInfo() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
 
-    // 获取用户余额和ID
-    fetch("https://pankouhoutai.shop/api/user/balance", {
-      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-    })
-      .then((r) => r.json())
-      .then((d) => {
-        if (d?.userId) {
-          let userId = d.userId;
-          
-          // 确保 ID 以 "0x" 开头
-          if (!userId.startsWith("0x")) {
-            userId = "0x" + userId;
+        const res = await fetch("https://pankouhoutai.shop/api/userinfo", {
+          headers: { 
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
           }
+        });
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
+        const data = await res.json();
+        setUserInfo(data);
 
-          // 格式化用户ID
-          const shortUserId =
-            userId.length > 10
-              ? `0x${userId.slice(2, 6)}…${userId.slice(-4)}`
-              : userId || "--";
-
-          setUid(shortUserId);
+        // 保存到 localStorage
+        if (data?.wallet) {
+          localStorage.setItem("address", data.wallet);
+        }
+        if (data?.userId) {
+          localStorage.setItem("userId", data.userId);
         }
 
-        // 如果没有地址但返回了用户信息，尝试设置地址
-        if (!savedAddress && d?.address) {
-          localStorage.setItem("address", d.address);
-          setAddress(d.address);
-        }
-      })
-      .catch(err => {
-        console.warn("获取用户信息失败:", err);
-      });
+        console.log("用户信息加载成功:", data);
+      } catch (err) {
+        console.error("加载用户信息失败:", err);
+      }
+    }
+
+    loadUserInfo();
   }, []);
 
-  const maskedAddress = maskAddress(address);
+  // 地址和用户ID处理（与 Wallet 组件相同）
+  const address = userInfo?.wallet || localStorage.getItem("address") || "";
+  const userId = userInfo?.userId || localStorage.getItem("userId") || "";
 
-  // 监听 localStorage 变化来更新地址
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const newAddress = localStorage.getItem("address") || "";
-      if (newAddress !== address) {
-        setAddress(newAddress);
-      }
-    };
+  const shortAddress = address && address.length > 10
+    ? `0x${address.slice(0, 6)}…${address.slice(-4)}`
+    : address || "--";
 
-    // 监听 storage 事件（跨标签页）
-    window.addEventListener('storage', handleStorageChange);
-    
-    // 定期检查（用于当前标签页内的变化）
-    const interval = setInterval(handleStorageChange, 1000);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
-    };
-  }, [address]);
+  // 格式化用户ID显示
+  const formattedUid = userId && userId.length > 10
+    ? `0x${userId.slice(0, 6)}…${userId.slice(-4)}`
+    : userId || "--";
 
 
 // 多语言 features - 更大尺寸和灰色字体
@@ -310,47 +297,48 @@ const features = [
       style={scrollStyle}
     >
 
-{/* Header */}
-<div className="w-full bg-[#FFB800] px-4 py-2 flex items-center justify-between">
-  <div className="flex items-center space-x-2 flex-1">
-    <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-      <img src={yonghuIcon} className="w-6 h-6" alt="user" />
-    </div>
+      {/* Header */}
+      <div className="w-full bg-[#FFB800] px-4 py-2 flex items-center justify-between">
+        <div className="flex items-center space-x-2 flex-1">
+          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+            <img src={yonghuIcon} className="w-6 h-6" alt="user" />
+          </div>
 
-    <div className="flex-1">
-      <div className="bg-white px-3 py-1 rounded text-gray-700 text-sm font-medium truncate w-full">
-        {maskedAddress}
+          <div className="flex-1">
+            <div className="bg-white px-3 py-1 rounded text-gray-700 text-sm font-medium truncate w-full">
+              {shortAddress}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-2 ml-3 text-white">
+          <button 
+            className="relative p-0 bg-transparent" 
+            onClick={() => navigate("/notice")}
+            style={noFocusStyle}
+            onMouseDown={preventDefault}
+            onTouchStart={preventDefault}
+          >
+            <img src={emailIcon} className="w-7 h-7" alt="mail" />
+            {unread > 0 && (
+              <span className="absolute -top-1 -right-2 bg-red-600 text-[10px] px-1 rounded-full">
+                {unread}
+              </span>
+            )}
+          </button>
+
+          <button 
+            className="p-0 bg-transparent" 
+            onClick={() => navigate("/user/language")}
+            style={noFocusStyle}
+            onMouseDown={preventDefault}
+            onTouchStart={preventDefault}
+          >
+            <img src={globeIcon} className="w-7 h-7" alt="globe" />
+          </button>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <div className="flex items-center space-x-2 ml-3 text-white">
-    <button 
-      className="relative p-0 bg-transparent" 
-      onClick={() => navigate("/notice")}
-      style={noFocusStyle}
-      onMouseDown={preventDefault}
-      onTouchStart={preventDefault}
-    >
-      <img src={emailIcon} className="w-7 h-7" alt="mail" />
-      {unread > 0 && (
-        <span className="absolute -top-1 -right-2 bg-red-600 text-[10px] px-1 rounded-full">
-          {unread}
-        </span>
-      )}
-    </button>
-
-    <button 
-      className="p-0 bg-transparent" 
-      onClick={() => navigate("/user/language")}
-      style={noFocusStyle}
-      onMouseDown={preventDefault}
-      onTouchStart={preventDefault}
-    >
-      <img src={globeIcon} className="w-7 h-7" alt="globe" />
-    </button>
-  </div>
-</div>
 
 
       {/* Banner */}
