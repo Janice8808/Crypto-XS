@@ -186,14 +186,14 @@ useEffect(() => {
 
 // 多语言 features - 更大尺寸和灰色字体
 const features = [
-  { key: "User Center", icon: <img src={userIcon} className="w-13 h-13" />, path: "/user" },
-  { key: "MSb", icon: <img src={msbIcon} className="w-13 h-13" />, path: "/user/msb" },
-  { key: "Introduction", icon: <img src={introIcon} className="w-13 h-13" />, path: "/intro" },
-  { key: "Currency", icon: <img src={currencyIcon} className="w-13 h-13" />, path: "/coin/BTCUSDT" },
-  { key: "Deposit", icon: <img src={depositIcon} className="w-13 h-13" />, path: "/deposit1" },
-  { key: "DeFi", icon: <img src={defiIcon} className="w-13 h-13" />, path: "/defi" },
-  { key: "Futures", icon: <img src={futuresIcon} className="w-13 h-13" />, path: "/trade" },
-  { key: "Withdraw", icon: <img src={withdrawIcon} className="w-13 h-13" />, path: "/wallet/USDT/withdraw" },
+  { key: "User Center", icon: <img src={userIcon} className="w-8 h-8" />, path: "/user" },
+  { key: "MSb", icon: <img src={msbIcon} className="w-8 h-8" />, path: "/user/msb" },
+  { key: "Introduction", icon: <img src={introIcon} className="w-8 h-8" />, path: "/intro" },
+  { key: "Currency", icon: <img src={currencyIcon} className="w-8 h-8" />, path: "/coin/BTCUSDT" },
+  { key: "Deposit", icon: <img src={depositIcon} className="w-8 h-8" />, path: "/deposit1" },
+  { key: "DeFi", icon: <img src={defiIcon} className="w-8 h-8" />, path: "/defi" },
+  { key: "Futures", icon: <img src={futuresIcon} className="w-8 h-8" />, path: "/trade" },
+  { key: "Withdraw", icon: <img src={withdrawIcon} className="w-8 h-8" />, path: "/wallet/USDT/withdraw" },
 ];
 
 
