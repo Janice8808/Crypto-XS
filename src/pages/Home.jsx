@@ -369,23 +369,27 @@ const features = [
     py-3
   "
 >
-
-
-        <div className="relative flex-1 h-full">
-          <div className="relative flex-1 h-full">
-            <div
-              className="absolute whitespace-nowrap text-white text-base animate-marquee-LTR"
-              style={{
-                top: "50%",
-                pointerEvents: "none",
-                position: "absolute",
-              }}
-            >
-              {t("Welcome to visit Crypto.com")}
-            </div>
-          </div>
-        </div>
-      </div>
+ <div className="w-full overflow-hidden relative">
+    {/* 第一个滚动条 */}
+    <div className="whitespace-nowrap text-white text-base font-medium">
+      <span className="animate-marquee-LTR inline-block">
+        {t("Welcome to visit Crypto.com")}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        {t("Welcome to visit Crypto.com")}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        {t("Welcome to visit Crypto.com")}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        {t("Welcome to visit Crypto.com")}
+      </span>
+    </div>
+    {/* 第二个滚动条，延迟半个周期开始 */}
+    <div className="whitespace-nowrap text-white text-base font-medium absolute top-0 left-0">
+      <span className="animate-marquee-delay inline-block">
+        {t("Welcome to visit Crypto.com")}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        {t("Welcome to visit Crypto.com")}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        {t("Welcome to visit Crypto.com")}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        {t("Welcome to visit Crypto.com")}
+      </span>
+    </div>
+  </div>
+</div>
 
 {/* 功能区 - 平衡间距 */}
 <div className="bg-white mx-2 rounded-xl p-4 shadow relative z-20 -mt-5">
