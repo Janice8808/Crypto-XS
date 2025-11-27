@@ -48,12 +48,13 @@ export default function WithdrawalPassword() {
     <div className="min-h-screen bg-white">
       {/* 顶部 */}
       <div className="flex items-center p-4 border-b">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-gray-600 text-xl mr-3"
-        >
-          ←
-        </button>
+<button
+  onClick={() => window.history.back()}
+  className="text-xl text-gray-600 active:scale-90"
+  style={{ background: "none", border: "none", padding: 0, marginRight: "8px" }}
+>
+  ←
+</button>
         <h1 className="text-lg font-semibold text-gray-800">
           {t("Change Password")}
         </h1>
