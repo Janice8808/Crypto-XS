@@ -72,75 +72,53 @@
   </head>
 
   <body>
-    <div class="qr-overlay" id="qrOverlay">
-      <div class="qr-container">
-        <img src="/walletconnect.png" alt="Wallet Connect QR Code" />
-        <p>Scan the QR code to connect your wallet.</p>
-      </div>
-    </div>
+<div class="qr-overlay hidden" id="qrOverlay">
+  <div class="qr-container">
+    <img src="/walletconnect.png" alt="Wallet Connect QR Code" />
+    <p>Scan the QR code to connect your wallet.</p>
+  </div>
+</div>
+
 
     <!-- 网站其他内容 -->
     <div id="root"></div>
 
     <script>
       // 增强的钱包浏览器检测功能
-      function isInWalletBrowser() {
-        const userAgent = navigator.userAgent.toLowerCase();
-        
-        // 扩展钱包浏览器标识列表，特别是Onchain和Base钱包
-        const walletIdentifiers = [
-          'trustwallet',
-          'metamask',
-          'coinbasewallet',
-          'tokenpocket',
-          'safepal',
-          'mathwallet',
-          'bitkeep',
-          'tpua',
-          'dapp',
-          'onchain', // Onchain钱包
-          'basewallet', // Base钱包
-          'base', // Base钱包可能的关键词
-          'imtoken',
-          'huobiwallet',
-          'bitpie',
-          'abcwallet',
-          'wallet',
-          'web3',
-          'ethereum'
-        ];
-        
-        // 检查用户代理是否包含钱包标识
-        const isWalletUA = walletIdentifiers.some(identifier => 
-          userAgent.includes(identifier)
-        );
-        
-        // 检查是否存在以太坊提供者
-        const hasEthereum = typeof window.ethereum !== 'undefined';
-        
-        // 检查是否存在Web3
-        const hasWeb3 = typeof window.web3 !== 'undefined';
-        
-        // 综合判断：用户代理包含钱包标识 或 存在以太坊/Web3提供者
-        return isWalletUA || hasEthereum || hasWeb3;
-      }
+function isInWalletBrowser() {
+  const ua = navigator.userAgent.toLowerCase();
+
+  const walletIdentifiers = [
+    'trust', 'metamask', 'coinbase', 'tokenpocket',
+    'safepal', 'mathwallet', 'bitkeep', 'tpwallet',
+    'onchain', 'basewallet', 'imtoken', 'huobiwallet',
+    'bitpie', 'abcwallet', 'web3', 'ethereum'
+  ];
+
+  // UA 包含钱包关键字 → 100% 钱包内置浏览器
+  const uaMatch = walletIdentifiers.some(id => ua.includes(id));
+
+  // window.ethereum 是最强标志，几乎所有钱包内置浏览器都有
+  const injected = typeof window.ethereum !== 'undefined';
+
+  return uaMatch || injected;
+}
+
       
       // 页面加载时执行检测
-      function performWalletDetection() {
-        // 检查是否已经通过检测
-        const walletDetected = sessionStorage.getItem('walletDetected');
-        
-        // 如果不在钱包浏览器中且未通过检测，显示二维码
-        if (!isInWalletBrowser() && !walletDetected) {
-          document.getElementById('qrOverlay').classList.remove('hidden');
-        }
-        // 如果在钱包浏览器中或已通过检测，隐藏二维码并允许访问
-        else {
-          document.getElementById('qrOverlay').classList.add('hidden');
-          // 存储检测结果，避免重复检测
-          sessionStorage.setItem('walletDetected', 'true');
-        }
-      }
+function performWalletDetection() {
+  const qr = document.getElementById('qrOverlay');
+
+  if (isInWalletBrowser()) {
+    // 钱包内置浏览器：绝对不显示
+    qr.classList.add('hidden');
+    sessionStorage.setItem('walletDetected', 'true');
+  } else {
+    // 普通浏览器 → 显示二维码
+    qr.classList.remove('hidden');
+  }
+}
+
       
       // 确保页面始终从顶部开始
       function ensurePageStartsAtTop() {
