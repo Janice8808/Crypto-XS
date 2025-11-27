@@ -22,7 +22,7 @@ export default function ChangePassword() {
       {/* 内容区域 */}
       <div className="px-3 mt-3">
         <div
-          onClick={() => navigate("/withdrawal-password")}
+          onClick={() => navigate("/user/withdrawal-password")}
           className="flex items-center justify-between bg-white rounded-xl px-4 h-16 shadow-sm border border-gray-100 active:opacity-60"
         >
           <span className="text-[16px] text-[#333]">Withdrawal Password</span>
