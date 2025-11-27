@@ -373,10 +373,7 @@ const features = [
     {/* 第一个滚动条 */}
     <div className="whitespace-nowrap text-white text-base font-medium">
       <span className="animate-marquee-LTR inline-block">
-        {t("Welcome to visit Crypto.com")}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        {t("Welcome to visit Crypto.com")}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        {t("Welcome to visit Crypto.com")}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        {t("Welcome to visit Crypto.com")}
+        {t("Welcome to visit Crypto.com")}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        
       </span>
     </div>
   </div>
