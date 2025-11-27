@@ -35,9 +35,20 @@ useEffect(() => {
 
       {/* 顶部导航 */}
       <div className="flex items-center h-14 px-3 border-b border-gray-200">
-        <button onClick={() => navigate(-1)} className="p-1">
-          <ChevronLeft size={22} />
-        </button>
+          <button
+  onClick={() => window.history.back()}
+  style={{
+    background: "none",
+    border: "none",
+    fontSize: 20,
+    color: "#666",
+    width: "45px",
+    textAlign: "left",
+    paddingLeft: "12px",
+  }}
+>
+  ←
+</button>
         <div className="flex-1 text-center text-lg font-medium">
           Change Password
         </div>
