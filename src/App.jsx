@@ -268,6 +268,16 @@ function App() {
               </AuthGate>
             }
           />
+<Route
+  path="/user/change-password"
+  element={
+    <AuthGate>
+      <PullToRefreshWrapper>
+        <ChangePassword />
+      </PullToRefreshWrapper>
+    </AuthGate>
+  }
+/>
 
           <Route
             path="/trade"
@@ -305,7 +315,7 @@ function App() {
           <Route path="/user/bank" element={<AuthGate><BankCard /></AuthGate>} />
           <Route path="/user/language" element={<AuthGate><Language /></AuthGate>} />
           <Route path="/user/withdrawal-password" element={<AuthGate><WithdrawalPassword /></AuthGate>} />
-          <Route path="/change-password" element={<ChangePassword />} />
+         
           <Route path="/intro" element={<AuthGate><Introduction /></AuthGate>} />
           <Route path="/user/msb" element={<AuthGate><MSBCertification /></AuthGate>} />
 
