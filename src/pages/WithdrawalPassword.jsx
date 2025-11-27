@@ -10,7 +10,7 @@ export default function WithdrawalPassword() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false); // 成功弹窗
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleSubmit = async () => {
     if (!password || !confirm) {
@@ -27,14 +27,17 @@ export default function WithdrawalPassword() {
 
       const res = await fetch("https://pankouhoutai.shop/api/withdrawal-password", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
         body: JSON.stringify({ password }),
       });
 
       const data = await res.json();
 
-      if (res.ok) {
-        setShowSuccess(true); // 显示成功弹窗
+      if (res.ok && data.success) {
+        setShowSuccess(true);
       } else {
         alert(data.error || t("Failed to change password"));
       }
@@ -46,9 +49,12 @@ export default function WithdrawalPassword() {
     }
   };
 
-  // 关闭弹窗后返回上一页
   const handleSuccessClose = () => {
     setShowSuccess(false);
+
+    // ⭐ 触发全局刷新 ChangePassword 的 isSet 状态
+    window.dispatchEvent(new CustomEvent("refreshData"));
+
     navigate(-1);
   };
 
@@ -69,7 +75,7 @@ export default function WithdrawalPassword() {
         </h1>
       </div>
 
-      {/* 内容区 */}
+      {/* 内容 */}
       <div className="p-5">
         <div className="mb-5">
           <label className="block text-gray-700 font-medium mb-2">
@@ -80,7 +86,7 @@ export default function WithdrawalPassword() {
             placeholder={t("Please enter a new password")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-gray-50"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 bg-gray-50"
           />
         </div>
 
@@ -93,15 +99,14 @@ export default function WithdrawalPassword() {
             placeholder={t("Please enter the confirmation password")}
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-gray-50"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 bg-gray-50"
           />
         </div>
 
         <Button
           onClick={handleSubmit}
           disabled={loading}
-          className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg py-3
-                     focus:outline-none active:outline-none focus:ring-0"
+          className="w-full bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg py-3"
         >
           {loading ? t("Submitting") : t("Submit")}
         </Button>
@@ -117,8 +122,7 @@ export default function WithdrawalPassword() {
 
             <button
               onClick={handleSuccessClose}
-              className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-medium py-2 rounded-lg 
-                         focus:outline-none active:outline-none"
+              className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-medium py-2 rounded-lg"
             >
               {t("OK")}
             </button>
