@@ -443,11 +443,15 @@ const features = [
         to={`/trade?symbol=${coin.base}USDT`}
         className="text-center py-2"
       >
-        <div className="text-gray-500 text-xs">{coin.symbol}</div>
-        {/* 这里使用 formatPrice */}
-        <div className="font-bold text-gray-600 text-sm">
+        {/* 上面小字体灰色 */}
+        <div className="text-gray-500 text-xs mb-1">{coin.symbol}</div>
+        
+        {/* 下面大字体深灰色 */}
+        <div className="font-bold text-gray-700 text-base mb-1">
           ${formatPrice(coin.price)}
         </div>
+        
+        {/* 涨跌幅保持小字体灰色 */}
         <div className="text-gray-500 text-xs">
           {up ? "+" : ""}
           {coin.change}%
