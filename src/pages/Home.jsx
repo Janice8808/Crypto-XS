@@ -355,25 +355,19 @@ const features = [
         ))}
       </div>
 
-      {/* 滚动公告 */}
-<div
-  className="
-    relative overflow-hidden 
-    h-20 px-3 flex items-center
-    bg-gradient-to-b
-    from-[#3A3A3D]
-    via-[#4A4A4F]
-    via-[#6A6A70]
-    via-[#9A9AA2]
-    to-[#FAFAFC]
-    py-3
-  "
->
- <div className="w-full overflow-hidden relative">
-    {/* 第一个滚动条 */}
+{/* 滚动公告 - 优化版本 */}
+<div className="relative overflow-hidden h-20 flex items-center bg-gradient-to-b from-[#3A3A3D] via-[#4A4A4F] via-[#6A6A70] via-[#9A9AA2] to-[#FAFAFC]">
+  <div className="w-full overflow-hidden">
     <div className="whitespace-nowrap text-white text-base font-medium">
-      <span className="animate-marquee-LTR inline-block">
-        {t("Welcome to visit Crypto.com")}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        
+      <span className="animate-marquee-fast inline-block">
+        {t("Welcome to visit Crypto.com")} • 
+        {t("Welcome to visit Crypto.com")} • 
+        {t("Welcome to visit Crypto.com")} • 
+        {t("Welcome to visit Crypto.com")} • 
+        {t("Welcome to visit Crypto.com")} • 
+        {t("Welcome to visit Crypto.com")} • 
+        {t("Welcome to visit Crypto.com")} • 
+        {t("Welcome to visit Crypto.com")}
       </span>
     </div>
   </div>
