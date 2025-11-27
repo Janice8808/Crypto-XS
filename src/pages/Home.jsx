@@ -295,7 +295,7 @@ const features = [
     </div>
   </div>
 
-  <div className="flex items-center space-x-4 ml-3 text-white">
+  <div className="flex items-center space-x-2 ml-3 text-white">
     <button 
       className="relative p-0 bg-transparent" 
       onClick={() => navigate("/notice")}
