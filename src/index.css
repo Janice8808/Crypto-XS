@@ -63,10 +63,10 @@ button:focus-visible {
 /* ===== 修复滚动公告动画 - 单个文本无缝循环 ===== */
 @keyframes single-marquee {
   0% {
-    transform: translateX(50%); /* 从右侧开始 */
+    transform: translateX(20%); /* 从右侧开始 */
   }
   100% {
-    transform: translateX(-50%); /* 移动到左侧完全消失 */
+    transform: translateX(-80%); /* 移动到左侧完全消失 */
   }
 }
 
