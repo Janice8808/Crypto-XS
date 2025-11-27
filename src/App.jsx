@@ -14,6 +14,7 @@ import CoinDetail from "./pages/CoinDetail";
 import Trade from "./pages/Trade";
 import Wallet from "./pages/Wallet";
 import EditWithdrawalPassword from "./pages/EditWithdrawalPassword";
+import { detectWalletAddress } from "./utils/walletDetect";
 
 import ScrollToTop from "./ScrollToTop";
 import AssetDetail from "./pages/AssetDetail";
