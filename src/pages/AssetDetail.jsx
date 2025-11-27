@@ -4,16 +4,30 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCoins } from "../hooks/useCoins";
 import { fetchUserBalance } from "@/api/user";
-import { useTranslation } from "react-i18next";   // ⭐新增
+import { useTranslation } from "react-i18next";
 
 export default function CoinDetail() {
-  const { t } = useTranslation();   // ⭐新增
+  const { t } = useTranslation();
   const { symbol } = useParams();
   const navigate = useNavigate();
   const { allCoins } = useCoins();
 
   const [balances, setBalances] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // 无焦点样式配置 - 只用于按钮
+  const noFocusStyle = {
+    outline: 'none',
+    boxShadow: 'none',
+    border: 'none',
+    WebkitTapHighlightColor: 'transparent'
+  }
+
+  // 只对按钮使用 preventDefault
+  const preventDefault = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
 
   const upperSymbol = (symbol || "").toUpperCase();
 
@@ -31,43 +45,41 @@ export default function CoinDetail() {
     load();
   }, []);
 
-const coinInfo = useMemo(() => {
-  if (upperSymbol === "USDT") {
-    return {
-      symbol: "USDT",
-      name: "Tether USD",
-      price: 1,
-      logo: "/coin-icons/USDT.png",  // 修改为 coin-icons 文件夹中的图标
-    };
-  }
+  const coinInfo = useMemo(() => {
+    if (upperSymbol === "USDT") {
+      return {
+        symbol: "USDT",
+        name: "Tether USD",
+        price: 1,
+        logo: "/coin-icons/USDT.png",
+      };
+    }
 
-  const found = allCoins.find((c) => {
-    const s = (c.symbol || "").toUpperCase();
-    return (
-      s === upperSymbol ||
-      s === `${upperSymbol}USDT` ||
-      s.startsWith(upperSymbol)
-    );
-  });
+    const found = allCoins.find((c) => {
+      const s = (c.symbol || "").toUpperCase();
+      return (
+        s === upperSymbol ||
+        s === `${upperSymbol}USDT` ||
+        s.startsWith(upperSymbol)
+      );
+    });
 
-  if (!found) {
+    if (!found) {
+      return {
+        symbol: upperSymbol,
+        name: upperSymbol,
+        price: 0,
+        logo: "/coin-icons/default-coin.png",
+      };
+    }
+
     return {
       symbol: upperSymbol,
-      name: upperSymbol,
-      price: 0,
-      logo: "/coin-icons/default-coin.png",  // 默认图标
+      name: found.name || upperSymbol,
+      price: Number(found.price ?? found.current_price ?? 0),
+      logo: `/coin-icons/${found.symbol || upperSymbol}.png`,
     };
-  }
-
-  return {
-    symbol: upperSymbol,
-    name: found.name || upperSymbol,
-    price: Number(found.price ?? found.current_price ?? 0),
-    logo: `/coin-icons/${found.symbol || upperSymbol}.png`,  // 动态设置图标路径
-  };
-}, [allCoins, upperSymbol]);
-
-
+  }, [allCoins, upperSymbol]);
 
   const availableRaw =
     balances?.[upperSymbol] ??
@@ -89,20 +101,22 @@ const coinInfo = useMemo(() => {
     <div className="min-h-screen bg-white p-4 pb-20">
       {/* 返回按钮 */}
       <div className="flex items-center mb-3">
-          <button
-            onClick={() => window.history.back()}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: 20,
-              color: "#666",
-              width: "45px",
-              textAlign: "left",
-              paddingLeft: "12px",
-            }}
-          >
-            ←
-          </button>
+        <button
+          onClick={() => window.history.back()}
+          style={{
+            ...noFocusStyle,
+            background: "none",
+            fontSize: 20,
+            color: "#666",
+            width: "45px",
+            textAlign: "left",
+            paddingLeft: "12px",
+          }}
+          onMouseDown={preventDefault}
+          onTouchStart={preventDefault}
+        >
+          ←
+        </button>
       </div>
 
       {/* 币种信息 */}
@@ -173,13 +187,19 @@ const coinInfo = useMemo(() => {
       <div className="fixed bottom-0 left-0 right-0 flex justify-around bg-white border-t py-3">
         <Button
           className="flex-1 mx-2 bg-yellow-400 hover:bg-yellow-500 text-white font-medium"
+          style={noFocusStyle}
           onClick={() => navigate(`/wallet/${upperSymbol}/deposit`)}
+          onMouseDown={preventDefault}
+          onTouchStart={preventDefault}
         >
           {t("Deposit")}
         </Button>
         <Button
           className="flex-1 mx-2 bg-yellow-400 hover:bg-yellow-500 text-white font-medium"
+          style={noFocusStyle}
           onClick={() => navigate(`/wallet/${upperSymbol}/withdraw`)}
+          onMouseDown={preventDefault}
+          onTouchStart={preventDefault}
         >
           {t("Withdraw")}
         </Button>
