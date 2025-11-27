@@ -295,30 +295,30 @@ const features = [
     </div>
   </div>
 
-  <div className="flex items-center space-x-2 flex-shrink-0"> {/* 使用 -space-x-3 负间距 */}
+  <div className="flex items-center space-x-3 flex-shrink-0"> {/* 增加间距 */}
     <button 
-      className="relative p-0 bg-transparent" 
+      className="relative w-9 h-9 flex items-center justify-center bg-transparent" {/* 固定按钮尺寸 */}
       onClick={() => navigate("/notice")}
       style={noFocusStyle}
       onMouseDown={preventDefault}
       onTouchStart={preventDefault}
     >
-      <img src={emailIcon} className="w-7 h-7" alt="mail" />
+      <img src={emailIcon} className="w-7 h-7 object-contain" alt="mail" /> {/* 添加 object-contain */}
       {unread > 0 && (
-        <span className="absolute top-0 right-0 bg-red-600 text-[10px] px-1 rounded-full">
+        <span className="absolute -top-1 -right-1 bg-red-600 text-[10px] px-1 rounded-full">
           {unread}
         </span>
       )}
     </button>
 
     <button 
-      className="p-0 bg-transparent" 
+      className="w-9 h-9 flex items-center justify-center bg-transparent" {/* 固定按钮尺寸 */}
       onClick={() => navigate("/user/language")}
       style={noFocusStyle}
       onMouseDown={preventDefault}
       onTouchStart={preventDefault}
     >
-      <img src={globeIcon} className="w-7 h-7" alt="globe" />
+      <img src={globeIcon} className="w-7 h-7 object-contain" alt="globe" /> {/* 添加 object-contain */}
     </button>
   </div>
 </div>
