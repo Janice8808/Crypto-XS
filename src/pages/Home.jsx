@@ -282,7 +282,7 @@ const features = [
     >
 
 {/* Header */}
-<div className="w-full bg-[#FFB800] px-3 py-2 flex items-center justify-between">
+<div className="w-full bg-[#FFB800] px-4 py-2 flex items-center justify-between">
   <div className="flex items-center space-x-2 flex-1">
     <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
       <img src={yonghuIcon} className="w-6 h-6" alt="user" />
@@ -295,33 +295,34 @@ const features = [
     </div>
   </div>
 
-  <div className="flex items-center space-x-3 flex-shrink-0"> {/* 增加间距 */}
+  <div className="flex items-center space-x-4 ml-3 text-white">
     <button 
-      className="relative w-9 h-9 flex items-center justify-center bg-transparent" {/* 固定按钮尺寸 */}
+      className="relative p-0 bg-transparent" 
       onClick={() => navigate("/notice")}
       style={noFocusStyle}
       onMouseDown={preventDefault}
       onTouchStart={preventDefault}
     >
-      <img src={emailIcon} className="w-7 h-7 object-contain" alt="mail" /> {/* 添加 object-contain */}
+      <img src={emailIcon} className="w-7 h-7" alt="mail" />
       {unread > 0 && (
-        <span className="absolute -top-1 -right-1 bg-red-600 text-[10px] px-1 rounded-full">
+        <span className="absolute -top-1 -right-2 bg-red-600 text-[10px] px-1 rounded-full">
           {unread}
         </span>
       )}
     </button>
 
     <button 
-      className="w-9 h-9 flex items-center justify-center bg-transparent" {/* 固定按钮尺寸 */}
+      className="p-0 bg-transparent" 
       onClick={() => navigate("/user/language")}
       style={noFocusStyle}
       onMouseDown={preventDefault}
       onTouchStart={preventDefault}
     >
-      <img src={globeIcon} className="w-7 h-7 object-contain" alt="globe" /> {/* 添加 object-contain */}
+      <img src={globeIcon} className="w-7 h-7" alt="globe" />
     </button>
   </div>
 </div>
+
 
       {/* Banner */}
       <div className="w-full relative bg-gray-800 overflow-hidden">
