@@ -18,7 +18,7 @@ import yonghuIcon from '../assets/icons/yonghu.png';
 const maskAddress = (addr) => {
   if (!addr) return "--";
   if (addr.length < 16) return addr;
-  return `0x${addr.slice(0, 6)}…${addr.slice(-4)}`; // 在地址前加上 "0x"
+  return `0x${addr.slice(0, 6)}…${addr.slice(-12)}`; // 在地址前加上 "0x"
 };
 // ============ 价格格式化函数 ============
 const formatPrice = (price) => {
