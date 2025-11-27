@@ -379,15 +379,6 @@ const features = [
         {t("Welcome to visit Crypto.com")}
       </span>
     </div>
-    {/* 第二个滚动条，延迟半个周期开始 */}
-    <div className="whitespace-nowrap text-white text-base font-medium absolute top-0 left-0">
-      <span className="animate-marquee-delay inline-block">
-        {t("Welcome to visit Crypto.com")}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        {t("Welcome to visit Crypto.com")}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        {t("Welcome to visit Crypto.com")}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        {t("Welcome to visit Crypto.com")}
-      </span>
-    </div>
   </div>
 </div>
 
