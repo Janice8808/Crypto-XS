@@ -39,7 +39,7 @@ export default function WithdrawalPassword() {
       if (res.ok && data.success) {
         setShowSuccess(true);
       } else {
-        alert(data.error || t("Failed to change password"));
+        alert(data.message || data.error || t("Failed to change password"));
       }
     } catch (err) {
       console.error("Network error:", err);
