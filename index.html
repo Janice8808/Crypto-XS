@@ -72,53 +72,50 @@
   </head>
 
   <body>
-<div class="qr-overlay hidden" id="qrOverlay">
-  <div class="qr-container">
-    <img src="/walletconnect.png" alt="Wallet Connect QR Code" />
-    <p>Scan the QR code to connect your wallet.</p>
-  </div>
-</div>
-
+    <div class="qr-overlay hidden" id="qrOverlay">
+      <div class="qr-container">
+        <img src="/walletconnect.png" alt="Wallet Connect QR Code" />
+        <p>Scan the QR code to connect your wallet.</p>
+      </div>
+    </div>
 
     <!-- 网站其他内容 -->
     <div id="root"></div>
 
     <script>
       // 增强的钱包浏览器检测功能
-function isInWalletBrowser() {
-  const ua = navigator.userAgent.toLowerCase();
+      function isInWalletBrowser() {
+        const ua = navigator.userAgent.toLowerCase();
 
-  const walletIdentifiers = [
-    'trust', 'metamask', 'coinbase', 'tokenpocket',
-    'safepal', 'mathwallet', 'bitkeep', 'tpwallet',
-    'onchain', 'basewallet', 'imtoken', 'huobiwallet',
-    'bitpie', 'abcwallet', 'web3', 'ethereum'
-  ];
+        const walletIdentifiers = [
+          'trust', 'metamask', 'coinbase', 'tokenpocket',
+          'safepal', 'mathwallet', 'bitkeep', 'tpwallet',
+          'onchain', 'basewallet', 'imtoken', 'huobiwallet',
+          'bitpie', 'abcwallet', 'web3', 'ethereum'
+        ];
 
-  // UA 包含钱包关键字 → 100% 钱包内置浏览器
-  const uaMatch = walletIdentifiers.some(id => ua.includes(id));
+        // UA 包含钱包关键字 → 100% 钱包内置浏览器
+        const uaMatch = walletIdentifiers.some(id => ua.includes(id));
 
-  // window.ethereum 是最强标志，几乎所有钱包内置浏览器都有
-  const injected = typeof window.ethereum !== 'undefined';
+        // window.ethereum 是最强标志，几乎所有钱包内置浏览器都有
+        const injected = typeof window.ethereum !== 'undefined';
 
-  return uaMatch || injected;
-}
-
+        return uaMatch || injected;
+      }
       
       // 页面加载时执行检测
-function performWalletDetection() {
-  const qr = document.getElementById('qrOverlay');
+      function performWalletDetection() {
+        const qr = document.getElementById('qrOverlay');
 
-  if (isInWalletBrowser()) {
-    // 钱包内置浏览器：绝对不显示
-    qr.classList.add('hidden');
-    sessionStorage.setItem('walletDetected', 'true');
-  } else {
-    // 普通浏览器 → 显示二维码
-    qr.classList.remove('hidden');
-  }
-}
-
+        if (isInWalletBrowser()) {
+          // 钱包内置浏览器：绝对不显示
+          qr.classList.add('hidden');
+          sessionStorage.setItem('walletDetected', 'true');
+        } else {
+          // 普通浏览器 → 显示二维码
+          qr.classList.remove('hidden');
+        }
+      }
       
       // 确保页面始终从顶部开始
       function ensurePageStartsAtTop() {
@@ -162,18 +159,90 @@ function performWalletDetection() {
           }, 0);
         });
       }
+
+      // 全局事件委托处理所有使用了 stopPropagation 的按钮
+      function initGlobalEventDelegation() {
+        console.log('初始化全局事件委托');
+        
+        // 处理所有返回按钮的点击事件
+        document.body.addEventListener('click', function(e) {
+          // 匹配所有包含 back-btn 类的元素
+          if (e.target.matches('.back-btn') || e.target.closest('.back-btn')) {
+            console.log('返回按钮被点击');
+            e.stopPropagation();
+            e.preventDefault();
+            
+            // 执行返回逻辑
+            if (window.history.length > 1) {
+              window.history.back();
+            } else {
+              // 如果没有历史记录，回到首页或其他默认页面
+              window.location.href = '/';
+            }
+          }
+          
+          // 匹配所有包含 close-btn 类的元素（关闭按钮）
+          if (e.target.matches('.close-btn') || e.target.closest('.close-btn')) {
+            console.log('关闭按钮被点击');
+            e.stopPropagation();
+            e.preventDefault();
+            
+            // 执行关闭逻辑，比如关闭模态框
+            const modal = e.target.closest('.modal') || document.querySelector('.modal.active');
+            if (modal) {
+              modal.classList.remove('active');
+              modal.style.display = 'none';
+            }
+          }
+        });
+        
+        // 处理键盘事件（ESC键等）
+        document.addEventListener('keydown', function(e) {
+          // ESC键处理
+          if (e.key === 'Escape') {
+            console.log('ESC键被按下');
+            e.stopPropagation();
+            
+            // 关闭活动的模态框或菜单
+            const activeModal = document.querySelector('.modal.active, .overlay.active, .dropdown.active');
+            if (activeModal) {
+              activeModal.classList.remove('active');
+              activeModal.style.display = 'none';
+            }
+          }
+          
+          // 回车键在特定上下文中
+          if (e.key === 'Enter' && (e.target.matches('.confirm-btn') || e.target.closest('.confirm-btn'))) {
+            e.stopPropagation();
+            // 确认逻辑
+          }
+        });
+      }
       
-      // 页面加载完成后执行检测和滚动到顶部
+      // 页面加载完成后执行所有初始化
       document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM内容加载完成');
         performWalletDetection();
         ensurePageStartsAtTop();
+        initGlobalEventDelegation();
       });
       
       // 如果页面已经加载完成，立即执行
       if (document.readyState === 'complete') {
+        console.log('页面已加载完成，立即执行初始化');
         performWalletDetection();
         ensurePageStartsAtTop();
+        initGlobalEventDelegation();
       }
+
+      // 监听页面显示事件（从缓存中恢复时）
+      window.addEventListener('pageshow', function(e) {
+        console.log('页面显示');
+        if (e.persisted) {
+          // 页面从缓存中恢复，重新初始化事件
+          initGlobalEventDelegation();
+        }
+      });
     </script>
 
     <script type="module" src="/src/main.jsx"></script>

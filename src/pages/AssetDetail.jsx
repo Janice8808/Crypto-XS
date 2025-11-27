@@ -23,11 +23,11 @@ export default function CoinDetail() {
     WebkitTapHighlightColor: 'transparent'
   }
 
-  // 只对按钮使用 preventDefault
-  const preventDefault = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+  // 可以移除 preventDefault 函数，因为全局事件委托会处理
+  // const preventDefault = (e) => {
+  //   e.preventDefault()
+  //   e.stopPropagation()
+  // }
 
   const upperSymbol = (symbol || "").toUpperCase();
 
@@ -99,9 +99,10 @@ export default function CoinDetail() {
 
   return (
     <div className="min-h-screen bg-white p-4 pb-20">
-      {/* 返回按钮 */}
+      {/* 返回按钮 - 已修改 */}
       <div className="flex items-center mb-3">
         <button
+          className="back-btn" // 添加 back-btn class
           onClick={() => window.history.back()}
           style={{
             ...noFocusStyle,
@@ -112,8 +113,7 @@ export default function CoinDetail() {
             textAlign: "left",
             paddingLeft: "12px",
           }}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
+          // 移除 onMouseDown 和 onTouchStart，因为全局事件委托会处理
         >
           ←
         </button>
@@ -183,14 +183,13 @@ export default function CoinDetail() {
         </CardContent>
       </Card>
 
-      {/* 底部按钮 */}
+      {/* 底部按钮 - 已修改 */}
       <div className="fixed bottom-0 left-0 right-0 flex justify-around bg-white border-t py-3">
         <Button
           className="flex-1 mx-2 bg-yellow-400 hover:bg-yellow-500 text-white font-medium"
           style={noFocusStyle}
           onClick={() => navigate(`/wallet/${upperSymbol}/deposit`)}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
+          // 移除 onMouseDown 和 onTouchStart
         >
           {t("Deposit")}
         </Button>
@@ -198,8 +197,7 @@ export default function CoinDetail() {
           className="flex-1 mx-2 bg-yellow-400 hover:bg-yellow-500 text-white font-medium"
           style={noFocusStyle}
           onClick={() => navigate(`/wallet/${upperSymbol}/withdraw`)}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
+          // 移除 onMouseDown 和 onTouchStart
         >
           {t("Withdraw")}
         </Button>
