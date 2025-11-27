@@ -440,10 +440,10 @@ const features = [
         className="text-center py-2"
       >
         {/* 上面小字体灰色 */}
-        <div className="text-gray-500 text-xs mb-1">{coin.symbol}</div>
+        <div className="text-gray-300 text-[10px] mb-1">{coin.symbol}</div>
         
         {/* 下面大字体深灰色 */}
-        <div className="font-bold text-gray-700 text-base mb-1">
+        <div className="font-bold text-gray-500 text-base mb-1">
           ${formatPrice(coin.price)}
         </div>
         
