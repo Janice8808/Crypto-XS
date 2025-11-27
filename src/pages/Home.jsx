@@ -73,6 +73,16 @@ const Home = () => {
     e.preventDefault()
     e.stopPropagation()
   }
+
+  // 禁止滚动样式
+  const noScrollStyle = {
+    overflow: 'hidden',
+    height: '100vh',
+    position: 'fixed',
+    width: '100%',
+    top: 0,
+    left: 0
+  }
   
 
   // 币种订阅
@@ -281,7 +291,10 @@ const features = [
 
 
   return (
-    <div className="w-full max-w-5xl mx-auto bg-gray-100 min-h-screen text-black relative">
+    <div 
+      className="w-full max-w-5xl mx-auto bg-gray-100 min-h-screen text-black relative"
+      style={noScrollStyle}
+    >
 
       {/* Header */}
       <div className="w-full bg-[#FFB800] px-4 py-2 flex items-center justify-between">
