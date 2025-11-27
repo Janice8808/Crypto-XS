@@ -429,7 +429,7 @@ const features = [
 </div>
 
 {/* 热门 Top3 当前价格 */}
-<div className="grid grid-cols-3 gap-4 mt-2"> {/* 减少上边距 */}
+<div className="grid grid-cols-3 gap-4 mt-0"> {/* 减少上边距 */}
   {top3.map((coin) => {
     const up = coin.change >= 0;
 
