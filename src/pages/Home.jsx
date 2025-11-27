@@ -390,50 +390,8 @@ const features = [
   </div>
 
 
-{/* 两个广告图 */}
-<div className="flex gap-2 mb-6 w-screen -ml-4 pr-4">
-  <div className="w-1/3 relative">
-    <div 
-      className="w-full h-[70px] rounded-lg bg-contain bg-right bg-no-repeat bg-gray-100"
-      style={{backgroundImage: "url(/images/online.jpg)"}}
-    />
-    <div className="absolute inset-0 flex items-center justify-center">
-      <span className="text-gray-600 text-sm font-bold text-center leading-tight mr-3">
-        {t('Online')}<br />{t('Service')}
-      </span>
-    </div>
-  </div>
-
-  <div 
-    className="w-2/3 relative cursor-pointer"
-    onClick={() => navigate('/deposit1')}
-    style={noFocusStyle}
-    onMouseDown={preventDefault}
-    onTouchStart={preventDefault}
-  >
-    <div 
-      className="w-full h-[70px] rounded-lg bg-contain bg-center bg-no-repeat bg-gray-100"
-      style={{backgroundImage: "url(/images/fastbuy.jpg)"}}
-    />
-    <div className="absolute inset-0 flex items-center justify-center">
-      <div className="text-center ml-4">
-        <span className="text-gray-600 text-sm font-bold">
-          {t("Fast buying coin")}
-        </span>
-        <div className="text-gray-400 text-[10px] mt-1">
-          {t("Zero fees. Get started now")}
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-
-
 {/* 热门 Top3 当前价格 */}
-<div className="grid grid-cols-3 gap-4">
+<div className="grid grid-cols-3 gap-4 mt-2"> {/* 减少上边距 */}
   {top3.map((coin) => {
     const up = coin.change >= 0;
 
