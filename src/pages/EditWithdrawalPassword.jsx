@@ -38,15 +38,22 @@ export default function EditWithdrawalPassword() {
 
       const data = await res.json();
 
-      if (data.success) {
+      if (res.ok && data.success) {
         setPopup(true);
+
+        // ⭐ 通知 ChangePassword 刷新「Already set」
+        window.dispatchEvent(new CustomEvent("refreshData"));
+
         setTimeout(() => {
           setPopup(false);
-          navigate(-1); // 返回上一页
+          navigate(-1);
         }, 1200);
       } else {
-        alert(data.message || "Failed");
+        alert(data.message || data.error || "Failed");
       }
+    } catch (err) {
+      console.error(err);
+      alert("Network error");
     } finally {
       setLoading(false);
     }
@@ -72,7 +79,7 @@ export default function EditWithdrawalPassword() {
         <input
           type="password"
           placeholder="Old password"
-          className="w-full border border-gray-300 rounded-xl p-3 text-base"
+          className="w-full border border-gray-300 rounded-xl p-3 text-base bg-gray-50"
           value={oldPwd}
           onChange={(e) => setOldPwd(e.target.value)}
         />
@@ -80,7 +87,7 @@ export default function EditWithdrawalPassword() {
         <input
           type="password"
           placeholder="New password"
-          className="w-full border border-gray-300 rounded-xl p-3 text-base"
+          className="w-full border border-gray-300 rounded-xl p-3 text-base bg-gray-50"
           value={pwd}
           onChange={(e) => setPwd(e.target.value)}
         />
@@ -88,7 +95,7 @@ export default function EditWithdrawalPassword() {
         <input
           type="password"
           placeholder="Confirm new password"
-          className="w-full border border-gray-300 rounded-xl p-3 text-base"
+          className="w-full border border-gray-300 rounded-xl p-3 text-base bg-gray-50"
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
         />
