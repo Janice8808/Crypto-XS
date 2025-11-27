@@ -1,9 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function ChangePassword() {
   const navigate = useNavigate();
+
+  const [isSet, setIsSet] = useState(null); // null=加载中, true=已设置, false=未设置
+
+  // ⭐ 自动拉取用户信息判断提现密码是否已设置
+useEffect(() => {
+  async function fetchStatus() {
+    try {
+      const res = await fetch("https://pankouhoutai.shop/api/userinfo", {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      });
+
+      const data = await res.json();
+
+      setIsSet(data.withdrawPasswordSet === true);
+
+    } catch (err) {
+      console.log("获取提现密码状态失败：", err);
+      setIsSet(false);
+    }
+  }
+
+  fetchStatus();
+}, []);
 
   return (
     <div className="min-h-screen bg-white">
@@ -16,7 +41,7 @@ export default function ChangePassword() {
         <div className="flex-1 text-center text-lg font-medium">
           Change Password
         </div>
-        <div className="w-6" /> {/* 用于保持左右平衡 */}
+        <div className="w-6" />
       </div>
 
       {/* 内容区域 */}
@@ -28,11 +53,25 @@ export default function ChangePassword() {
           <span className="text-[16px] text-[#333]">Withdrawal Password</span>
 
           <div className="flex items-center gap-1">
-            <span className="text-[15px] text-[#31C48D]">Already set</span>
+
+            {/* ⭐ 根据状态动态显示文字 + 颜色 */}
+            {isSet === null && (
+              <span className="text-[15px] text-gray-400">Loading…</span>
+            )}
+
+            {isSet === true && (
+              <span className="text-[15px] text-[#31C48D]">Already set</span>
+            )}
+
+            {isSet === false && (
+              <span className="text-[15px] text-gray-400">Not set</span>
+            )}
+
             <ChevronRight size={18} color="#999" />
           </div>
         </div>
       </div>
+
     </div>
   );
 }
