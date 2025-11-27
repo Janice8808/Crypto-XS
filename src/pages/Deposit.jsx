@@ -126,7 +126,11 @@ const handleCopy = () => {
       </Card>
 
       {/* 网络 + 地址 + 二维码 */}
-<Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
+<Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100
+  focus:outline-none focus:ring-0 focus-visible:ring-0 
+  focus-within:outline-none focus-within:ring-0"
+>
+
   <CardContent className="p-5 space-y-5">
 
     {/* 网络选择 */}
@@ -180,7 +184,11 @@ const handleCopy = () => {
 </Card>
 
       {/* 上传凭证 + 金额 + 提示 */}
-      <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
+      <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100
+  focus:outline-none focus:ring-0 focus-visible:ring-0 
+  focus-within:outline-none focus-within:ring-0"
+>
+
         <CardContent className="p-5 space-y-5">
 
           {/* 上传凭证 */}
