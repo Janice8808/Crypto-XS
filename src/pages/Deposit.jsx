@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next"
 export default function Deposit() {
   const { t } = useTranslation()
   const { symbol } = useParams()
-  const navigate = useNavigate()  // 使用 navigate
+  const navigate = useNavigate()
   const [network, setNetwork] = useState("")
   const [amount, setAmount] = useState("")
   const [voucher, setVoucher] = useState(null)
@@ -74,39 +74,51 @@ export default function Deposit() {
     alert(`${t("Deposit")} ${amount} ${symbol} ${t("via")} ${activeNetwork}`)
   }
 
-const handleCopy = () => {
-  navigator.clipboard.writeText(depositAddress); // 复制地址
-  setCopyText(t("Copied!")); // 改变按钮文本为 "Copied!"
-  console.log(copyText);  // 打印 copyText 查看是否更新
-  setTimeout(() => {
-    setCopyText(t("Copy")); // 两秒后恢复原文本
-  }, 2000);
-};
-
+  const handleCopy = () => {
+    navigator.clipboard.writeText(depositAddress)
+    setCopyText(t("Copied!"))
+    setTimeout(() => {
+      setCopyText(t("Copy"))
+    }, 2000)
+  }
 
   const handleCurrencyClick = () => {
-    // 点击 "USDT" 后返回上一层页面
     navigate(-1)
+  }
+
+  // 无焦点样式配置
+  const noFocusStyle = {
+    outline: 'none',
+    boxShadow: 'none',
+    border: 'none',
+    WebkitTapHighlightColor: 'transparent'
+  }
+
+  const preventDefault = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
   }
 
   return (
     <div className="min-h-screen bg-white p-4 pb-24">
       {/* 返回 */}
       <div className="flex items-center mb-3">
-          <button
-            onClick={() => window.history.back()}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: 20,
-              color: "#666",
-              width: "45px",
-              textAlign: "left",
-              paddingLeft: "12px",
-            }}
-          >
-            ←
-          </button>
+        <button
+          onClick={() => window.history.back()}
+          style={{
+            ...noFocusStyle,
+            background: "none",
+            fontSize: 20,
+            color: "#666",
+            width: "45px",
+            textAlign: "left",
+            paddingLeft: "12px",
+          }}
+          onMouseDown={preventDefault}
+          onTouchStart={preventDefault}
+        >
+          ←
+        </button>
       </div>
 
       {/* 标题 */}
@@ -118,7 +130,10 @@ const handleCopy = () => {
           <span className="text-gray-600 font-medium">{t("Currency")}</span>
           <span 
             className="font-semibold text-gray-900 cursor-pointer" 
-            onClick={handleCurrencyClick}  // 点击时返回上一层
+            onClick={handleCurrencyClick}
+            style={noFocusStyle}
+            onMouseDown={preventDefault}
+            onTouchStart={preventDefault}
           >
             {symbol}
           </span>
@@ -126,78 +141,76 @@ const handleCopy = () => {
       </Card>
 
       {/* 网络 + 地址 + 二维码 */}
-<Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100
-  focus:outline-none focus:ring-0 focus-visible:ring-0 
-  focus-within:outline-none focus-within:ring-0"
->
+      <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
+        <CardContent className="p-5 space-y-5">
+          {/* 网络选择 */}
+          <div>
+            <div className="text-gray-600 font-medium mb-2">{t("Network")}</div>
+            <div className="flex gap-3">
+              {current.networks.map((n) => (
+                <Button
+                  key={n}
+                  style={{
+                    ...noFocusStyle,
+                    backgroundColor: activeNetwork === n ? 'green' : 'white',
+                    color: activeNetwork === n ? 'white' : 'gray'
+                  }}
+                  className="flex-1 font-semibold rounded-lg border"
+                  onClick={() => setNetwork(n)}
+                  onMouseDown={preventDefault}
+                  onTouchStart={preventDefault}
+                >
+                  {n}
+                </Button>
+              ))}
+            </div>
+          </div>
 
-  <CardContent className="p-5 space-y-5">
+          {/* 地址与二维码 */}
+          <div className="text-center">
+            <div className="text-gray-600 font-medium mb-2">{t("Deposit address")}</div>
 
-    {/* 网络选择 */}
-    <div>
-      <div className="text-gray-600 font-medium mb-2">{t("Network")}</div>
-      <div className="flex gap-3">
-        {current.networks.map((n) => (
-          <Button
-            key={n}
-            style={{
-              backgroundColor: activeNetwork === n ? 'green' : 'white', // green if active, white if inactive
-              color: activeNetwork === n ? 'white' : 'gray' // white text if active, gray if inactive
-            }}
-            className="flex-1 font-semibold rounded-lg border"
-            onClick={() => setNetwork(n)}
-          >
-            {n}
-          </Button>
-        ))}
-      </div>
-    </div>
+            <div className="flex justify-center mb-3">
+              <img src={current.qr} alt="QR" className="w-40 h-40" />
+            </div>
 
-    {/* 地址与二维码 */}
-    <div className="text-center">
-      <div className="text-gray-600 font-medium mb-2">{t("Deposit address")}</div>
+            <div className="text-gray-800 text-sm bg-gray-50 border border-gray-200 rounded-lg py-2 px-2 break-all">
+              {depositAddress}
+            </div>
 
-      <div className="flex justify-center mb-3">
-        <img src={current.qr} alt="QR" className="w-40 h-40" />
-      </div>
-
-      <div className="text-gray-800 text-sm bg-gray-50 border border-gray-200 rounded-lg py-2 px-2 break-all">
-        {depositAddress}
-      </div>
-
-      <div className="flex justify-center">
-<Button
-  className="mt-3 text-white font-semibold rounded-lg px-10"
-  style={{ 
-    backgroundColor: '#16813dff',
-    border: 'none'
-  }}
-  onClick={handleCopy}
->
-  {copyText}
-</Button>
-
-      </div>
-    </div>
-
-  </CardContent>
-</Card>
+            <div className="flex justify-center">
+              <Button
+                className="mt-3 text-white font-semibold rounded-lg px-10"
+                style={{ 
+                  ...noFocusStyle,
+                  backgroundColor: '#16813dff'
+                }}
+                onClick={handleCopy}
+                onMouseDown={preventDefault}
+                onTouchStart={preventDefault}
+              >
+                {copyText}
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* 上传凭证 + 金额 + 提示 */}
-      <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100
-  focus:outline-none focus:ring-0 focus-visible:ring-0 
-  focus-within:outline-none focus-within:ring-0"
->
-
+      <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
         <CardContent className="p-5 space-y-5">
-
           {/* 上传凭证 */}
           <div>
             <div className="text-gray-600 font-medium mb-2">
               {t("Upload transfer voucher")}
             </div>
 
-            <label className="w-full h-44 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-200 transition">
+            <label 
+              className="w-full h-44 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-200 transition"
+              style={noFocusStyle}
+              onMouseDown={preventDefault}
+              onTouchStart={preventDefault}
+            >
               {voucher ? (
                 <img src={voucher} alt="voucher" className="w-full h-full object-cover rounded-lg" />
               ) : (
@@ -219,6 +232,9 @@ const handleCopy = () => {
               onChange={(e) => setAmount(e.target.value)}
               placeholder={t("Please enter the transfer amount")}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-gray-50"
+              style={noFocusStyle}
+              onMouseDown={preventDefault}
+              onTouchStart={preventDefault}
             />
           </div>
 
@@ -233,7 +249,6 @@ const handleCopy = () => {
             <p>{t("Your recharge address will not change frequently, and you can recharge repeatedly; If there is any change, we will try our best to notify you through website announcement or email")}</p>
             <p>{t("Please make sure that the computer and browser are secure to prevent information from being tampered with or disclosed")}</p>
           </div>
-
         </CardContent>
       </Card>
 
@@ -241,12 +256,14 @@ const handleCopy = () => {
       <div className="py-3">
         <Button
           className="w-full bg-green-600 hover:bg-green-800 text-white font-semibold rounded-lg py-3"
+          style={noFocusStyle}
           onClick={handleSubmit}
+          onMouseDown={preventDefault}
+          onTouchStart={preventDefault}
         >
           {t("Submit")}
         </Button>
       </div>
-
     </div>
   )
 }
