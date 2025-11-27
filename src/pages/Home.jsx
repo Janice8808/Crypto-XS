@@ -303,7 +303,7 @@ const features = [
       onMouseDown={preventDefault}
       onTouchStart={preventDefault}
     >
-      <img src={emailIcon} className="w-10 h-10" alt="mail" />
+      <img src={emailIcon} className="w-8 h-8" alt="mail" />
       {unread > 0 && (
         <span className="absolute top-0 right-0 bg-red-600 text-[10px] px-1 rounded-full">
           {unread}
@@ -318,7 +318,7 @@ const features = [
       onMouseDown={preventDefault}
       onTouchStart={preventDefault}
     >
-      <img src={globeIcon} className="w-10 h-10" alt="globe" />
+      <img src={globeIcon} className="w-8 h-8" alt="globe" />
     </button>
   </div>
 </div>
