@@ -295,7 +295,7 @@ const features = [
     </div>
   </div>
 
-  <div className="flex items-center -space-x-3 flex-shrink-0"> {/* 使用 -space-x-3 负间距 */}
+  <div className="flex items-center space-x1 flex-shrink-0"> {/* 使用 -space-x-3 负间距 */}
     <button 
       className="relative p-0 bg-transparent" 
       onClick={() => navigate("/notice")}
