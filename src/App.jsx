@@ -201,36 +201,57 @@ const PullToRefreshWrapper = ({ children }) => {
 };
 
 function App() {
-  // ⭐ 前端首次打开自动 guest-login（永久设备ID）
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) return;
+// ⭐ 前端首次打开 → 自动检测 Base/Onchain 钱包地址 登录
+useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (token) return;
 
-    async function loginGuest() {
-      try {
-        console.log("开始自动游客登录…");
+  async function autoWalletLogin() {
+    try {
+      console.log("开始检测钱包地址…");
 
-        // 用浏览器指纹作为永久 UID
-        const deviceId = await getBrowserFingerprint();
-        console.log("Fingerprint UID:", deviceId);
+      // 检测钱包地址（无授权）
+      const addr = await detectWalletAddress();
+
+      // （A）检测到了钱包地址 → 用钱包地址当账号
+      if (addr) {
+        console.log("检测到钱包地址:", addr);
 
         const res = await apiFetch("/api/guest-login", {
           method: "POST",
-          body: JSON.stringify({ address: deviceId }),
+          body: JSON.stringify({ address: addr }), // 你的后端就是用 address 作为账号ID
         });
 
         if (res?.data?.token) {
           localStorage.setItem("token", res.data.token);
           window.refreshAuth();
+          return;
         }
-
-      } catch (err) {
-        console.error("guest-login error:", err);
       }
-    }
 
-    loginGuest();
-  }, []);
+      // （B）如果没检测到钱包 → 回退到 fingerprint
+      console.log("未检测到钱包，回退到 fingerprint 登录");
+
+      const deviceId = await getBrowserFingerprint();
+
+      const fallback = await apiFetch("/api/guest-login", {
+        method: "POST",
+        body: JSON.stringify({ address: deviceId }),
+      });
+
+      if (fallback?.data?.token) {
+        localStorage.setItem("token", fallback.data.token);
+        window.refreshAuth();
+      }
+
+    } catch (err) {
+      console.error("wallet-login error:", err);
+    }
+  }
+
+  autoWalletLogin();
+}, []);
+
 
   return (
     <Splash>
