@@ -457,6 +457,20 @@ const features = [
   })}
 </div>
 
+{/* Popular List Header */}
+<div className="bg-white px-3 py-4 mt-4">
+  <div className="text-gray-700 text-base font-semibold mb-3">
+    {t("Popular list")}
+    <div className="w-14 h-[2px] bg-yellow-500 mt-1"></div>
+  </div>
+
+  <div className="flex text-gray-400 text-xs font-medium mt-2">
+    <div className="w-1/3">{t("Symbol")}</div>
+    <div className="w-1/3 text-center">{t("Latest price")}</div>
+    <div className="w-1/3 text-right">24h</div>
+  </div>
+</div>
+
 {/* 实时行情列表 */}
 {list.map((coin) => {
   if (!coin) return null;
