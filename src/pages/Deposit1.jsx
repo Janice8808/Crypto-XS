@@ -13,11 +13,11 @@ export default function Deposit1() {
     WebkitTapHighlightColor: 'transparent'
   }
 
-  // 只对按钮使用 preventDefault
-  const preventDefault = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+  // 可以移除 preventDefault 函数
+  // const preventDefault = (e) => {
+  //   e.preventDefault()
+  //   e.stopPropagation()
+  // }
 
   const rechargeCoins = [
     { name: "USDT", icon: "/images/USDT.png" },
@@ -48,20 +48,14 @@ export default function Deposit1() {
           placeholder={t("Search currency")}
           className="flex-1 border rounded-full px-4 py-2 bg-gray-100 outline-none"
         />
-<button
-  onClick={(e) => {
-    e.stopPropagation();       // 按钮内部事件不冒泡
-    e.preventDefault();        // 阻止默认点击（防长按选中）
-    navigate(-1);              // 强制执行返回
-  }}
-  onMouseDown={(e) => e.preventDefault()}   // 禁止手机点击高亮
-  onTouchStart={(e) => e.preventDefault()}  // 禁止触摸高亮
-  className="ml-3 text-gray-600 text-sm font-medium bg-white"
-  style={noFocusStyle}
->
-  {t("Cancel")}
-</button>
-
+        <button
+          className="close-btn" // 添加 close-btn class
+          onClick={() => navigate(-1)}
+          style={noFocusStyle}
+          // 移除 onMouseDown 和 onTouchStart
+        >
+          {t("Cancel")}
+        </button>
       </div>
 
       {/* Recharge 区域 */}
@@ -74,14 +68,15 @@ export default function Deposit1() {
           {rechargeCoins.map((coin) => (
             <div
               key={coin.name}
+              className="deposit-coin-item" // 添加 class 用于事件委托
               onClick={() => navigate(`/wallet/${coin.name}/deposit`)}
-              className="flex items-center justify-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer transition active:bg-gray-100"
               style={noFocusStyle}
-              onMouseDown={preventDefault}
-              onTouchStart={preventDefault}
+              // 移除 onMouseDown 和 onTouchStart
             >
-              <img src={coin.icon} alt={coin.name} className="w-7 h-7 mr-2" />
-              <span className="font-medium text-gray-800 text-sm">{coin.name}</span>
+              <div className="flex items-center justify-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer transition active:bg-gray-100">
+                <img src={coin.icon} alt={coin.name} className="w-7 h-7 mr-2" />
+                <span className="font-medium text-gray-800 text-sm">{coin.name}</span>
+              </div>
             </div>
           ))}
         </div>
@@ -97,13 +92,14 @@ export default function Deposit1() {
           {buyPlatforms.map((p) => (
             <div
               key={p.name}
+              className="buy-platform-item" // 添加 class 用于事件委托
               onClick={() => window.open(p.url, "_blank")}
-              className="flex items-center justify-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer transition active:bg-gray-100"
               style={noFocusStyle}
-              onMouseDown={preventDefault}
-              onTouchStart={preventDefault}
+              // 移除 onMouseDown 和 onTouchStart
             >
-              <img src={p.icon} alt={p.name} className="h-10 object-contain" />
+              <div className="flex items-center justify-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer transition active:bg-gray-100">
+                <img src={p.icon} alt={p.name} className="h-10 object-contain" />
+              </div>
             </div>
           ))}
         </div>

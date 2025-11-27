@@ -40,11 +40,11 @@ export default function Withdraw1() {
     WebkitTapHighlightColor: 'transparent'
   }
 
-  // 只对按钮使用 preventDefault
-  const preventDefault = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+  // 可以移除 preventDefault 函数，因为全局事件委托会处理
+  // const preventDefault = (e) => {
+  //   e.preventDefault()
+  //   e.stopPropagation()
+  // }
 
   // 获取币种列表
   useEffect(() => {
@@ -78,7 +78,7 @@ export default function Withdraw1() {
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
 
-      {/* 顶部搜索栏 */}
+      {/* 顶部搜索栏 - 已修改 */}
       <div className="flex items-center px-4 py-3 bg-white shadow-sm sticky top-0 z-10">
         <input
           type="text"
@@ -88,17 +88,16 @@ export default function Withdraw1() {
           className="flex-1 border rounded-full px-4 py-2 text-sm text-gray-700 focus:ring-1 focus:ring-yellow-400 outline-none"
         />
         <button
-          className="ml-3 text-gray-500 text-sm font-medium"
+          className="back-btn ml-3 text-gray-500 text-sm font-medium" // 添加 back-btn class
           onClick={() => navigate(-1)}
           style={noFocusStyle}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
+          // 移除 onMouseDown 和 onTouchStart
         >
           {t("Cancel")}
         </button>
       </div>
 
-      {/* 币种列表 */}
+      {/* 币种列表 - 已修改 */}
       <div className="px-4 mt-2 space-y-2">
         {filteredCoins.map((coin) => {
           const sym = (coin.symbol || "").toUpperCase();
@@ -110,11 +109,10 @@ export default function Withdraw1() {
           return (
             <div
               key={coin.id || coin.symbol}
+              className="coin-item flex items-center justify-between bg-white rounded-xl p-3 shadow-sm hover:bg-gray-100 cursor-pointer transition" // 添加 coin-item class
               onClick={() => navigate(`/wallet/${sym}/withdraw`)}
-              className="flex items-center justify-between bg-white rounded-xl p-3 shadow-sm hover:bg-gray-100 cursor-pointer transition"
               style={noFocusStyle}
-              onMouseDown={preventDefault}
-              onTouchStart={preventDefault}
+              // 移除 onMouseDown 和 onTouchStart
             >
               <div className="flex items-center space-x-3">
 

@@ -15,11 +15,11 @@ export default function DeFiRecord() {
     WebkitTapHighlightColor: 'transparent'
   }
 
-  // 只对按钮使用 preventDefault
-  const preventDefault = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+  // 可以移除 preventDefault 函数，因为全局事件委托会处理
+  // const preventDefault = (e) => {
+  //   e.preventDefault()
+  //   e.stopPropagation()
+  // }
 
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,9 +47,10 @@ export default function DeFiRecord() {
   return (
     <div className="w-full min-h-screen bg-white text-black">
 
-      {/* 顶部导航 */}
+      {/* 顶部导航 - 已修改 */}
       <div className="flex items-center px-4 py-3 bg-white shadow-sm">
         <button
+          className="back-btn" // 添加 back-btn class
           onClick={() => window.history.back()}
           style={{
             ...noFocusStyle,
@@ -60,8 +61,7 @@ export default function DeFiRecord() {
             textAlign: "left",
             paddingLeft: "12px",
           }}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
+          // 移除 onMouseDown 和 onTouchStart，因为全局事件委托会处理
         >
           ←
         </button>

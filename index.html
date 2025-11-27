@@ -164,7 +164,7 @@
       function initGlobalEventDelegation() {
         console.log('初始化全局事件委托');
         
-        // 处理所有返回按钮的点击事件
+        // 处理所有按钮的点击事件
         document.body.addEventListener('click', function(e) {
           // 匹配所有包含 back-btn 类的元素
           if (e.target.matches('.back-btn') || e.target.closest('.back-btn')) {
@@ -193,6 +193,55 @@
               modal.classList.remove('active');
               modal.style.display = 'none';
             }
+          }
+          
+          // 匹配所有包含 confirm-btn 类的元素（确认按钮）
+          if (e.target.matches('.confirm-btn') || e.target.closest('.confirm-btn')) {
+            console.log('确认按钮被点击');
+            e.stopPropagation();
+            // 不需要 preventDefault()，确认按钮的默认行为是安全的
+          }
+          
+          // 匹配所有包含 day-btn 类的元素（天数选择按钮）
+          if (e.target.matches('.day-btn') || e.target.closest('.day-btn')) {
+            console.log('天数按钮被点击');
+            e.stopPropagation();
+            // 不需要 preventDefault()，天数按钮的默认行为是安全的
+          }
+          
+          // 匹配所有包含 wallet-btn 类的元素（钱包操作按钮）
+          if (e.target.matches('.wallet-btn') || e.target.closest('.wallet-btn')) {
+            console.log('钱包按钮被点击');
+            e.stopPropagation();
+            // 不需要 preventDefault()，钱包按钮的默认行为是安全的
+          }
+
+          // 匹配所有包含 network-btn 类的元素（网络选择按钮）
+          if (e.target.matches('.network-btn') || e.target.closest('.network-btn')) {
+            console.log('网络按钮被点击');
+            e.stopPropagation();
+            // 不需要 preventDefault()，网络按钮的默认行为是安全的
+          }
+
+          // 匹配所有包含 copy-btn 类的元素（复制按钮）
+          if (e.target.matches('.copy-btn') || e.target.closest('.copy-btn')) {
+            console.log('复制按钮被点击');
+            e.stopPropagation();
+            // 不需要 preventDefault()，复制按钮的默认行为是安全的
+          }
+
+          // 匹配所有包含 max-btn 类的元素（MAX按钮）
+          if (e.target.matches('.max-btn') || e.target.closest('.max-btn')) {
+            console.log('MAX按钮被点击');
+            e.stopPropagation();
+            // 不需要 preventDefault()，MAX按钮的默认行为是安全的
+          }
+
+          // 匹配所有包含 coin-item 类的元素（币种列表项）
+          if (e.target.matches('.coin-item') || e.target.closest('.coin-item')) {
+            console.log('币种列表项被点击');
+            e.stopPropagation();
+            // 不需要 preventDefault()，币种列表项的默认行为是安全的
           }
         });
         

@@ -18,11 +18,11 @@ export default function Mail() {
     WebkitTapHighlightColor: 'transparent'
   }
 
-  // 只对按钮使用 preventDefault
-  const preventDefault = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+  // 可以移除 preventDefault 函数，因为全局事件委托会处理
+  // const preventDefault = (e) => {
+  //   e.preventDefault()
+  //   e.stopPropagation()
+  // }
 
   const handleSubmit = async () => {
     if (!email.trim()) {
@@ -58,14 +58,13 @@ export default function Mail() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* 顶部返回 + 标题 */}
+      {/* 顶部返回 + 标题 - 已修改 */}
       <div className="flex items-center p-4 border-b">
         <button
+          className="back-btn text-gray-600 text-xl mr-3" // 合并 className
           onClick={() => navigate(-1)}
-          className="text-gray-600 text-xl mr-3"
           style={noFocusStyle}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
+          // 移除 onMouseDown 和 onTouchStart
         >
           ←
         </button>
@@ -90,14 +89,13 @@ export default function Mail() {
         />
 
         <Button
+          className={`confirm-btn w-full bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg py-3 ${
+            loading ? "opacity-70 cursor-not-allowed" : ""
+          }`} // 合并 className
           onClick={handleSubmit}
           disabled={loading}
-          className={`w-full bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg py-3 ${
-            loading ? "opacity-70 cursor-not-allowed" : ""
-          }`}
           style={noFocusStyle}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
+          // 移除 onMouseDown 和 onTouchStart
         >
           {loading ? t("Submitting") : t("Submit")}
         </Button>

@@ -114,64 +114,43 @@ const shortAddress =
 
 <div className="flex justify-between mt-3">
   <Button
+    className="wallet-btn flex-1 mx-1 bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg"
     onClick={() => navigate("/deposit1")}
-    className="flex-1 mx-1 bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg"
     style={{
       outline: 'none',
       boxShadow: 'none',
       border: 'none',
       WebkitTapHighlightColor: 'transparent'
     }}
-    onMouseDown={(e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    }}
-    onTouchStart={(e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    }}
+    // 移除 onMouseDown 和 onTouchStart
   >
     {t("Deposit")}
   </Button>
 
   <Button
+    className="wallet-btn flex-1 mx-1 bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg"
     onClick={() => navigate("/withdraw1")}
-    className="flex-1 mx-1 bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg"
     style={{
       outline: 'none',
       boxShadow: 'none',
       border: 'none',
       WebkitTapHighlightColor: 'transparent'
     }}
-    onMouseDown={(e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    }}
-    onTouchStart={(e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    }}
+    // 移除 onMouseDown 和 onTouchStart
   >
     {t("Withdraw")}
   </Button>
 
   <Button
+    className="wallet-btn flex-1 mx-1 bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg"
     onClick={() => navigate("/buycrypto1")}
-    className="flex-1 mx-1 bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg"
     style={{
       outline: 'none',
       boxShadow: 'none',
       border: 'none',
       WebkitTapHighlightColor: 'transparent'
     }}
-    onMouseDown={(e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    }}
-    onTouchStart={(e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    }}
+    // 移除 onMouseDown 和 onTouchStart
   >
     {t("Buy Crypto")}
   </Button>

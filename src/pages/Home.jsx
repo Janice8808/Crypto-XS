@@ -62,10 +62,11 @@ const Home = () => {
     WebkitTapHighlightColor: 'transparent'
   }
 
-  const preventDefault = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+  // 可以移除 preventDefault 函数，因为全局事件委托会处理
+  // const preventDefault = (e) => {
+  //   e.preventDefault()
+  //   e.stopPropagation()
+  // }
 
   // 禁止左右滚动但允许上下滚动的样式
   const scrollStyle = {
@@ -312,11 +313,10 @@ const shortAddress =
         <div className="flex items-center space-x-3 ml-3 text-white">
           {/* 修复邮件图标 - 使用固定尺寸容器和object-contain */}
           <button 
-            className="relative p-0 bg-transparent flex items-center justify-center w-8 h-8" 
+            className="nav-btn relative p-0 bg-transparent flex items-center justify-center w-8 h-8" // 添加 nav-btn class
             onClick={() => navigate("/notice")}
             style={noFocusStyle}
-            onMouseDown={preventDefault}
-            onTouchStart={preventDefault}
+            // 移除 onMouseDown 和 onTouchStart
           >
             <div className="w-7 h-7 flex items-center justify-center overflow-hidden">
               <img 
@@ -334,11 +334,10 @@ const shortAddress =
 
           {/* 修复地球图标 */}
           <button 
-            className="p-0 bg-transparent flex items-center justify-center w-8 h-8" 
+            className="nav-btn p-0 bg-transparent flex items-center justify-center w-8 h-8" // 添加 nav-btn class
             onClick={() => navigate("/user/language")}
             style={noFocusStyle}
-            onMouseDown={preventDefault}
-            onTouchStart={preventDefault}
+            // 移除 onMouseDown 和 onTouchStart
           >
             <div className="w-7 h-7 flex items-center justify-center overflow-hidden">
               <img 
@@ -423,11 +422,10 @@ const shortAddress =
           </div>
 
           <div 
-            className="w-2/3 relative cursor-pointer"
+            className="nav-btn w-2/3 relative cursor-pointer" // 添加 nav-btn class
             onClick={() => navigate('/deposit1')}
             style={noFocusStyle}
-            onMouseDown={preventDefault}
-            onTouchStart={preventDefault}
+            // 移除 onMouseDown 和 onTouchStart
           >
             <div 
               className="w-full h-[70px] rounded-lg bg-contain bg-center bg-no-repeat bg-gray-100"

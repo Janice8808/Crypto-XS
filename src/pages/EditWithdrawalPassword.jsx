@@ -13,11 +13,11 @@ export default function EditWithdrawalPassword() {
     WebkitTapHighlightColor: 'transparent'
   }
 
-  // 只对按钮使用 preventDefault
-  const preventDefault = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+  // 可以移除 preventDefault 函数，因为全局事件委托会处理
+  // const preventDefault = (e) => {
+  //   e.preventDefault()
+  //   e.stopPropagation()
+  // }
 
   const [oldPwd, setOldPwd] = useState("");
   const [pwd, setPwd] = useState("");
@@ -76,14 +76,13 @@ export default function EditWithdrawalPassword() {
   return (
     <div className="min-h-screen bg-white relative">
 
-      {/* 顶部导航 */}
+      {/* 顶部导航 - 已修改 */}
       <div className="flex items-center h-14 px-3 border-b border-gray-200">
         <button 
+          className="back-btn p-1" // 合并 className
           onClick={() => navigate(-1)} 
-          className="p-1"
           style={noFocusStyle}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
+          // 移除 onMouseDown 和 onTouchStart
         >
           <ChevronLeft size={22} />
         </button>
@@ -120,14 +119,13 @@ export default function EditWithdrawalPassword() {
           onChange={(e) => setConfirm(e.target.value)}
         />
 
-        {/* 保存按钮 */}
+        {/* 保存按钮 - 已修改 */}
         <button
+          className="confirm-btn w-full bg-[#31C48D] text-white rounded-xl py-3 text-base active:opacity-70 disabled:opacity-40" // 合并 className
           disabled={loading}
           onClick={save}
-          className="w-full bg-[#31C48D] text-white rounded-xl py-3 text-base active:opacity-70 disabled:opacity-40"
           style={noFocusStyle}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
+          // 移除 onMouseDown 和 onTouchStart
         >
           {loading ? "Saving..." : "Save"}
         </button>

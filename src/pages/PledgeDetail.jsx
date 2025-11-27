@@ -48,11 +48,11 @@ export default function PledgeDetail() {
     WebkitTapHighlightColor: 'transparent'
   }
 
-  // 只对按钮使用 preventDefault
-  const preventDefault = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+  // 可以移除 preventDefault 函数，因为全局事件委托会处理
+  // const preventDefault = (e) => {
+  //   e.preventDefault()
+  //   e.stopPropagation()
+  // }
 
   /** 模拟币配置（和主页面一致） */
   const coins = {
@@ -75,14 +75,13 @@ export default function PledgeDetail() {
   return (
     <div className="w-full min-h-screen bg-white text-[#333]">
 
-      {/* 顶部导航 */}
+      {/* 顶部导航 - 已修改 */}
       <div className="flex items-center px-4 py-4 border-b">
         <button 
+          className="back-btn mr-3" // 合并 className
           onClick={() => nav(-1)} 
-          className="mr-3"
           style={noFocusStyle}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
+          // 移除 onMouseDown 和 onTouchStart
         >
           <svg width="26" height="26" fill="none" stroke="#444" strokeWidth="2" strokeLinecap="round">
             <path d="M15 6l-6 6 6 6" />
@@ -123,16 +122,14 @@ export default function PledgeDetail() {
         {info.days.map((day) => (
           <button
             key={day}
-            onClick={() => setSelectedDay(day)}
-            className={`
-              py-2 rounded-md border text-sm font-medium 
-              ${selectedDay === day 
+            className={`day-btn py-2 rounded-md border text-sm font-medium ${
+              selectedDay === day 
                 ? "border-[#FFB800] text-[#FFB800]" 
-                : "border-gray-300 text-gray-700"}
-            `}
+                : "border-gray-300 text-gray-700"
+            }`}
+            onClick={() => setSelectedDay(day)}
             style={noFocusStyle}
-            onMouseDown={preventDefault}
-            onTouchStart={preventDefault}
+            // 移除 onMouseDown 和 onTouchStart
           >
             {day}
           </button>
@@ -209,13 +206,12 @@ export default function PledgeDetail() {
         </div>
       </div>
 
-      {/* 确认按钮 */}
+      {/* 确认按钮 - 已修改 */}
       <div className="px-4 mt-10">
         <button 
-          className="w-full bg-[#FFC940] py-3 rounded-lg text-white text-sm font-medium"
+          className="confirm-btn w-full bg-[#FFC940] py-3 rounded-lg text-white text-sm font-medium"
           style={noFocusStyle}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
+          // 移除 onMouseDown 和 onTouchStart
         >
           {t("confirm")}
         </button>

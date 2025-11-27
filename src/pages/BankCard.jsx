@@ -22,11 +22,11 @@ export default function BankCard() {
     WebkitTapHighlightColor: 'transparent'
   }
 
-  // 只对按钮使用 preventDefault
-  const preventDefault = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+  // 可以移除 preventDefault 函数，因为全局事件委托会处理
+  // const preventDefault = (e) => {
+  //   e.preventDefault()
+  //   e.stopPropagation()
+  // }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,11 +71,10 @@ export default function BankCard() {
       {/* 顶部 */}
       <div className="flex items-center p-4 border-b">
         <button 
+          className="back-btn text-gray-600 text-xl mr-3" // 添加 back-btn class
           onClick={() => navigate(-1)} 
-          className="text-gray-600 text-xl mr-3"
           style={noFocusStyle}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
+          // 移除 onMouseDown 和 onTouchStart
         >
           ←
         </button>
@@ -126,8 +125,7 @@ export default function BankCard() {
             loading ? "opacity-70 cursor-not-allowed" : ""
           }`}
           style={noFocusStyle}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
+          // 移除 onMouseDown 和 onTouchStart
         >
           {loading ? t("Submitting...") : t("Submit")}
         </Button>

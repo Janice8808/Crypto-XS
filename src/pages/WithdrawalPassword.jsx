@@ -15,11 +15,11 @@ export default function WithdrawalPassword() {
     WebkitTapHighlightColor: 'transparent'
   }
 
-  // 只对按钮使用 preventDefault
-  const preventDefault = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+  // 可以移除 preventDefault 函数，因为全局事件委托会处理
+  // const preventDefault = (e) => {
+  //   e.preventDefault()
+  //   e.stopPropagation()
+  // }
 
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -130,19 +130,18 @@ export default function WithdrawalPassword() {
 
   return (
     <div className="min-h-screen bg-white relative" onKeyPress={handleKeyPress}>
-      {/* 顶部 */}
+      {/* 顶部 - 已修改 */}
       <div className="flex items-center p-4 border-b">
         <button
+          className="back-btn text-xl text-gray-600 active:scale-90 focus:outline-none" // 添加 back-btn class
           onClick={() => navigate(-1)}
-          className="text-xl text-gray-600 active:scale-90 focus:outline-none"
           style={{ 
             ...noFocusStyle,
             background: "none", 
             padding: 0, 
             marginRight: "8px" 
           }}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
+          // 移除 onMouseDown 和 onTouchStart
         >
           ←
         </button>
@@ -181,23 +180,19 @@ export default function WithdrawalPassword() {
           />
         </div>
 
+        {/* 提交按钮 - 已修改 */}
         <Button
+          className="confirm-btn w-full rounded-lg py-3 text-white transition-colors" // 添加 confirm-btn class
           onClick={handleSubmit}
           disabled={loading || !password || !confirm}
-          className={`w-full rounded-lg py-3 ${
-            loading || !password || !confirm
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-yellow-400 hover:bg-yellow-500"
-          } text-white transition-colors`}
           style={noFocusStyle}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
+          // 移除 onMouseDown 和 onTouchStart
         >
           {loading ? t("Submitting") : (isSettingNew ? t("Set Password") : t("Submit"))}
         </Button>
       </div>
 
-      {/* 成功弹窗 */}
+      {/* 成功弹窗 - 已修改 */}
       {showSuccess && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
@@ -213,12 +208,11 @@ export default function WithdrawalPassword() {
             <p className="text-gray-600 mb-4">{t("Your password has been updated.")}</p>
 
             <button
+              className="confirm-btn w-full bg-yellow-400 hover:bg-yellow-500 text-white font-medium py-2 rounded-lg transition-colors active:scale-95" // 添加 confirm-btn class
               onClick={handleSuccessClose}
-              className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-medium py-2 rounded-lg transition-colors active:scale-95"
               autoFocus
               style={noFocusStyle}
-              onMouseDown={preventDefault}
-              onTouchStart={preventDefault}
+              // 移除 onMouseDown 和 onTouchStart
             >
               {t("OK")}
             </button>

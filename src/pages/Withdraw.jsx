@@ -74,11 +74,11 @@ export default function Withdraw() {
     WebkitTapHighlightColor: 'transparent'
   }
 
-  // 只对按钮使用 preventDefault
-  const preventDefault = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+  // 可以移除 preventDefault 函数，因为全局事件委托会处理
+  // const preventDefault = (e) => {
+  //   e.preventDefault()
+  //   e.stopPropagation()
+  // }
 
   // 获取用户余额
   const fetchBalance = async () => {
@@ -182,9 +182,10 @@ export default function Withdraw() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 pb-24">
-      {/* 顶部导航 */}
+      {/* 顶部导航 - 已修改 */}
       <div className="mb-4">
         <button
+          className="back-btn" // 添加 back-btn class
           onClick={() => window.history.back()}
           style={{
             ...noFocusStyle,
@@ -195,8 +196,7 @@ export default function Withdraw() {
             textAlign: "left",
             paddingLeft: "12px",
           }}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
+          // 移除 onMouseDown 和 onTouchStart
         >
           ←
         </button>
@@ -215,22 +215,21 @@ export default function Withdraw() {
             <span className="text-gray-800 font-medium text-base">{symbol}</span>
           </div>
 
-          {/* 网络 */}
+          {/* 网络 - 已修改 */}
           <div>
             <div className="text-sm text-gray-500 mb-1">{t("Network")}</div>
             <div className="flex space-x-2">
               {current.networks.map((net) => (
                 <button
                   key={net}
-                  onClick={() => setNetwork(net)}
-                  style={noFocusStyle}
-                  onMouseDown={preventDefault}
-                  onTouchStart={preventDefault}
-                  className={`flex-1 py-2 rounded-lg font-medium border ${
+                  className={`network-btn flex-1 py-2 rounded-lg font-medium border ${
                     network === net
                       ? "bg-yellow-400 text-white border-yellow-400"
                       : "bg-white text-gray-700 border-gray-200"
                   }`}
+                  onClick={() => setNetwork(net)}
+                  style={noFocusStyle}
+                  // 移除 onMouseDown 和 onTouchStart
                 >
                   {net}
                 </button>
@@ -238,7 +237,7 @@ export default function Withdraw() {
             </div>
           </div>
 
-          {/* 地址 */}
+          {/* 地址 - 已修改 */}
           <div>
             <div className="text-sm text-gray-500 mb-1">{t("Withdrawal address")}</div>
 
@@ -251,17 +250,16 @@ export default function Withdraw() {
                 className="flex-1 px-3 py-2 text-sm rounded-lg outline-none text-black"
               />
               <button 
-                className="px-3 text-gray-400 hover:text-gray-600"
+                className="copy-btn px-3 text-gray-400 hover:text-gray-600" // 添加 copy-btn class
                 style={noFocusStyle}
-                onMouseDown={preventDefault}
-                onTouchStart={preventDefault}
+                // 移除 onMouseDown 和 onTouchStart
               >
                 📋
               </button>
             </div>
           </div>
 
-          {/* 数量 */}
+          {/* 数量 - 已修改 */}
           <div>
             <div className="flex justify-between text-sm text-gray-500 mb-1">
               <span>{t("Withdrawal Amount")}</span>
@@ -288,11 +286,10 @@ export default function Withdraw() {
 
             <div className="text-right mt-1">
               <button
-                className="text-xs text-yellow-500 font-medium hover:underline"
+                className="max-btn text-xs text-yellow-500 font-medium hover:underline" // 添加 max-btn class
                 onClick={() => setAmount(available.toString())}
                 style={noFocusStyle}
-                onMouseDown={preventDefault}
-                onTouchStart={preventDefault}
+                // 移除 onMouseDown 和 onTouchStart
               >
                 {t("MAX")}
               </button>
@@ -311,13 +308,12 @@ export default function Withdraw() {
             />
           </div>
 
-          {/* 按钮 */}
+          {/* 按钮 - 已修改 */}
           <Button
-            className="w-full bg-yellow-400 hover:bg-yellow-500 text-white py-3 rounded-lg font-semibold disabled:opacity-50"
+            className="confirm-btn w-full bg-yellow-400 hover:bg-yellow-500 text-white py-3 rounded-lg font-semibold disabled:opacity-50" // 添加 confirm-btn class
             style={noFocusStyle}
             onClick={handleSubmit}
-            onMouseDown={preventDefault}
-            onTouchStart={preventDefault}
+            // 移除 onMouseDown 和 onTouchStart
             disabled={submitting}
           >
             {submitting ? t("Processing...") : t("Submit")}

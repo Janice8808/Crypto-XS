@@ -14,7 +14,19 @@ const SYMBOLS = [
   "MATIC-USDT","TON-USDT","ICP-USDT","APT-USDT","NEAR-USDT",
   "SAND-USDT","MANA-USDT","ARB-USDT","OP-USDT","SUI-USDT"
 ];
+// 在文件顶部添加样式定义
+const noFocusStyle = {
+  outline: 'none',
+  boxShadow: 'none',
+  border: 'none',
+  WebkitTapHighlightColor: 'transparent'
+}
 
+// 可以移除 preventDefault 函数，因为全局事件委托会处理
+// const preventDefault = (e) => {
+//   e.preventDefault()
+//   e.stopPropagation()
+// }
 /* ===================== TradingView 图表 ===================== */
 const TradingViewWidget = ({ symbol, onPrice }) => {
   const containerRef = useRef(null);
@@ -263,12 +275,15 @@ const BottomModal = ({ children, onClose, disableClose }) => (
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         {!disableClose && (
           <button
+            className="close-btn" // 添加 close-btn class
             onClick={onClose}
             style={{
               fontSize: 20,
               background: "none",
               border: "none",
+              ...noFocusStyle // 使用统一的样式
             }}
+            // 移除 onMouseDown 和 onTouchStart
           >
             ✕
           </button>
@@ -1167,6 +1182,7 @@ const Trade = () => {
       >
         {/* ⭐ 左侧返回键 - 绝对贴左 */}
         <button
+          className="back-btn" // 添加 back-btn class
           onClick={() => window.history.back()}
           style={{
             background: "none",
@@ -1176,7 +1192,9 @@ const Trade = () => {
             width: "45px",
             textAlign: "left",
             paddingLeft: "12px",
+            ...noFocusStyle // 使用统一的样式
           }}
+          // 移除 onMouseDown 和 onTouchStart
         >
           ←
         </button>

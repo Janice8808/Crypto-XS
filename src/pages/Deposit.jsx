@@ -94,17 +94,18 @@ export default function Deposit() {
     WebkitTapHighlightColor: 'transparent'
   }
 
-  // 只对按钮使用 preventDefault
-  const preventDefault = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+  // 可以移除 preventDefault 函数
+  // const preventDefault = (e) => {
+  //   e.preventDefault()
+  //   e.stopPropagation()
+  // }
 
   return (
     <div className="min-h-screen bg-white p-4 pb-24">
-      {/* 返回 */}
+      {/* 返回 - 已修改 */}
       <div className="flex items-center mb-3">
         <button
+          className="back-btn" // 添加 back-btn class
           onClick={() => window.history.back()}
           style={{
             ...noFocusStyle,
@@ -115,8 +116,7 @@ export default function Deposit() {
             textAlign: "left",
             paddingLeft: "12px",
           }}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
+          // 移除 onMouseDown 和 onTouchStart
         >
           ←
         </button>
@@ -125,16 +125,15 @@ export default function Deposit() {
       {/* 标题 */}
       <h1 className="text-xl font-semibold text-gray-800 mb-3">{t("Deposit")}</h1>
 
-      {/* 币种 */}
+      {/* 币种 - 已修改 */}
       <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
         <CardContent className="p-4 flex justify-between items-center">
           <span className="text-gray-600 font-medium">{t("Currency")}</span>
           <span 
-            className="font-semibold text-gray-900 cursor-pointer" 
+            className="font-semibold text-gray-900 cursor-pointer back-btn" // 添加 back-btn class
             onClick={handleCurrencyClick}
             style={noFocusStyle}
-            onMouseDown={preventDefault}
-            onTouchStart={preventDefault}
+            // 移除 onMouseDown 和 onTouchStart
           >
             {symbol}
           </span>
@@ -144,7 +143,7 @@ export default function Deposit() {
       {/* 网络 + 地址 + 二维码 */}
       <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
         <CardContent className="p-5 space-y-5">
-          {/* 网络选择 */}
+          {/* 网络选择 - 已修改 */}
           <div>
             <div className="text-gray-600 font-medium mb-2">{t("Network")}</div>
             <div className="flex gap-3">
@@ -158,8 +157,7 @@ export default function Deposit() {
                   }}
                   className="flex-1 font-semibold rounded-lg border"
                   onClick={() => setNetwork(n)}
-                  onMouseDown={preventDefault}
-                  onTouchStart={preventDefault}
+                  // 移除 onMouseDown 和 onTouchStart
                 >
                   {n}
                 </Button>
@@ -167,7 +165,7 @@ export default function Deposit() {
             </div>
           </div>
 
-          {/* 地址与二维码 */}
+          {/* 地址与二维码 - 已修改 */}
           <div className="text-center">
             <div className="text-gray-600 font-medium mb-2">{t("Deposit address")}</div>
 
@@ -187,8 +185,7 @@ export default function Deposit() {
                   backgroundColor: '#16813dff'
                 }}
                 onClick={handleCopy}
-                onMouseDown={preventDefault}
-                onTouchStart={preventDefault}
+                // 移除 onMouseDown 和 onTouchStart
               >
                 {copyText}
               </Button>
@@ -197,10 +194,10 @@ export default function Deposit() {
         </CardContent>
       </Card>
 
-      {/* 上传凭证 + 金额 + 提示 */}
+      {/* 上传凭证 + 金额 + 提示 - 已修改 */}
       <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
         <CardContent className="p-5 space-y-5">
-          {/* 上传凭证 */}
+          {/* 上传凭证 - 已修改 */}
           <div>
             <div className="text-gray-600 font-medium mb-2">
               {t("Upload transfer voucher")}
@@ -209,8 +206,7 @@ export default function Deposit() {
             <label 
               className="w-full h-44 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-200 transition"
               style={noFocusStyle}
-              onMouseDown={preventDefault}
-              onTouchStart={preventDefault}
+              // 移除 onMouseDown 和 onTouchStart
             >
               {voucher ? (
                 <img src={voucher} alt="voucher" className="w-full h-full object-cover rounded-lg" />
@@ -250,14 +246,13 @@ export default function Deposit() {
         </CardContent>
       </Card>
 
-      {/* 提交按钮 */}
+      {/* 提交按钮 - 已修改 */}
       <div className="py-3">
         <Button
           className="w-full bg-green-600 hover:bg-green-800 text-white font-semibold rounded-lg py-3"
           style={noFocusStyle}
           onClick={handleSubmit}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
+          // 移除 onMouseDown 和 onTouchStart
         >
           {t("Submit")}
         </Button>
