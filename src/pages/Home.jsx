@@ -11,7 +11,9 @@ import depositIcon from '../assets/icons/deposit.png';
 import defiIcon from '../assets/icons/defi.png';
 import futuresIcon from '../assets/icons/futures.png';
 import withdrawIcon from '../assets/icons/withdraw.png';
-
+import emailIcon from '../assets/icons/email.png'; // 导入邮件图标
+import globeIcon from '../assets/icons/globe.png'; // 导入地球图标
+import yonghuIcon from '../assets/icons/yonghu.png';
 // ============ 地址遮挡函数 ============
 const maskAddress = (addr) => {
   if (!addr) return "--";
@@ -39,22 +41,6 @@ const formatPrice = (price) => {
 };
 
 /* ---------------- SVG ICONS ---------------- */
-const MailIcon = () => (
-  <svg width="24" height="24" fill="none" stroke="#fff" strokeWidth="2"
-    strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="5" width="18" height="14" rx="3" />
-    <path d="M3 5l9 7 9-7" />
-  </svg>
-);
-
-const GlobeIcon = () => (
-  <svg width="24" height="24" fill="none" stroke="#fff" strokeWidth="2"
-    strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="9" />
-    <path d="M3 12h18" />
-    <path d="M12 3a15 15 0 0 1 0 18" />
-  </svg>
-);
 
 const Home = () => {
   const navigate = useNavigate();
@@ -295,47 +281,47 @@ const features = [
       style={scrollStyle}
     >
 
-      {/* Header */}
-      <div className="w-full bg-[#FFB800] px-4 py-2 flex items-center justify-between">
-        <div className="flex items-center space-x-2 flex-1">
-         <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-  <img src={userIcon} className="w-6 h-6" alt="user" />
-</div>
+{/* Header */}
+<div className="w-full bg-[#FFB800] px-4 py-2 flex items-center justify-between">
+  <div className="flex items-center space-x-2 flex-1">
+    <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+      <img src={yonghuIcon} className="w-6 h-6" alt="user" />
+    </div>
 
-          <div className="flex-1">
-            <div className="bg-white px-3 py-1 rounded text-gray-700 text-sm font-medium truncate w-full">
-              {maskedAddress}
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center space-x-4 ml-3 text-white">
-          <button 
-            className="relative p-0 bg-transparent" 
-            onClick={() => navigate("/notice")}
-            style={noFocusStyle}
-            onMouseDown={preventDefault}
-            onTouchStart={preventDefault}
-          >
-            <MailIcon />
-            {unread > 0 && (
-              <span className="absolute -top-1 -right-2 bg-red-600 text-[10px] px-1 rounded-full">
-                {unread}
-              </span>
-            )}
-          </button>
-
-          <button 
-            className="p-0 bg-transparent" 
-            onClick={() => navigate("/user/language")}
-            style={noFocusStyle}
-            onMouseDown={preventDefault}
-            onTouchStart={preventDefault}
-          >
-            <GlobeIcon />
-          </button>
-        </div>
+    <div className="flex-1">
+      <div className="bg-white px-3 py-1 rounded text-gray-700 text-sm font-medium truncate w-full">
+        {maskedAddress}
       </div>
+    </div>
+  </div>
+
+  <div className="flex items-center space-x-4 ml-3 text-white">
+    <button 
+      className="relative p-0 bg-transparent" 
+      onClick={() => navigate("/notice")}
+      style={noFocusStyle}
+      onMouseDown={preventDefault}
+      onTouchStart={preventDefault}
+    >
+      <img src={emailIcon} className="w-6 h-6" alt="mail" />
+      {unread > 0 && (
+        <span className="absolute -top-1 -right-2 bg-red-600 text-[10px] px-1 rounded-full">
+          {unread}
+        </span>
+      )}
+    </button>
+
+    <button 
+      className="p-0 bg-transparent" 
+      onClick={() => navigate("/user/language")}
+      style={noFocusStyle}
+      onMouseDown={preventDefault}
+      onTouchStart={preventDefault}
+    >
+      <img src={globeIcon} className="w-6 h-6" alt="globe" />
+    </button>
+  </div>
+</div>
 
       {/* Banner */}
       <div className="w-full relative bg-gray-800 overflow-hidden">
