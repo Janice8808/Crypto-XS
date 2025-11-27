@@ -7,6 +7,20 @@ export default function WithdrawalPassword() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  // 无焦点样式配置 - 只用于按钮
+  const noFocusStyle = {
+    outline: 'none',
+    boxShadow: 'none',
+    border: 'none',
+    WebkitTapHighlightColor: 'transparent'
+  }
+
+  // 只对按钮使用 preventDefault
+  const preventDefault = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
@@ -121,7 +135,14 @@ export default function WithdrawalPassword() {
         <button
           onClick={() => navigate(-1)}
           className="text-xl text-gray-600 active:scale-90 focus:outline-none"
-          style={{ background: "none", border: "none", padding: 0, marginRight: "8px" }}
+          style={{ 
+            ...noFocusStyle,
+            background: "none", 
+            padding: 0, 
+            marginRight: "8px" 
+          }}
+          onMouseDown={preventDefault}
+          onTouchStart={preventDefault}
         >
           ←
         </button>
@@ -168,6 +189,9 @@ export default function WithdrawalPassword() {
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-yellow-400 hover:bg-yellow-500"
           } text-white transition-colors`}
+          style={noFocusStyle}
+          onMouseDown={preventDefault}
+          onTouchStart={preventDefault}
         >
           {loading ? t("Submitting") : (isSettingNew ? t("Set Password") : t("Submit"))}
         </Button>
@@ -192,6 +216,9 @@ export default function WithdrawalPassword() {
               onClick={handleSuccessClose}
               className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-medium py-2 rounded-lg transition-colors active:scale-95"
               autoFocus
+              style={noFocusStyle}
+              onMouseDown={preventDefault}
+              onTouchStart={preventDefault}
             >
               {t("OK")}
             </button>
