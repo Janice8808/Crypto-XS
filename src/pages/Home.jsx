@@ -285,7 +285,7 @@ const features = [
 <div className="w-full bg-[#FFB800] px-4 py-2 flex items-center justify-between">
   <div className="flex items-center space-x-2 flex-1">
     <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-      <img src={yonghuIcon} className="w-12 h-12" alt="user" />
+      <img src={yonghuIcon} className="w-10 h-10" alt="user" />
     </div>
 
     <div className="flex-1">
@@ -303,7 +303,7 @@ const features = [
       onMouseDown={preventDefault}
       onTouchStart={preventDefault}
     >
-      <img src={emailIcon} className="w-12 h-12" alt="mail" />
+      <img src={emailIcon} className="w-10 h-10" alt="mail" />
       {unread > 0 && (
         <span className="absolute -top-1 -right-2 bg-red-600 text-[10px] px-1 rounded-full">
           {unread}
@@ -318,7 +318,7 @@ const features = [
       onMouseDown={preventDefault}
       onTouchStart={preventDefault}
     >
-      <img src={globeIcon} className="w-12 h-12" alt="globe" />
+      <img src={globeIcon} className="w-10 h-10" alt="globe" />
     </button>
   </div>
 </div>
