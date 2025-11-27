@@ -113,7 +113,7 @@ const shortAddress =
     {
       key: "Withdrawal password setting",
       icon: <LockIcon />,
-      path: "/user/withdrawal-password",
+      path: "/user/change-password",
     },
     { key: "MSB Certification", icon: <MsbIcon />, path: "/user/msb" },
   ];

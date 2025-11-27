@@ -27,6 +27,7 @@ import Mail from "./pages/Mail";
 import BankCard from "./pages/BankCard";
 import Language from "./pages/Language";
 import WithdrawalPassword from "./pages/WithdrawalPassword";
+import ChangePassword from "./pages/ChangePassword";
 import MSBCertification from "./pages/MSBCertification";
 import Introduction from "./pages/Introduction";
 
@@ -304,6 +305,7 @@ function App() {
           <Route path="/user/bank" element={<AuthGate><BankCard /></AuthGate>} />
           <Route path="/user/language" element={<AuthGate><Language /></AuthGate>} />
           <Route path="/user/withdrawal-password" element={<AuthGate><WithdrawalPassword /></AuthGate>} />
+          <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/intro" element={<AuthGate><Introduction /></AuthGate>} />
           <Route path="/user/msb" element={<AuthGate><MSBCertification /></AuthGate>} />
 
