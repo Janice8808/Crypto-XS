@@ -278,7 +278,7 @@ function App() {
     </AuthGate>
   }
 />
-
+<Route path="/user/withdrawal-password/edit" element={<EditWithdrawalPassword />} />
           <Route
             path="/trade"
             element={

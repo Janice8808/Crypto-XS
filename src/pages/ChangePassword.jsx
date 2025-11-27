@@ -47,7 +47,14 @@ useEffect(() => {
       {/* 内容区域 */}
       <div className="px-3 mt-3">
         <div
-          onClick={() => navigate("/user/withdrawal-password")}
+          onClick={() => {
+  if (isSet) {
+    navigate("/user/withdrawal-password/edit");   // ⭐ 已设置 → 修改密码页
+  } else {
+    navigate("/user/withdrawal-password");        // ⭐ 未设置 → 你的 WithdrawalPassword.jsx
+  }
+}}
+
           className="flex items-center justify-between bg-white rounded-xl px-4 h-16 shadow-sm border border-gray-100 active:opacity-60"
         >
           <span className="text-[16px] text-[#333]">Withdrawal Password</span>
