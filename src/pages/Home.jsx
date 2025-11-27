@@ -282,7 +282,7 @@ const features = [
     >
 
 {/* Header */}
-<div className="w-full bg-[#FFB800] px-3 py-0 flex items-center justify-between">
+<div className="w-full bg-[#FFB800] px-3 py-2 flex items-center justify-between">
   <div className="flex items-center space-x-2 flex-1">
     <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
       <img src={yonghuIcon} className="w-6 h-6" alt="user" />
@@ -295,7 +295,7 @@ const features = [
     </div>
   </div>
 
-  <div className="flex items-center space-x-3 flex-shrink-0"> {/* 使用 -space-x-3 负间距 */}
+  <div className="flex items-center space-x-2 flex-shrink-0"> {/* 使用 -space-x-3 负间距 */}
     <button 
       className="relative p-0 bg-transparent" 
       onClick={() => navigate("/notice")}
@@ -303,7 +303,7 @@ const features = [
       onMouseDown={preventDefault}
       onTouchStart={preventDefault}
     >
-      <img src={emailIcon} className="w-6 h-6" alt="mail" />
+      <img src={emailIcon} className="w-7 h-7" alt="mail" />
       {unread > 0 && (
         <span className="absolute top-0 right-0 bg-red-600 text-[10px] px-1 rounded-full">
           {unread}
@@ -318,7 +318,7 @@ const features = [
       onMouseDown={preventDefault}
       onTouchStart={preventDefault}
     >
-      <img src={globeIcon} className="w-6 h-6" alt="globe" />
+      <img src={globeIcon} className="w-7 h-7" alt="globe" />
     </button>
   </div>
 </div>
