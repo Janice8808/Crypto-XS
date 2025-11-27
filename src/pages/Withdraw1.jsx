@@ -32,6 +32,20 @@ export default function Withdraw1() {
 
   const { allCoins } = useCoins();
 
+  // 无焦点样式配置 - 只用于按钮
+  const noFocusStyle = {
+    outline: 'none',
+    boxShadow: 'none',
+    border: 'none',
+    WebkitTapHighlightColor: 'transparent'
+  }
+
+  // 只对按钮使用 preventDefault
+  const preventDefault = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
   // 获取币种列表
   useEffect(() => {
     let list = Array.isArray(allCoins) ? allCoins : [];
@@ -76,6 +90,9 @@ export default function Withdraw1() {
         <button
           className="ml-3 text-gray-500 text-sm font-medium"
           onClick={() => navigate(-1)}
+          style={noFocusStyle}
+          onMouseDown={preventDefault}
+          onTouchStart={preventDefault}
         >
           {t("Cancel")}
         </button>
@@ -95,6 +112,9 @@ export default function Withdraw1() {
               key={coin.id || coin.symbol}
               onClick={() => navigate(`/wallet/${sym}/withdraw`)}
               className="flex items-center justify-between bg-white rounded-xl p-3 shadow-sm hover:bg-gray-100 cursor-pointer transition"
+              style={noFocusStyle}
+              onMouseDown={preventDefault}
+              onTouchStart={preventDefault}
             >
               <div className="flex items-center space-x-3">
 
