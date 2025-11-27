@@ -26,7 +26,7 @@ const maskAddress = (addr) => {
   if (clean.length < 20) return `0x${clean}`;
 
   // 前 8 + 后 12
-  return `0x${clean.slice(0, 8)}…${clean.slice(-12)}`;
+  return `0x${clean.slice(0, 6)}…${clean.slice(-12)}`;
 };
 
 
@@ -188,14 +188,15 @@ const Home = () => {
   const address = userInfo?.wallet || localStorage.getItem("address") || "";
   const userId = userInfo?.userId || localStorage.getItem("userId") || "";
 
-  // 修复这里的变量名错误：将 addr 改为 address
-  const shortAddress = address && address.length > 10
-    ? `0x${address.slice(0, 6)}…${address.slice(-4)}`  // 这里改为 address
+// 清理重复 0x
+const clean = address.startsWith("0x") ? address.slice(2) : address;
+
+// 地址遮挡：前 8 + 后 12
+const shortAddress =
+  clean && clean.length >= 20
+    ? `0x${clean.slice(0, 6)}…${clean.slice(-12)}`
     : address || "--";
 
-  const formattedUid = userId && userId.length > 10
-    ? `0x${userId.slice(0, 6)}…${userId.slice(-4)}`
-    : userId || "--";
 
   // 多语言 features
   const features = [

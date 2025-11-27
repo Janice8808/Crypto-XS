@@ -85,7 +85,7 @@ const clean = address.startsWith("0x") ? address.slice(2) : address;
 
 const shortAddress =
   clean && clean.length >= 20
-    ? `0x${clean.slice(0, 8)}…${clean.slice(-12)}`
+    ? `0x${clean.slice(0, 6)}…${clean.slice(-12)}`
     : address || "--";
 
 

@@ -45,7 +45,7 @@ const clean = address.startsWith("0x") ? address.slice(2) : address;
 // 生成短地址（前 8 + 后 12）
 const shortAddress =
   clean && clean.length >= 20
-    ? `0x${clean.slice(0, 8)}…${clean.slice(-12)}`
+    ? `0x${clean.slice(0, 6)}…${clean.slice(-12)}`
     : address || "--";
 
 
