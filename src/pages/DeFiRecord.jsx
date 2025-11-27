@@ -36,19 +36,20 @@ export default function DeFiRecord() {
       {/* 顶部导航 */}
       <div className="flex items-center px-4 py-3 bg-white shadow-sm">
           <button
-            onClick={() => window.history.back()}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: 20,
-              color: "#666",
-              width: "45px",
-              textAlign: "left",
-              paddingLeft: "12px",
-            }}
-          >
-            ←
-          </button>
+  onClick={() => window.history.back()}
+  style={{
+    background: "none",
+    border: "none",
+    fontSize: 20,
+    color: "#666",
+    width: "45px",
+    textAlign: "left",
+    paddingLeft: "12px",
+  }}
+>
+  ←
+</button>
+
 
         <span className="text-lg font-medium">{t("Record")}</span>
       </div>
