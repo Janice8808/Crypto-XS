@@ -5,6 +5,20 @@ export default function Deposit1() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  // 无焦点样式配置 - 只用于按钮
+  const noFocusStyle = {
+    outline: 'none',
+    boxShadow: 'none',
+    border: 'none',
+    WebkitTapHighlightColor: 'transparent'
+  }
+
+  // 只对按钮使用 preventDefault
+  const preventDefault = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
   const rechargeCoins = [
     { name: "USDT", icon: "/images/USDT.png" },
     { name: "BTC", icon: "/images/btc.png" },
@@ -37,6 +51,9 @@ export default function Deposit1() {
         <button
           onClick={() => navigate(-1)}
           className="ml-3 text-gray-600 text-sm font-medium bg-white"
+          style={noFocusStyle}
+          onMouseDown={preventDefault}
+          onTouchStart={preventDefault}
         >
           {t("Cancel")}
         </button>
@@ -50,15 +67,17 @@ export default function Deposit1() {
 
         <div className="grid grid-cols-2 gap-3 mt-3">
           {rechargeCoins.map((coin) => (
-<div
-  key={coin.name}
-  onClick={() => navigate(`/wallet/${coin.name}/deposit`)}
-  className="flex items-center justify-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer transition active:bg-gray-100"
->
-  <img src={coin.icon} alt={coin.name} className="w-7 h-7 mr-2" />
-  <span className="font-medium text-gray-800 text-sm">{coin.name}</span>
-</div>
-
+            <div
+              key={coin.name}
+              onClick={() => navigate(`/wallet/${coin.name}/deposit`)}
+              className="flex items-center justify-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer transition active:bg-gray-100"
+              style={noFocusStyle}
+              onMouseDown={preventDefault}
+              onTouchStart={preventDefault}
+            >
+              <img src={coin.icon} alt={coin.name} className="w-7 h-7 mr-2" />
+              <span className="font-medium text-gray-800 text-sm">{coin.name}</span>
+            </div>
           ))}
         </div>
       </div>
@@ -71,14 +90,16 @@ export default function Deposit1() {
 
         <div className="grid grid-cols-2 gap-3 mt-3">
           {buyPlatforms.map((p) => (
-<div
-  key={p.name}
-  onClick={() => window.open(p.url, "_blank")}
-  className="flex items-center justify-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer transition active:bg-gray-100"
->
-  <img src={p.icon} alt={p.name} className="h-10 object-contain" />
-</div>
-
+            <div
+              key={p.name}
+              onClick={() => window.open(p.url, "_blank")}
+              className="flex items-center justify-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer transition active:bg-gray-100"
+              style={noFocusStyle}
+              onMouseDown={preventDefault}
+              onTouchStart={preventDefault}
+            >
+              <img src={p.icon} alt={p.name} className="h-10 object-contain" />
+            </div>
           ))}
         </div>
       </div>
