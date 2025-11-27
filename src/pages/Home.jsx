@@ -371,23 +371,22 @@ const features = [
 
 {/* 功能区 - 平衡间距 */}
 <div className="bg-white mx-2 rounded-xl p-4 shadow relative z-20 -mt-5">
-  <div className="grid grid-cols-4 gap-4 px-4 pt-1 pb-3">{/* 恢复正常的py-3 */}
-{features.map((feature, index) => (
-  <Link
-    key={index}
-    to={feature.path}
-    className="flex flex-col items-center justify-center h-20 active:scale-95 transition"
-  >
-    <div className="flex items-center justify-center mb-0.5">
-      {feature.icon}
-    </div>
-    <span className="text-gray-500 text-xs text-center leading-tight mt-0.5">
-      {t(feature.key)}
-    </span>
-  </Link>
-))}
-
-  </div>
+<div className="grid grid-cols-4 gap-4 px-4 pt-1 pb-3">
+  {features.map((feature, index) => (
+    <Link
+      key={index}
+      to={feature.path}
+      className="flex flex-col items-center active:scale-95 transition space-y-1"
+    >
+      <div className="flex items-center justify-center">
+        {feature.icon}
+      </div>
+      <span className="text-gray-500 text-xs text-center leading-tight">
+        {t(feature.key)}
+      </span>
+    </Link>
+  ))}
+</div>
 
 
 {/* 两个广告图 */}
@@ -440,7 +439,7 @@ const features = [
         className="text-center py-2"
       >
         {/* 上面小字体灰色 */}
-        <div className="text-gray-300 text-[10px] mb-1">{coin.symbol}</div>
+        <div className="text-gray-400 text-[10px] mb-1">{coin.symbol}</div>
         
         {/* 下面大字体深灰色 */}
         <div className="font-bold text-gray-500 text-base mb-1">
