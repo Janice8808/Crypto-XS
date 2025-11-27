@@ -186,14 +186,14 @@ useEffect(() => {
 
 // 多语言 features - 更大尺寸和灰色字体
 const features = [
-  { key: "User Center", icon: <img src={userIcon} className="w-11 h-11" />, path: "/user" },
-  { key: "MSb", icon: <img src={msbIcon} className="w-11 h-11" />, path: "/user/msb" },
-  { key: "Introduction", icon: <img src={introIcon} className="w-11 h-11" />, path: "/intro" },
-  { key: "Currency", icon: <img src={currencyIcon} className="w-11 h-11" />, path: "/coin/BTCUSDT" },
-  { key: "Deposit", icon: <img src={depositIcon} className="w-11 h-11" />, path: "/deposit1" },
-  { key: "DeFi", icon: <img src={defiIcon} className="w-11 h-11" />, path: "/defi" },
-  { key: "Futures", icon: <img src={futuresIcon} className="w-11 h-11" />, path: "/trade" },
-  { key: "Withdraw", icon: <img src={withdrawIcon} className="w-11 h-11" />, path: "/wallet/USDT/withdraw" },
+  { key: "User Center", icon: <img src={userIcon} className="w-13 h-13" />, path: "/user" },
+  { key: "MSb", icon: <img src={msbIcon} className="w-13 h-13" />, path: "/user/msb" },
+  { key: "Introduction", icon: <img src={introIcon} className="w-13 h-13" />, path: "/intro" },
+  { key: "Currency", icon: <img src={currencyIcon} className="w-13 h-13" />, path: "/coin/BTCUSDT" },
+  { key: "Deposit", icon: <img src={depositIcon} className="w-13 h-13" />, path: "/deposit1" },
+  { key: "DeFi", icon: <img src={defiIcon} className="w-13 h-13" />, path: "/defi" },
+  { key: "Futures", icon: <img src={futuresIcon} className="w-13 h-13" />, path: "/trade" },
+  { key: "Withdraw", icon: <img src={withdrawIcon} className="w-13 h-13" />, path: "/wallet/USDT/withdraw" },
 ];
 
 
@@ -303,7 +303,7 @@ const features = [
       onMouseDown={preventDefault}
       onTouchStart={preventDefault}
     >
-      <img src={emailIcon} className="w-14 h-14" alt="mail" />
+      <img src={emailIcon} className="w-10 h-10" alt="mail" />
       {unread > 0 && (
         <span className="absolute top-0 right-0 bg-red-600 text-[10px] px-1 rounded-full">
           {unread}
@@ -318,7 +318,7 @@ const features = [
       onMouseDown={preventDefault}
       onTouchStart={preventDefault}
     >
-      <img src={globeIcon} className="w-14 h-14" alt="globe" />
+      <img src={globeIcon} className="w-10 h-10" alt="globe" />
     </button>
   </div>
 </div>
