@@ -13,6 +13,7 @@ import Market from "./pages/Market";
 import CoinDetail from "./pages/CoinDetail";
 import Trade from "./pages/Trade";
 import Wallet from "./pages/Wallet";
+import EditWithdrawalPassword from "./pages/EditWithdrawalPassword";
 
 import ScrollToTop from "./ScrollToTop";
 import AssetDetail from "./pages/AssetDetail";
@@ -278,7 +279,17 @@ function App() {
     </AuthGate>
   }
 />
-<Route path="/user/withdrawal-password/edit" element={<EditWithdrawalPassword />} />
+<Route
+  path="/user/withdrawal-password/edit"
+  element={
+    <AuthGate>
+      <PullToRefreshWrapper>
+        <EditWithdrawalPassword />
+      </PullToRefreshWrapper>
+    </AuthGate>
+  }
+/>
+
           <Route
             path="/trade"
             element={
