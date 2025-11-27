@@ -145,43 +145,72 @@ const btc = mergedTickers["BTC"] || { price: "--", change: 0 };
 const eth = mergedTickers["ETH"] || { price: "--", change: 0 };
 const bnb = mergedTickers["BNB"] || { price: "--", change: 0 };
 
-  const address = localStorage.getItem("address") || "";
-  const maskedAddress = maskAddress(address);
+  // ============ 关键修改：初始化地址逻辑 ============
+  const [address, setAddress] = useState("");
   const [uid, setUid] = useState("--");
 
-  // 获取用户ID
-useEffect(() => {
-  fetch("https://pankouhoutai.shop/api/user/balance", {
-    headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-  })
-    .then((r) => r.json())
-    .then((d) => {
-      if (d?.userId) {
-        let userId = d.userId;
-        
-        // 确保 ID 以 "0x" 开头
-        if (!userId.startsWith("0x")) {
-          userId = "0x" + userId; // 如果没有 "0x" 则添加
+  // 初始化地址和用户信息
+  useEffect(() => {
+    // 从 localStorage 获取地址
+    const savedAddress = localStorage.getItem("address") || "";
+    setAddress(savedAddress);
+
+    // 获取用户余额和ID
+    fetch("https://pankouhoutai.shop/api/user/balance", {
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    })
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.userId) {
+          let userId = d.userId;
+          
+          // 确保 ID 以 "0x" 开头
+          if (!userId.startsWith("0x")) {
+            userId = "0x" + userId;
+          }
+
+          // 格式化用户ID
+          const shortUserId =
+            userId.length > 10
+              ? `0x${userId.slice(2, 6)}…${userId.slice(-4)}`
+              : userId || "--";
+
+          setUid(shortUserId);
         }
 
-        // 调试输出查看userId
-        console.log("Original userId:", userId);
+        // 如果没有地址但返回了用户信息，尝试设置地址
+        if (!savedAddress && d?.address) {
+          localStorage.setItem("address", d.address);
+          setAddress(d.address);
+        }
+      })
+      .catch(err => {
+        console.warn("获取用户信息失败:", err);
+      });
+  }, []);
 
-        // 格式化用户ID，前4位 + "..." + 后4位
-        const shortUserId =
-          userId.length > 10
-            ? `0x${userId.slice(2, 6)}…${userId.slice(-4)}`
-            : userId || "--"; // 截取前后四位，确保格式正确
+  const maskedAddress = maskAddress(address);
 
-        // 调试输出查看最终短地址
-        console.log("Formatted shortUserId:", shortUserId);
-
-        setUid(shortUserId);
+  // 监听 localStorage 变化来更新地址
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const newAddress = localStorage.getItem("address") || "";
+      if (newAddress !== address) {
+        setAddress(newAddress);
       }
-    });
-}, []);
+    };
 
+    // 监听 storage 事件（跨标签页）
+    window.addEventListener('storage', handleStorageChange);
+    
+    // 定期检查（用于当前标签页内的变化）
+    const interval = setInterval(handleStorageChange, 1000);
 
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, [address]);
 
 
 // 多语言 features - 更大尺寸和灰色字体
