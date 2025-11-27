@@ -66,7 +66,7 @@ export default function Withdraw() {
     },
   };
 
-  // 无焦点样式配置
+  // 无焦点样式配置 - 只用于按钮
   const noFocusStyle = {
     outline: 'none',
     boxShadow: 'none',
@@ -74,6 +74,7 @@ export default function Withdraw() {
     WebkitTapHighlightColor: 'transparent'
   }
 
+  // 只对按钮使用 preventDefault
   const preventDefault = (e) => {
     e.preventDefault()
     e.stopPropagation()
@@ -248,9 +249,6 @@ export default function Withdraw() {
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder={t("Enter withdrawal address")}
                 className="flex-1 px-3 py-2 text-sm rounded-lg outline-none text-black"
-                style={noFocusStyle}
-                onMouseDown={preventDefault}
-                onTouchStart={preventDefault}
               />
               <button 
                 className="px-3 text-gray-400 hover:text-gray-600"
@@ -282,9 +280,6 @@ export default function Withdraw() {
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder={t("Enter withdrawal quantity")}
                 className="flex-1 px-3 py-2 text-sm rounded-lg outline-none text-black"
-                style={noFocusStyle}
-                onMouseDown={preventDefault}
-                onTouchStart={preventDefault}
               />
               <span className="px-3 py-2 text-gray-500 text-sm border-l">
                 {symbol}
@@ -313,9 +308,6 @@ export default function Withdraw() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder={t("Withdrawal Password")}
               className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-yellow-400 outline-none text-black"
-              style={noFocusStyle}
-              onMouseDown={preventDefault}
-              onTouchStart={preventDefault}
             />
           </div>
 
