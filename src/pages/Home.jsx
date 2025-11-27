@@ -285,7 +285,7 @@ const features = [
 <div className="w-full bg-[#FFB800] px-3 py-0 flex items-center justify-between"> {/* py-0 完全消除上下间距 */}
   <div className="flex items-center space-x-2 flex-1">
     <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-      <img src={yonghuIcon} className="w-6 h-6" alt="user" />
+      <img src={yonghuIcon} className="w-12 h-12" alt="user" />
     </div>
 
     <div className="flex-1">
@@ -295,7 +295,7 @@ const features = [
     </div>
   </div>
 
-  <div className="flex items-center -space-x-2 ml-0 text-white"> {/* 使用负间距让图标重叠 */}
+  <div className="flex items-center -space-x-4 ml-0 text-white"> {/* 使用负间距让图标重叠 */}
     <button 
       className="relative p-0 bg-transparent" 
       onClick={() => navigate("/notice")}
