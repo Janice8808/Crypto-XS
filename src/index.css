@@ -66,7 +66,7 @@ button:focus-visible {
     transform: translateX(50%); /* 从右侧开始 */
   }
   100% {
-    transform: translateX(-100%); /* 移动到左侧完全消失 */
+    transform: translateX(-50%); /* 移动到左侧完全消失 */
   }
 }
 
