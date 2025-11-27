@@ -10,6 +10,20 @@ export default function Mail() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // 无焦点样式配置 - 只用于按钮
+  const noFocusStyle = {
+    outline: 'none',
+    boxShadow: 'none',
+    border: 'none',
+    WebkitTapHighlightColor: 'transparent'
+  }
+
+  // 只对按钮使用 preventDefault
+  const preventDefault = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
   const handleSubmit = async () => {
     if (!email.trim()) {
       alert(t("Please fill in all fields"));
@@ -49,6 +63,9 @@ export default function Mail() {
         <button
           onClick={() => navigate(-1)}
           className="text-gray-600 text-xl mr-3"
+          style={noFocusStyle}
+          onMouseDown={preventDefault}
+          onTouchStart={preventDefault}
         >
           ←
         </button>
@@ -78,6 +95,9 @@ export default function Mail() {
           className={`w-full bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg py-3 ${
             loading ? "opacity-70 cursor-not-allowed" : ""
           }`}
+          style={noFocusStyle}
+          onMouseDown={preventDefault}
+          onTouchStart={preventDefault}
         >
           {loading ? t("Submitting") : t("Submit")}
         </Button>
