@@ -5,6 +5,20 @@ import { ChevronLeft } from "lucide-react";
 export default function EditWithdrawalPassword() {
   const navigate = useNavigate();
 
+  // 无焦点样式配置 - 只用于按钮
+  const noFocusStyle = {
+    outline: 'none',
+    boxShadow: 'none',
+    border: 'none',
+    WebkitTapHighlightColor: 'transparent'
+  }
+
+  // 只对按钮使用 preventDefault
+  const preventDefault = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
   const [oldPwd, setOldPwd] = useState("");
   const [pwd, setPwd] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -64,7 +78,13 @@ export default function EditWithdrawalPassword() {
 
       {/* 顶部导航 */}
       <div className="flex items-center h-14 px-3 border-b border-gray-200">
-        <button onClick={() => navigate(-1)} className="p-1">
+        <button 
+          onClick={() => navigate(-1)} 
+          className="p-1"
+          style={noFocusStyle}
+          onMouseDown={preventDefault}
+          onTouchStart={preventDefault}
+        >
           <ChevronLeft size={22} />
         </button>
         <div className="flex-1 text-center text-lg font-medium">
@@ -105,6 +125,9 @@ export default function EditWithdrawalPassword() {
           disabled={loading}
           onClick={save}
           className="w-full bg-[#31C48D] text-white rounded-xl py-3 text-base active:opacity-70 disabled:opacity-40"
+          style={noFocusStyle}
+          onMouseDown={preventDefault}
+          onTouchStart={preventDefault}
         >
           {loading ? "Saving..." : "Save"}
         </button>
