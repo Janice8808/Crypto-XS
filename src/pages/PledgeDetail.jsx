@@ -40,6 +40,20 @@ export default function PledgeDetail() {
   const { symbol } = useParams();
   const { t } = useTranslation();
 
+  // 无焦点样式配置 - 只用于按钮
+  const noFocusStyle = {
+    outline: 'none',
+    boxShadow: 'none',
+    border: 'none',
+    WebkitTapHighlightColor: 'transparent'
+  }
+
+  // 只对按钮使用 preventDefault
+  const preventDefault = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
   /** 模拟币配置（和主页面一致） */
   const coins = {
     BTC: { rate: 5, min: 10000, days: [10, 30, 90] },
@@ -63,7 +77,13 @@ export default function PledgeDetail() {
 
       {/* 顶部导航 */}
       <div className="flex items-center px-4 py-4 border-b">
-        <button onClick={() => nav(-1)} className="mr-3">
+        <button 
+          onClick={() => nav(-1)} 
+          className="mr-3"
+          style={noFocusStyle}
+          onMouseDown={preventDefault}
+          onTouchStart={preventDefault}
+        >
           <svg width="26" height="26" fill="none" stroke="#444" strokeWidth="2" strokeLinecap="round">
             <path d="M15 6l-6 6 6 6" />
           </svg>
@@ -80,68 +100,67 @@ export default function PledgeDetail() {
 
       {/* Type */}
       <div className="px-4 mt-2 text-gray-500 text-sm">{t("Type")}</div>
-<div className="px-4 mt-1">
-  <div
-    className="
-      border 
-      border-[#FFC940] 
-      rounded-md 
-      px-3 
-      py-2 
-      text-gray-700 
-      text-center
-    "
-  >
-    regular
-  </div>
-</div>
-
-
+      <div className="px-4 mt-1">
+        <div
+          className="
+            border 
+            border-[#FFC940] 
+            rounded-md 
+            px-3 
+            py-2 
+            text-gray-700 
+            text-center
+          "
+        >
+          regular
+        </div>
+      </div>
 
       {/* Dialogue（天数） */}
       <div className="px-4 mt-5 text-gray-500 text-sm">{t("Dialogue (Sky)")}</div>
 
-<div className="grid grid-cols-3 gap-3 px-4 mt-2">
-  {info.days.map((day) => (
-    <button
-      key={day}
-      onClick={() => setSelectedDay(day)}
-      className={`
-        py-2 rounded-md border text-sm font-medium 
-        ${selectedDay === day 
-          ? "border-[#FFB800] text-[#FFB800]" 
-          : "border-gray-300 text-gray-700"}
-      `}
-    >
-      {day}
-    </button>
-  ))}
-</div>
-
+      <div className="grid grid-cols-3 gap-3 px-4 mt-2">
+        {info.days.map((day) => (
+          <button
+            key={day}
+            onClick={() => setSelectedDay(day)}
+            className={`
+              py-2 rounded-md border text-sm font-medium 
+              ${selectedDay === day 
+                ? "border-[#FFB800] text-[#FFB800]" 
+                : "border-gray-300 text-gray-700"}
+            `}
+            style={noFocusStyle}
+            onMouseDown={preventDefault}
+            onTouchStart={preventDefault}
+          >
+            {day}
+          </button>
+        ))}
+      </div>
 
       {/* 输入数量 */}
       <div className="px-4 mt-6 text-gray-500 text-sm">{t("Purchase quantity")}</div>
 
       <div className="px-4 mt-2">
-<input
-  value={amount}
-  onChange={(e) => setAmount(e.target.value)}
-  className="
-    w-full 
-    border 
-    border-[#FFC940]
-    rounded-md 
-    px-3 
-    py-2 
-    text-gray-700
-    placeholder-gray-400
-    focus:border-[#FFC940]
-    focus:ring-0
-    outline-none
-  "
-  placeholder="Please enter the quantity"
-/>
-
+        <input
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          className="
+            w-full 
+            border 
+            border-[#FFC940]
+            rounded-md 
+            px-3 
+            py-2 
+            text-gray-700
+            placeholder-gray-400
+            focus:border-[#FFC940]
+            focus:ring-0
+            outline-none
+          "
+          placeholder="Please enter the quantity"
+        />
       </div>
 
       <div className="px-4 mt-1 text-gray-400 text-xs">
@@ -170,7 +189,7 @@ export default function PledgeDetail() {
           <span>{today}</span>
         </div>
 
-        <div class            ="flex justify-between">
+        <div className="flex justify-between">
           <span>🔹 Last to the end</span>
           <span>{today}</span>
         </div>
@@ -192,7 +211,12 @@ export default function PledgeDetail() {
 
       {/* 确认按钮 */}
       <div className="px-4 mt-10">
-        <button className="w-full bg-[#FFC940] py-3 rounded-lg text-white text-sm font-medium">
+        <button 
+          className="w-full bg-[#FFC940] py-3 rounded-lg text-white text-sm font-medium"
+          style={noFocusStyle}
+          onMouseDown={preventDefault}
+          onTouchStart={preventDefault}
+        >
           {t("confirm")}
         </button>
       </div>
