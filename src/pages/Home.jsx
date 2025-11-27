@@ -429,7 +429,7 @@ const features = [
 </div>
 
 {/* 热门 Top3 当前价格 */}
-<div className="grid grid-cols-3 gap-4 -mt-2"> {/* 减少上边距 */}
+<div className="grid grid-cols-3 gap-4 mb-2"> {/* 改为下边距 */}
   {top3.map((coin) => {
     const up = coin.change >= 0;
 
@@ -458,7 +458,7 @@ const features = [
 </div>
 
 {/* Popular List Header */}
-<div className="bg-white px-3 py-4 mt-4">
+<div className="bg-white px-3 py-4"> {/* 移除 mt-4 */}
   <div className="text-gray-700 text-base font-semibold mb-3">
     {t("Popular list")}
     <div className="w-14 h-[2px] bg-yellow-500 mt-1"></div>
