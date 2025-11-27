@@ -14,6 +14,20 @@ export default function BankCard() {
   });
   const [loading, setLoading] = useState(false);
 
+  // 无焦点样式配置 - 只用于按钮
+  const noFocusStyle = {
+    outline: 'none',
+    boxShadow: 'none',
+    border: 'none',
+    WebkitTapHighlightColor: 'transparent'
+  }
+
+  // 只对按钮使用 preventDefault
+  const preventDefault = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
@@ -56,7 +70,13 @@ export default function BankCard() {
     <div className="min-h-screen bg-white">
       {/* 顶部 */}
       <div className="flex items-center p-4 border-b">
-        <button onClick={() => navigate(-1)} className="text-gray-600 text-xl mr-3">
+        <button 
+          onClick={() => navigate(-1)} 
+          className="text-gray-600 text-xl mr-3"
+          style={noFocusStyle}
+          onMouseDown={preventDefault}
+          onTouchStart={preventDefault}
+        >
           ←
         </button>
         <h1 className="text-lg font-semibold text-gray-800">{t("Bank Card")}</h1>
@@ -105,6 +125,9 @@ export default function BankCard() {
           className={`w-full bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg py-3 ${
             loading ? "opacity-70 cursor-not-allowed" : ""
           }`}
+          style={noFocusStyle}
+          onMouseDown={preventDefault}
+          onTouchStart={preventDefault}
         >
           {loading ? t("Submitting...") : t("Submit")}
         </Button>
