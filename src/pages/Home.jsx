@@ -283,19 +283,21 @@ const features = [
 
 {/* Header */}
 <div className="w-full bg-[#FFB800] px-3 py-0 flex items-center justify-between">
-  <div className="flex items-center space-x-2 flex-1">
+  {/* 左侧内容 - 确保不被压缩 */}
+  <div className="flex items-center space-x-2 flex-shrink-0"> {/* 添加 flex-shrink-0 */}
     <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-      <img src={yonghuIcon} className="w-6 h-6" alt="user" />
+      <img src={yonghuIcon} className="w-10 h-10" alt="user" />
     </div>
 
-    <div className="flex-1">
+    <div className="flex-1 min-w-0"> {/* 添加 min-w-0 防止压缩 */}
       <div className="bg-white px-3 py-1 rounded text-gray-700 text-sm font-medium truncate w-full">
         {maskedAddress}
       </div>
     </div>
   </div>
 
-  <div className="flex items-center -space-x-3 flex-shrink-0"> {/* 使用 -space-x-3 负间距 */}
+  {/* 右侧图标 - 保持紧凑 */}
+  <div className="flex items-center -space-x-3 flex-shrink-0">
     <button 
       className="relative p-0 bg-transparent" 
       onClick={() => navigate("/notice")}
