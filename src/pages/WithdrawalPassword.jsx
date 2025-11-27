@@ -11,14 +11,29 @@ export default function WithdrawalPassword() {
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isSettingNew, setIsSettingNew] = useState(true);
 
-  // 调试：检查组件是否正常加载
+  // 检查用户是否已经设置过提现密码
   useEffect(() => {
-    console.log("WithdrawalPassword component mounted");
+    const checkPasswordStatus = async () => {
+      try {
+        const res = await fetch("https://pankouhoutai.shop/api/userinfo", {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        });
+        const data = await res.json();
+        setIsSettingNew(!data.withdrawPasswordSet);
+      } catch (err) {
+        console.error("检查密码状态失败:", err);
+      }
+    };
+    
+    checkPasswordStatus();
   }, []);
 
   const handleSubmit = async () => {
-    console.log("Submit clicked"); // 调试日志
+    console.log("Submit clicked");
     
     if (!password || !confirm) {
       alert(t("Please fill in all fields"));
@@ -31,10 +46,21 @@ export default function WithdrawalPassword() {
 
     try {
       setLoading(true);
-      console.log("Sending request..."); // 调试日志
+      console.log("Sending request...");
 
       const token = localStorage.getItem("token");
-      console.log("Token:", token ? "exists" : "missing"); // 调试日志
+      
+      // 构建请求数据
+      const requestData = isSettingNew 
+        ? { password, action: "set" }  // 设置新密码
+        : { password, action: "modify" }; // 修改密码（需要旧密码，但这里应该跳转到修改页面）
+
+      // 如果是修改密码但用户误入此页面，提示并跳转
+      if (!isSettingNew) {
+        alert(t("Password already set, please use modify password page"));
+        navigate("/user/withdrawal-password/edit");
+        return;
+      }
 
       const res = await fetch("https://pankouhoutai.shop/api/withdrawal-password", {
         method: "POST",
@@ -42,19 +68,19 @@ export default function WithdrawalPassword() {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token,
         },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify(requestData),
       });
 
-      console.log("Response status:", res.status); // 调试日志
+      console.log("Response status:", res.status);
       const data = await res.json();
-      console.log("Response data:", data); // 调试日志
+      console.log("Response data:", data);
 
       if (res.ok && data.success) {
-        console.log("Success! Showing dialog..."); // 调试日志
+        console.log("Success! Showing dialog...");
         setShowSuccess(true);
       } else {
-        const errorMsg = data.message || data.error || t("Failed to change password");
-        console.error("API Error:", errorMsg); // 调试日志
+        const errorMsg = data.message || data.error || t("Failed to set password");
+        console.error("API Error:", errorMsg);
         alert(errorMsg);
       }
     } catch (err) {
@@ -66,27 +92,22 @@ export default function WithdrawalPassword() {
   };
 
   const handleSuccessClose = () => {
-    console.log("Success dialog closed"); // 调试日志
+    console.log("Success dialog closed");
     setShowSuccess(false);
 
-    // 改进的事件触发方式
+    // 触发全局刷新
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent("refreshData", {
         detail: { source: "withdrawalPassword" }
       }));
     }, 100);
 
-    // 改进的导航方式
+    // 导航返回
     setTimeout(() => {
-      if (window.history.length > 1) {
-        navigate(-1);
-      } else {
-        navigate("/profile"); // 如果无法返回，跳转到指定页面
-      }
+      navigate(-1);
     }, 150);
   };
 
-  // 添加键盘事件支持
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !loading) {
       handleSubmit();
@@ -95,7 +116,6 @@ export default function WithdrawalPassword() {
 
   return (
     <div className="min-h-screen bg-white relative" onKeyPress={handleKeyPress}>
-
       {/* 顶部 */}
       <div className="flex items-center p-4 border-b">
         <button
@@ -106,7 +126,7 @@ export default function WithdrawalPassword() {
           ←
         </button>
         <h1 className="text-lg font-semibold text-gray-800">
-          {t("Change Password")}
+          {isSettingNew ? t("Set Withdrawal Password") : t("Change Password")}
         </h1>
       </div>
 
@@ -149,16 +169,15 @@ export default function WithdrawalPassword() {
               : "bg-yellow-400 hover:bg-yellow-500"
           } text-white transition-colors`}
         >
-          {loading ? t("Submitting") : t("Submit")}
+          {loading ? t("Submitting") : (isSettingNew ? t("Set Password") : t("Submit"))}
         </Button>
       </div>
 
-      {/* 成功弹窗 - 改进版本 */}
+      {/* 成功弹窗 */}
       {showSuccess && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
           onClick={(e) => {
-            // 点击背景也关闭
             if (e.target === e.currentTarget) {
               handleSuccessClose();
             }
@@ -172,7 +191,7 @@ export default function WithdrawalPassword() {
             <button
               onClick={handleSuccessClose}
               className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-medium py-2 rounded-lg transition-colors active:scale-95"
-              autoFocus // 自动聚焦，方便键盘操作
+              autoFocus
             >
               {t("OK")}
             </button>
