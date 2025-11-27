@@ -1,23 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import useSmartBack from "@/hooks/useSmartBack";  // ⭐ 引入智能返回
 
 export default function Deposit1() {
-  const navigate = useNavigate();
   const { t } = useTranslation();
+  const smartBack = useSmartBack();               // ⭐ 使用智能返回
+  const navigate = useNavigate();
 
-  // 无焦点样式配置 - 只用于按钮
   const noFocusStyle = {
     outline: 'none',
     boxShadow: 'none',
     border: 'none',
     WebkitTapHighlightColor: 'transparent'
-  }
-
-  // 可以移除 preventDefault 函数
-  // const preventDefault = (e) => {
-  //   e.preventDefault()
-  //   e.stopPropagation()
-  // }
+  };
 
   const rechargeCoins = [
     { name: "USDT", icon: "/images/USDT.png" },
@@ -48,11 +43,12 @@ export default function Deposit1() {
           placeholder={t("Search currency")}
           className="flex-1 border rounded-full px-4 py-2 bg-gray-100 outline-none"
         />
+        
+        {/* ⭐ 返回改成智能返回 */}
         <button
-          className="close-btn" // 添加 close-btn class
-          onClick={() => navigate(-1)}
+          className="close-btn"
+          onClick={smartBack}
           style={noFocusStyle}
-          // 移除 onMouseDown 和 onTouchStart
         >
           {t("Cancel")}
         </button>
@@ -68,10 +64,9 @@ export default function Deposit1() {
           {rechargeCoins.map((coin) => (
             <div
               key={coin.name}
-              className="deposit-coin-item" // 添加 class 用于事件委托
+              className="deposit-coin-item"
               onClick={() => navigate(`/wallet/${coin.name}/deposit`)}
               style={noFocusStyle}
-              // 移除 onMouseDown 和 onTouchStart
             >
               <div className="flex items-center justify-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer transition active:bg-gray-100">
                 <img src={coin.icon} alt={coin.name} className="w-7 h-7 mr-2" />
@@ -92,10 +87,9 @@ export default function Deposit1() {
           {buyPlatforms.map((p) => (
             <div
               key={p.name}
-              className="buy-platform-item" // 添加 class 用于事件委托
+              className="buy-platform-item"
               onClick={() => window.open(p.url, "_blank")}
               style={noFocusStyle}
-              // 移除 onMouseDown 和 onTouchStart
             >
               <div className="flex items-center justify-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer transition active:bg-gray-100">
                 <img src={p.icon} alt={p.name} className="h-10 object-contain" />
