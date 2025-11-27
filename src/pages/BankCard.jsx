@@ -2,10 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
+import useSmartBack from "@/hooks/useSmartBack";   // ⬅️ 引入智能返回
 
 export default function BankCard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const smartBack = useSmartBack();   // ⬅️ 使用智能返回
 
   const [form, setForm] = useState({
     name: "",
@@ -14,19 +16,12 @@ export default function BankCard() {
   });
   const [loading, setLoading] = useState(false);
 
-  // 无焦点样式配置 - 只用于按钮
   const noFocusStyle = {
     outline: 'none',
     boxShadow: 'none',
     border: 'none',
     WebkitTapHighlightColor: 'transparent'
-  }
-
-  // 可以移除 preventDefault 函数，因为全局事件委托会处理
-  // const preventDefault = (e) => {
-  //   e.preventDefault()
-  //   e.stopPropagation()
-  // }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,7 +49,7 @@ export default function BankCard() {
 
       if (res.ok) {
         alert(data.message || t("Bank card submitted successfully!"));
-        navigate(-1);
+        smartBack();    // ⬅️ 成功提交后也用智能返回
       } else {
         alert(data.error || t("Failed to submit"));
       }
@@ -71,14 +66,16 @@ export default function BankCard() {
       {/* 顶部 */}
       <div className="flex items-center p-4 border-b">
         <button 
-          className="back-btn text-gray-600 text-xl mr-3" // 添加 back-btn class
-          onClick={() => navigate(-1)} 
+          className="back-btn text-gray-600 text-xl mr-3"
+          onClick={smartBack}      // ⬅️ 替换 navigate(-1)
           style={noFocusStyle}
-          // 移除 onMouseDown 和 onTouchStart
         >
           ←
         </button>
-        <h1 className="text-lg font-semibold text-gray-800">{t("Bank Card")}</h1>
+
+        <h1 className="text-lg font-semibold text-gray-800">
+          {t("Bank Card")}
+        </h1>
       </div>
 
       {/* 内容 */}
@@ -125,7 +122,6 @@ export default function BankCard() {
             loading ? "opacity-70 cursor-not-allowed" : ""
           }`}
           style={noFocusStyle}
-          // 移除 onMouseDown 和 onTouchStart
         >
           {loading ? t("Submitting...") : t("Submit")}
         </Button>

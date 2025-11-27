@@ -3,11 +3,12 @@ import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useTranslation } from "react-i18next"
+import useSmartBack from "@/hooks/useSmartBack"   // ⭐ 引入智能返回
 
 export default function Deposit() {
   const { t } = useTranslation()
   const { symbol } = useParams()
-  const navigate = useNavigate()
+  const smartBack = useSmartBack()                 // ⭐ 使用智能返回  
   const [network, setNetwork] = useState("")
   const [amount, setAmount] = useState("")
   const [voucher, setVoucher] = useState(null)
@@ -104,22 +105,21 @@ export default function Deposit() {
     <div className="min-h-screen bg-white p-4 pb-24">
       {/* 返回 - 已修改 */}
       <div className="flex items-center mb-3">
-        <button
-          className="back-btn" // 添加 back-btn class
-          onClick={() => window.history.back()}
-          style={{
-            ...noFocusStyle,
-            background: "none",
-            fontSize: 20,
-            color: "#666",
-            width: "45px",
-            textAlign: "left",
-            paddingLeft: "12px",
-          }}
-          // 移除 onMouseDown 和 onTouchStart
-        >
-          ←
-        </button>
+<button
+  className="back-btn"
+  onClick={smartBack}      // ⭐ 改成智能返回
+  style={{
+    ...noFocusStyle,
+    background: "none",
+    fontSize: 20,
+    color: "#666",
+    width: "45px",
+    textAlign: "left",
+    paddingLeft: "12px",
+  }}
+>
+  ←
+</button>
       </div>
 
       {/* 标题 */}
@@ -129,14 +129,13 @@ export default function Deposit() {
       <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
         <CardContent className="p-4 flex justify-between items-center">
           <span className="text-gray-600 font-medium">{t("Currency")}</span>
-          <span 
-            className="font-semibold text-gray-900 cursor-pointer back-btn" // 添加 back-btn class
-            onClick={handleCurrencyClick}
-            style={noFocusStyle}
-            // 移除 onMouseDown 和 onTouchStart
-          >
-            {symbol}
-          </span>
+<span
+  className="font-semibold text-gray-900 cursor-pointer back-btn"
+  onClick={smartBack}     // ⭐ 也改成智能返回
+  style={noFocusStyle}
+>
+  {symbol}
+</span>
         </CardContent>
       </Card>
 
