@@ -41,7 +41,7 @@ export default function Wallet() {
 
 const shortAddress =
     address && address.length > 10
-      ? `0x${address.slice(0, 6)}…${address.slice(-10)}`
+      ? `0x${address.slice(0, 6)}…${address.slice(-4)}`
       : `0x${address}` || "--";
 
 

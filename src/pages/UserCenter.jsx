@@ -82,7 +82,7 @@ export default function UserCenter() {
   const address = localStorage.getItem("address") || "";
 const shortAddress =
     address && address.length > 10
-      ? `0x${address.slice(0, 6)}…${address.slice(-10)}`
+      ? `0x${address.slice(0, 6)}…${address.slice(-4)}`
       : `0x${address}` || "--";
 
 

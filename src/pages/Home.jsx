@@ -19,7 +19,7 @@ import yonghuIcon from '../assets/icons/yonghu.png';
 const maskAddress = (addr) => {
   if (!addr) return "--";
   if (addr.length < 16) return addr;
-  return `0x${addr.slice(0, 6)}…${addr.slice(-10)}`;
+  return `0x${addr.slice(0, 6)}…${addr.slice(-4)}`;
 };
 
 // ============ 价格格式化函数 ============
@@ -181,11 +181,11 @@ const Home = () => {
   const userId = userInfo?.userId || localStorage.getItem("userId") || "";
 
   const shortAddress = address && address.length > 10
-    ? `0x${address.slice(0, 6)}…${addr.slice(-10)}`
+    ? `0x${address.slice(0, 6)}…${addr.slice(-4)}`
     : address || "--";
 
   const formattedUid = userId && userId.length > 10
-    ? `0x${userId.slice(0, 6)}…${userId.slice(-10)}`
+    ? `0x${userId.slice(0, 6)}…${userId.slice(-4)}`
     : userId || "--";
 
   // 多语言 features
