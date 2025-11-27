@@ -48,15 +48,20 @@ export default function Deposit1() {
           placeholder={t("Search currency")}
           className="flex-1 border rounded-full px-4 py-2 bg-gray-100 outline-none"
         />
-        <button
-          onClick={() => navigate(-1)}
-          className="ml-3 text-gray-600 text-sm font-medium bg-white"
-          style={noFocusStyle}
-          onMouseDown={preventDefault}
-          onTouchStart={preventDefault}
-        >
-          {t("Cancel")}
-        </button>
+<button
+  onClick={(e) => {
+    e.stopPropagation();       // 按钮内部事件不冒泡
+    e.preventDefault();        // 阻止默认点击（防长按选中）
+    navigate(-1);              // 强制执行返回
+  }}
+  onMouseDown={(e) => e.preventDefault()}   // 禁止手机点击高亮
+  onTouchStart={(e) => e.preventDefault()}  // 禁止触摸高亮
+  className="ml-3 text-gray-600 text-sm font-medium bg-white"
+  style={noFocusStyle}
+>
+  {t("Cancel")}
+</button>
+
       </div>
 
       {/* Recharge 区域 */}
