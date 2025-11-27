@@ -80,11 +80,26 @@ export default function Pledge() {
 
       {/* 顶部导航 */}
       <div className="flex items-center px-4 py-3 bg-white shadow-sm">
-        <button onClick={() => nav(-1)} className="mr-3">
-          <svg width="26" height="26" fill="none" stroke="#444" strokeWidth="2" strokeLinecap="round">
-            <path d="M15 6l-6 6 6 6" />
-          </svg>
-        </button>
+<button
+  onClick={() => nav(-1)}
+  className="p-0 m-0 mr-3 bg-transparent border-none"
+  style={{
+    background: "none",
+    border: "none",
+    padding: 0,
+  }}
+>
+  <svg
+    width="26"
+    height="26"
+    fill="none"
+    stroke="#444"
+    strokeWidth="2"
+    strokeLinecap="round"
+  >
+    <path d="M15 6l-6 6 6 6" />
+  </svg>
+</button>
 
         <span className="text-lg font-medium">{t("Pledge")}</span>
       </div>
