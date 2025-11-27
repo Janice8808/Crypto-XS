@@ -86,7 +86,7 @@ export default function Deposit() {
     navigate(-1)
   }
 
-  // 无焦点样式配置
+  // 无焦点样式配置 - 只用于按钮
   const noFocusStyle = {
     outline: 'none',
     boxShadow: 'none',
@@ -94,6 +94,7 @@ export default function Deposit() {
     WebkitTapHighlightColor: 'transparent'
   }
 
+  // 只对按钮使用 preventDefault
   const preventDefault = (e) => {
     e.preventDefault()
     e.stopPropagation()
@@ -232,9 +233,6 @@ export default function Deposit() {
               onChange={(e) => setAmount(e.target.value)}
               placeholder={t("Please enter the transfer amount")}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-gray-50"
-              style={noFocusStyle}
-              onMouseDown={preventDefault}
-              onTouchStart={preventDefault}
             />
           </div>
 
