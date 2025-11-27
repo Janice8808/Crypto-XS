@@ -143,3 +143,28 @@ button:not(.bottom-nav *):active,
 .feature-item:focus {
   color: #666 !important; /* 保持灰色，不变成蓝色 */
 }
+
+/* 移除所有焦点边框 & 高亮 */
+button, 
+button:focus, 
+button:focus-visible,
+button:active,
+[class*="button"],
+[class*="btn"],
+[class*="Button"],
+[class*="btn"]:focus-visible,
+[class*="btn"]:focus,
+[class*="Button"]:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* 覆盖 Tailwind 的 ring 和 outline */
+button[class*="ring"],
+button[class*="ring-"],
+button:focus-visible[class*="ring"],
+button:focus-visible[class*="ring-"] {
+  outline: none !important;
+  box-shadow: none !important;
+}
