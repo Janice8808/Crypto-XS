@@ -321,19 +321,7 @@ const features = [
       <img src={globeIcon} className="w-10 h-10" alt="globe" />
     </button>
   </div>
-</div>
-
-    <button 
-      className="p-0 bg-transparent" 
-      onClick={() => navigate("/user/language")}
-      style={noFocusStyle}
-      onMouseDown={preventDefault}
-      onTouchStart={preventDefault}
-    >
-      <img src={globeIcon} className="w-10 h-10" alt="globe" />
-    </button>
-  </div>
-</div>
+</div> 
 
       {/* Banner */}
       <div className="w-full relative bg-gray-800 overflow-hidden">
