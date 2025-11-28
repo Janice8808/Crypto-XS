@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useCoins } from "../hooks/useCoins";
 import { useTranslation } from "react-i18next";
 
-// ====== 让 USDT 一定出现 ======
+// ====== USDT 一定出现 ======
 function ensureUsdt(coins) {
   const hasUsdt = coins.some(
     (c) => (c.symbol || "").toUpperCase() === "USDT"
@@ -25,35 +25,37 @@ function ensureUsdt(coins) {
 export default function Withdraw1() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-
-  const [coins, setCoins] = useState([]);
-  const [balances, setBalances] = useState({});
-  const [search, setSearch] = useState("");
-
   const { allCoins } = useCoins();
 
-  // 无焦点样式配置 - 只用于按钮
-  const noFocusStyle = {
-    outline: 'none',
-    boxShadow: 'none',
-    border: 'none',
-    WebkitTapHighlightColor: 'transparent'
-  }
+  /* -------------------------------------
+      ⭐ 1. 静态首屏（瞬间显示）
+  ------------------------------------- */
+  const [coins, setCoins] = useState([
+    { symbol: "USDT" },
+    { symbol: "BTC" },
+    { symbol: "ETH" },
+    { symbol: "BNB" },
+    { symbol: "SOL" },
+    { symbol: "XRP" },
+    { symbol: "ADA" },
+    { symbol: "DOGE" },
+  ]);
 
-  // 可以移除 preventDefault 函数，因为全局事件委托会处理
-  // const preventDefault = (e) => {
-  //   e.preventDefault()
-  //   e.stopPropagation()
-  // }
-
-  // 获取币种列表
+  /* -------------------------------------
+      ⭐ 2. allCoins 加载后平滑替换真数据
+  ------------------------------------- */
   useEffect(() => {
-    let list = Array.isArray(allCoins) ? allCoins : [];
-    list = ensureUsdt(list); // USDT 强制置顶
-    setCoins(list);
+    if (Array.isArray(allCoins) && allCoins.length > 0) {
+      let final = ensureUsdt(allCoins);
+      setCoins(final.slice(0, 50)); // 限制数量避免卡顿
+    }
   }, [allCoins]);
 
-  // 获取用户余额
+  /* -------------------------------------
+      ⭐ 3. 余额：第一次不用等待
+  ------------------------------------- */
+  const [balances, setBalances] = useState({});
+
   useEffect(() => {
     async function loadBalance() {
       try {
@@ -61,24 +63,44 @@ export default function Withdraw1() {
         const res = await fetch("https://pankouhoutai.shop/api/user/balance", {
           headers: { Authorization: `Bearer ${token}` },
         });
+
         const data = await res.json();
-        if (data && data.balances) setBalances(data.balances);
+        if (data && data.balances) {
+          setBalances(data.balances);
+        }
       } catch (err) {
         console.error("Failed to load balances:", err);
       }
     }
+
     loadBalance();
   }, []);
 
-  // 搜索过滤
-  const filteredCoins = coins.filter((coin) =>
-    coin.symbol?.toLowerCase().includes(search.toLowerCase())
-  );
+  /* -------------------------------------
+      搜索
+  ------------------------------------- */
+  const [search, setSearch] = useState("");
+
+  const filteredCoins = useMemo(() => {
+    return coins.filter((coin) =>
+      coin.symbol?.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [coins, search]);
+
+  /* -------------------------------------
+      无焦点默认样式
+  ------------------------------------- */
+  const noFocusStyle = {
+    outline: "none",
+    boxShadow: "none",
+    border: "none",
+    WebkitTapHighlightColor: "transparent",
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
 
-      {/* 顶部搜索栏 - 已修改 */}
+      {/* 搜索栏 */}
       <div className="flex items-center px-4 py-3 bg-white shadow-sm sticky top-0 z-10">
         <input
           type="text"
@@ -88,35 +110,33 @@ export default function Withdraw1() {
           className="flex-1 border rounded-full px-4 py-2 text-sm text-gray-700 focus:ring-1 focus:ring-yellow-400 outline-none"
         />
         <button
-          className="back-btn ml-3 text-gray-500 text-sm font-medium" // 添加 back-btn class
+          className="back-btn ml-3 text-gray-500 text-sm font-medium"
           onClick={() => navigate(-1)}
           style={noFocusStyle}
-          // 移除 onMouseDown 和 onTouchStart
         >
           {t("Cancel")}
         </button>
       </div>
 
-      {/* 币种列表 - 已修改 */}
+      {/* 币种列表 */}
       <div className="px-4 mt-2 space-y-2">
         {filteredCoins.map((coin) => {
           const sym = (coin.symbol || "").toUpperCase();
           const amount =
             parseFloat(
-              balances?.[sym] ?? balances?.[sym.replace("USDT", "")] ?? 0
+              balances?.[sym] ??
+              balances?.[sym.replace("USDT", "")] ??
+              0
             ) || 0;
 
           return (
             <div
               key={coin.id || coin.symbol}
-              className="coin-item flex items-center justify-between bg-white rounded-xl p-3 shadow-sm hover:bg-gray-100 cursor-pointer transition" // 添加 coin-item class
+              className="coin-item flex items-center justify-between bg-white rounded-xl p-3 shadow-sm hover:bg-gray-100 cursor-pointer transition"
               onClick={() => navigate(`/wallet/${sym}/withdraw`)}
               style={noFocusStyle}
-              // 移除 onMouseDown 和 onTouchStart
             >
               <div className="flex items-center space-x-3">
-
-                {/* 币种图标 */}
                 <img
                   src={`/coin-icons/${sym}.png`}
                   alt={sym}
