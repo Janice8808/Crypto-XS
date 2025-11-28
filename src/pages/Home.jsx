@@ -427,7 +427,7 @@ const shortAddress =
               style={{backgroundImage: "url(/images/online.jpg)"}}
             />
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-gray-500 text-sm font-bold text-center leading-tight mr-3">
+             <span className="text-[#5E6271] text-sm font-bold text-center leading-tight mr-3">
                 {t('Online')}<br />{t('Service')}
               </span>
             </div>
@@ -443,7 +443,7 @@ const shortAddress =
   />
   <div className="absolute inset-0 flex items-center justify-center">
     <div className="text-center ml-4">
-      <span className="text-gray-500 text-sm font-bold">
+      <span className="text-[#5E6271] text-sm font-bold">
         {t("Fast buying coin")}
       </span>
       <div className="text-gray-400 text-[10px] mt-1">
