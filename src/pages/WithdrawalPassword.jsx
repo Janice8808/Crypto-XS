@@ -109,6 +109,8 @@ export default function WithdrawalPassword() {
     console.log("Success dialog closed");
     setShowSuccess(false);
 
+    localStorage.setItem("withdrawPasswordSet", "1");
+
     // 触发全局刷新
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent("refreshData", {

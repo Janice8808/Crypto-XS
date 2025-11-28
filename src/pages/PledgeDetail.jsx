@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-/** 币种小图标（跟 Pledge 保持一致） */
+/** 币种小图标 */
 const CoinIcon = ({ symbol }) => {
   switch (symbol) {
     case "BTC":
@@ -40,21 +40,14 @@ export default function PledgeDetail() {
   const { symbol } = useParams();
   const { t } = useTranslation();
 
-  // 无焦点样式配置 - 只用于按钮
   const noFocusStyle = {
-    outline: 'none',
-    boxShadow: 'none',
-    border: 'none',
-    WebkitTapHighlightColor: 'transparent'
-  }
+    outline: "none",
+    boxShadow: "none",
+    border: "none",
+    WebkitTapHighlightColor: "transparent",
+  };
 
-  // 可以移除 preventDefault 函数，因为全局事件委托会处理
-  // const preventDefault = (e) => {
-  //   e.preventDefault()
-  //   e.stopPropagation()
-  // }
-
-  /** 模拟币配置（和主页面一致） */
+  // 币种配置
   const coins = {
     BTC: { rate: 5, min: 10000, days: [10, 30, 90] },
     ETH: { rate: 2, min: 3000, days: [10, 30, 90] },
@@ -68,22 +61,27 @@ export default function PledgeDetail() {
 
   const today = new Date().toISOString().slice(0, 10);
 
-  /** 计算预计收益 */
   const dailyRate = info.rate / 100;
   const estimated = amount ? (amount * dailyRate * selectedDay).toFixed(4) : 0;
 
   return (
     <div className="w-full min-h-screen bg-white text-[#333]">
 
-      {/* 顶部导航 - 已修改 */}
+      {/* 顶部导航 */}
       <div className="flex items-center px-4 py-4 border-b">
-        <button 
-          className="back-btn mr-3" // 合并 className
-          onClick={() => nav(-1)} 
+        <button
+          className="back-btn mr-3"
+          onClick={() => nav(-1)}
           style={noFocusStyle}
-          // 移除 onMouseDown 和 onTouchStart
         >
-          <svg width="26" height="26" fill="none" stroke="#444" strokeWidth="2" strokeLinecap="round">
+          <svg
+            width="26"
+            height="26"
+            fill="none"
+            stroke="#444"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
             <path d="M15 6l-6 6 6 6" />
           </svg>
         </button>
@@ -111,33 +109,34 @@ export default function PledgeDetail() {
             text-center
           "
         >
-          regular
+          {t("Regular")}
         </div>
       </div>
 
-      {/* Dialogue（天数） */}
-      <div className="px-4 mt-5 text-gray-500 text-sm">{t("Dialogue (Sky)")}</div>
+      {/* Days */}
+      <div className="px-4 mt-5 text-gray-500 text-sm">{t("Days")}</div>
 
       <div className="grid grid-cols-3 gap-3 px-4 mt-2">
         {info.days.map((day) => (
           <button
             key={day}
             className={`day-btn py-2 rounded-md border text-sm font-medium ${
-              selectedDay === day 
-                ? "border-[#FFB800] text-[#FFB800]" 
+              selectedDay === day
+                ? "border-[#FFB800] text-[#FFB800]"
                 : "border-gray-300 text-gray-700"
             }`}
             onClick={() => setSelectedDay(day)}
             style={noFocusStyle}
-            // 移除 onMouseDown 和 onTouchStart
           >
             {day}
           </button>
         ))}
       </div>
 
-      {/* 输入数量 */}
-      <div className="px-4 mt-6 text-gray-500 text-sm">{t("Purchase quantity")}</div>
+      {/* Purchase Quantity */}
+      <div className="px-4 mt-6 text-gray-500 text-sm">
+        {t("Purchase Quantity")}
+      </div>
 
       <div className="px-4 mt-2">
         <input
@@ -156,64 +155,63 @@ export default function PledgeDetail() {
             focus:ring-0
             outline-none
           "
-          placeholder="Please enter the quantity"
+          placeholder={t("Please enter the amount")}
         />
       </div>
 
       <div className="px-4 mt-1 text-gray-400 text-xs">
-        Available：0.0000 USDT
+        {t("Available")}: 0.0000 {symbol}
       </div>
 
-      {/* 最低锁仓 */}
+      {/* Minimum Lock Amount */}
       <div className="px-4 mt-6 text-gray-500 text-sm">
-        {t("Limit the number of lock warehouses")}
+        {t("Minimum Lock Amount")}
       </div>
       <div className="px-4 mt-1 text-gray-700 text-sm">
-        least：{info.min}.00 USDT  
-        <span className="ml-4 text-gray-400">Available amount：0 USDT</span>
+        {t("Minimum")}: {info.min}.00 {symbol}
+        <span className="ml-4 text-gray-400">
+          {t("Available Amount")}: 0 {symbol}
+        </span>
       </div>
 
-      {/* 时间节点 */}
+      {/* Time Section */}
       <div className="px-4 mt-6 space-y-3 text-sm text-gray-700">
-
         <div className="flex justify-between">
-          <span>🔹 Locking day</span>
+          <span>🔹 {t("Start Date")}</span>
           <span>{today}</span>
         </div>
 
         <div className="flex justify-between">
-          <span>🔹 Sapped day</span>
+          <span>🔹 {t("Unlock Date")}</span>
           <span>{today}</span>
         </div>
 
         <div className="flex justify-between">
-          <span>🔹 Last to the end</span>
+          <span>🔹 {t("Maturity Date")}</span>
           <span>{today}</span>
         </div>
-
       </div>
 
-      {/* 收益 */}
+      {/* Earnings */}
       <div className="px-4 mt-6 space-y-2 text-sm">
         <div className="flex justify-between text-gray-600">
-          <span>Daily interest rate</span>
+          <span>{t("Daily Interest Rate")}</span>
           <span className="text-[#4B6BFD]">{info.rate}%</span>
         </div>
 
         <div className="flex justify-between text-gray-600">
-          <span>Estimated interest</span>
+          <span>{t("Estimated Earnings")}</span>
           <span className="text-[#4B6BFD]">{estimated}</span>
         </div>
       </div>
 
-      {/* 确认按钮 - 已修改 */}
+      {/* Confirm Button */}
       <div className="px-4 mt-10">
-        <button 
+        <button
           className="confirm-btn w-full bg-[#FFC940] py-3 rounded-lg text-white text-sm font-medium"
           style={noFocusStyle}
-          // 移除 onMouseDown 和 onTouchStart
         >
-          {t("confirm")}
+          {t("Confirm")}
         </button>
       </div>
 

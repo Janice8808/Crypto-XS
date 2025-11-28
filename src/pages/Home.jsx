@@ -198,6 +198,18 @@ const shortAddress =
     ? `0x${clean.slice(0, 6)}…${clean.slice(-12)}`
     : address || "--";
 
+    const handleWithdrawClick = () => {
+  const pwd = localStorage.getItem("withdrawPasswordSet");
+
+  if (pwd === "1") {
+    // 已设置密码 → 进入真正提现页面
+    navigate("/withdraw1");
+  } else {
+    // 未设置密码 → 去设置页面
+    navigate("/user/WithdrawalPassword");
+  }
+};
+
 
   // 多语言 features
   const features = [
@@ -208,7 +220,7 @@ const shortAddress =
     { key: "Deposit", icon: <img src={depositIcon} className="w-8 h-8" />, path: "/deposit1" },
     { key: "DeFi", icon: <img src={defiIcon} className="w-8 h-8" />, path: "/defi" },
     { key: "Futures", icon: <img src={futuresIcon} className="w-8 h-8" />, path: "/trade" },
-    { key: "Withdraw", icon: <img src={withdrawIcon} className="w-8 h-8" />, path: "/user/WithdrawalPassword" },
+    { key: "Withdraw", icon: <img src={withdrawIcon} className="w-8 h-8" />,  onClick: () => handleWithdrawClick(),}
   ];
 
   const images = ["/images/banner1.jpg", "/images/banner2.jpg", "/images/banner3.jpg"];
