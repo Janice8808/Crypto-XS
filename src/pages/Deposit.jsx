@@ -8,24 +8,13 @@ export default function Deposit() {
   const { t } = useTranslation()
   const { symbol } = useParams()
   const navigate = useNavigate()
-  
-  console.log('=== 调试信息 ===')
-  console.log('symbol:', symbol)
-  console.log('history.length:', window.history.length)
 
-  // 智能返回函数 - 修复版
+  // 智能返回函数
   const smartBack = () => {
-    console.log('🎯 返回按钮被点击')
-    console.log('当前history长度:', window.history.length)
-    
-    // 如果是从其他页面跳转过来的，返回上一页
     if (window.history.length > 2) {
-      console.log('返回上一页')
       navigate(-1)
     } else {
-      // 如果是直接打开的，跳转到钱包页面或首页
-      console.log('跳转到钱包页面')
-      navigate('/wallet') // 或者 navigate('/')
+      navigate('/wallet') // 根据你的实际路由调整
     }
   }
 
@@ -103,20 +92,13 @@ export default function Deposit() {
     }, 2000)
   }
 
-  // 无焦点样式配置
-  const noFocusStyle = {
-    outline: 'none',
-    boxShadow: 'none',
-    border: 'none',
-    WebkitTapHighlightColor: 'transparent'
-  }
-
   return (
     <div className="min-h-screen bg-white p-4 pb-24">
-      {/* 返回按钮 - 修复版 */}
+      {/* 返回按钮 - 完全移除焦点样式 */}
       <div className="flex items-center mb-3">
         <button
           onClick={smartBack}
+          className="back-btn"
           style={{
             background: "none",
             fontSize: 20,
@@ -124,6 +106,20 @@ export default function Deposit() {
             width: "45px",
             textAlign: "left",
             paddingLeft: "12px",
+            border: "none",
+            outline: "none",
+            boxShadow: "none",
+            WebkitTapHighlightColor: "transparent",
+            // 移除所有可能的焦点状态
+            focus: "none",
+            active: "none",
+            hover: "none"
+          }}
+          onMouseDown={(e) => {
+            e.preventDefault() // 阻止默认的鼠标按下样式
+          }}
+          onTouchStart={(e) => {
+            e.preventDefault() // 阻止触摸反馈
           }}
         >
           ←
@@ -140,7 +136,15 @@ export default function Deposit() {
           <span
             className="font-semibold text-gray-900 cursor-pointer"
             onClick={smartBack}
-            style={noFocusStyle}
+            style={{
+              border: "none",
+              outline: "none",
+              boxShadow: "none",
+              WebkitTapHighlightColor: "transparent",
+              background: "none"
+            }}
+            onMouseDown={(e) => e.preventDefault()}
+            onTouchStart={(e) => e.preventDefault()}
           >
             {symbol}
           </span>
@@ -158,12 +162,17 @@ export default function Deposit() {
                 <Button
                   key={n}
                   style={{
-                    ...noFocusStyle,
                     backgroundColor: activeNetwork === n ? 'green' : 'white',
-                    color: activeNetwork === n ? 'white' : 'gray'
+                    color: activeNetwork === n ? 'white' : 'gray',
+                    border: "1px solid #d1d5db",
+                    outline: "none",
+                    boxShadow: "none",
+                    WebkitTapHighlightColor: "transparent"
                   }}
-                  className="flex-1 font-semibold rounded-lg border"
+                  className="flex-1 font-semibold rounded-lg"
                   onClick={() => setNetwork(n)}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onTouchStart={(e) => e.preventDefault()}
                 >
                   {n}
                 </Button>
@@ -187,10 +196,15 @@ export default function Deposit() {
               <Button
                 className="mt-3 text-white font-semibold rounded-lg px-10"
                 style={{ 
-                  ...noFocusStyle,
-                  backgroundColor: '#16813dff'
+                  backgroundColor: '#16813dff',
+                  border: "none",
+                  outline: "none",
+                  boxShadow: "none",
+                  WebkitTapHighlightColor: "transparent"
                 }}
                 onClick={handleCopy}
+                onMouseDown={(e) => e.preventDefault()}
+                onTouchStart={(e) => e.preventDefault()}
               >
                 {copyText}
               </Button>
@@ -210,7 +224,14 @@ export default function Deposit() {
 
             <label 
               className="w-full h-44 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-200 transition"
-              style={noFocusStyle}
+              style={{
+                border: "2px dashed #d1d5db",
+                outline: "none",
+                boxShadow: "none",
+                WebkitTapHighlightColor: "transparent"
+              }}
+              onMouseDown={(e) => e.preventDefault()}
+              onTouchStart={(e) => e.preventDefault()}
             >
               {voucher ? (
                 <img src={voucher} alt="voucher" className="w-full h-full object-cover rounded-lg" />
@@ -254,8 +275,15 @@ export default function Deposit() {
       <div className="py-3">
         <Button
           className="w-full bg-green-600 hover:bg-green-800 text-white font-semibold rounded-lg py-3"
-          style={noFocusStyle}
+          style={{
+            border: "none",
+            outline: "none",
+            boxShadow: "none",
+            WebkitTapHighlightColor: "transparent"
+          }}
           onClick={handleSubmit}
+          onMouseDown={(e) => e.preventDefault()}
+          onTouchStart={(e) => e.preventDefault()}
         >
           {t("Submit")}
         </Button>
