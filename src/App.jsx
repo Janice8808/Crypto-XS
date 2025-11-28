@@ -2,12 +2,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./i18n";
-
+import InviteIntro from "./pages/InviteIntro";
 import Splash from "./Splash";
 import Layout from "./Layout";
 import AuthGate from "./AuthGate";
 import { apiFetch } from "@/api/http";
-
+import Announcement from "./pages/Announcement";
 import Home from "./pages/Home";
 import Market from "./pages/Market";
 import CoinDetail from "./pages/CoinDetail";
@@ -351,7 +351,8 @@ useEffect(() => {
          
           <Route path="/intro" element={<AuthGate><Introduction /></AuthGate>} />
           <Route path="/user/msb" element={<AuthGate><MSBCertification /></AuthGate>} />
-
+          <Route path="/invite-intro" element={<InviteIntro />} />
+          <Route path="/announcement" element={<Announcement />} />
           <Route path="/defi" element={<AuthGate><Pledge /></AuthGate>} />
           <Route path="/defi-record" element={<AuthGate><DeFiRecord /></AuthGate>} />
           <Route path="/pledge-detail/:symbol" element={<AuthGate><PledgeDetail /></AuthGate>} />
