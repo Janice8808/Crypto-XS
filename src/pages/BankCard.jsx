@@ -2,12 +2,21 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
-import useSmartBack from "@/hooks/useSmartBack";
+// ❌ 移除 useSmartBack 导入
+// import useSmartBack from "@/hooks/useSmartBack";
 
 export default function BankCard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const smartBack = useSmartBack("/user");
+
+  // ✅ 直接使用 window.history.back()
+  const handleGoBack = () => {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      navigate("/user", { replace: true });
+    }
+  };
 
   const [form, setForm] = useState({
     name: "",
@@ -21,15 +30,6 @@ export default function BankCard() {
     boxShadow: "none",
     border: "none",
     WebkitTapHighlightColor: "transparent",
-  };
-
-  // 备用返回函数，以防 smartBack 出现问题
-  const fallbackGoBack = () => {
-    if (window.history.length > 1) {
-      navigate(-1);
-    } else {
-      navigate("/user", { replace: true });
-    }
   };
 
   const handleChange = (e) => {
@@ -77,10 +77,9 @@ export default function BankCard() {
       <div className="flex items-center p-4 border-b">
         <button
           className="back-btn text-gray-600 text-xl mr-3"
-          onClick={smartBack || fallbackGoBack} // 双重保障
+          onClick={handleGoBack}  // ✅ 使用简单的返回逻辑
           style={noFocusStyle}
           onTouchStart={(e) => {
-            // 移动端触摸反馈
             e.currentTarget.style.opacity = "0.7";
           }}
           onTouchEnd={(e) => {
