@@ -89,6 +89,15 @@ export default function UserCenter() {
       ? `0x${clean.slice(0, 6)}…${clean.slice(-12)}`
       : address || "--";
 
+  // 智能返回函数
+  const handleBack = () => {
+    if (window.history.length > 2) {
+      navigate(-1)
+    } else {
+      navigate('/') // 或者 navigate('/Home')，根据你的首页路径调整
+    }
+  }
+
   /* ============== 检查 Token 有效性 ============== */
   useEffect(() => {
     const checkTokenValidity = async () => {
@@ -163,9 +172,9 @@ export default function UserCenter() {
 
   return (
     <div className="min-h-screen bg-white pb-20">
-      {/* ⭐ 左侧返回键 - 绝对贴左 */}
+      {/* ⭐ 左侧返回键 - 修复版 */}
       <button
-        onClick={() => window.history.back()}
+        onClick={handleBack}
         style={{
           background: "none",
           border: "none",
@@ -174,6 +183,9 @@ export default function UserCenter() {
           width: "45px",
           textAlign: "left",
           paddingLeft: "12px",
+          outline: "none",
+          boxShadow: "none",
+          cursor: "pointer"
         }}
       >
         ←
