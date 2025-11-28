@@ -1191,7 +1191,7 @@ const resources = {
     "Withdraw": "提幣",
     "fastbuy": "快速購買",
 
-    "Buy Crypto": "購買加密貨幣",
+    "Buy Crypto": "買幣",
     "Money": "資金",
     "Submit order": "提交訂單",
 
@@ -1430,7 +1430,7 @@ const resources = {
       "Service": "客服",
       "Announcement center": "公告中心",
       "Recharge": "充值",
-      "Buy Cryptocurrency": "购买加密货币",
+      "Buy Cryptocurrency": "买币",
       "Search currency": "搜索币种",
       "Cancel": "取消",
 
@@ -1477,7 +1477,7 @@ const resources = {
       "Enter withdrawal quantity": "请输入提币数量",
 
       /* BuyCrypto */
-      "Buy Crypto": "购买加密货币",
+      "Buy Crypto": "买币",
       "Money": "资金",
       "Submit order": "提交订单",
 
