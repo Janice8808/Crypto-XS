@@ -3,12 +3,32 @@ import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useTranslation } from "react-i18next"
-import useSmartBack from "@/hooks/useSmartBack"   // ⭐ 引入智能返回
 
 export default function Deposit() {
   const { t } = useTranslation()
   const { symbol } = useParams()
-  const smartBack = useSmartBack()                 // ⭐ 使用智能返回  
+  const navigate = useNavigate()
+  
+  console.log('=== 调试信息 ===')
+  console.log('symbol:', symbol)
+  console.log('history.length:', window.history.length)
+
+  // 智能返回函数 - 修复版
+  const smartBack = () => {
+    console.log('🎯 返回按钮被点击')
+    console.log('当前history长度:', window.history.length)
+    
+    // 如果是从其他页面跳转过来的，返回上一页
+    if (window.history.length > 2) {
+      console.log('返回上一页')
+      navigate(-1)
+    } else {
+      // 如果是直接打开的，跳转到钱包页面或首页
+      console.log('跳转到钱包页面')
+      navigate('/wallet') // 或者 navigate('/')
+    }
+  }
+
   const [network, setNetwork] = useState("")
   const [amount, setAmount] = useState("")
   const [voucher, setVoucher] = useState(null)
@@ -83,11 +103,7 @@ export default function Deposit() {
     }, 2000)
   }
 
-  const handleCurrencyClick = () => {
-    navigate(-1)
-  }
-
-  // 无焦点样式配置 - 只用于按钮
+  // 无焦点样式配置
   const noFocusStyle = {
     outline: 'none',
     boxShadow: 'none',
@@ -95,54 +111,46 @@ export default function Deposit() {
     WebkitTapHighlightColor: 'transparent'
   }
 
-  // 可以移除 preventDefault 函数
-  // const preventDefault = (e) => {
-  //   e.preventDefault()
-  //   e.stopPropagation()
-  // }
-
   return (
     <div className="min-h-screen bg-white p-4 pb-24">
-      {/* 返回 - 已修改 */}
+      {/* 返回按钮 - 修复版 */}
       <div className="flex items-center mb-3">
-<button
-  className="back-btn"
-  onClick={smartBack}      // ⭐ 改成智能返回
-  style={{
-    ...noFocusStyle,
-    background: "none",
-    fontSize: 20,
-    color: "#666",
-    width: "45px",
-    textAlign: "left",
-    paddingLeft: "12px",
-  }}
->
-  ←
-</button>
+        <button
+          onClick={smartBack}
+          style={{
+            background: "none",
+            fontSize: 20,
+            color: "#666",
+            width: "45px",
+            textAlign: "left",
+            paddingLeft: "12px",
+          }}
+        >
+          ←
+        </button>
       </div>
 
       {/* 标题 */}
       <h1 className="text-xl font-semibold text-gray-800 mb-3">{t("Deposit")}</h1>
 
-      {/* 币种 - 已修改 */}
+      {/* 币种 */}
       <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
         <CardContent className="p-4 flex justify-between items-center">
           <span className="text-gray-600 font-medium">{t("Currency")}</span>
-<span
-  className="font-semibold text-gray-900 cursor-pointer back-btn"
-  onClick={smartBack}     // ⭐ 也改成智能返回
-  style={noFocusStyle}
->
-  {symbol}
-</span>
+          <span
+            className="font-semibold text-gray-900 cursor-pointer"
+            onClick={smartBack}
+            style={noFocusStyle}
+          >
+            {symbol}
+          </span>
         </CardContent>
       </Card>
 
       {/* 网络 + 地址 + 二维码 */}
       <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
         <CardContent className="p-5 space-y-5">
-          {/* 网络选择 - 已修改 */}
+          {/* 网络选择 */}
           <div>
             <div className="text-gray-600 font-medium mb-2">{t("Network")}</div>
             <div className="flex gap-3">
@@ -156,7 +164,6 @@ export default function Deposit() {
                   }}
                   className="flex-1 font-semibold rounded-lg border"
                   onClick={() => setNetwork(n)}
-                  // 移除 onMouseDown 和 onTouchStart
                 >
                   {n}
                 </Button>
@@ -164,7 +171,7 @@ export default function Deposit() {
             </div>
           </div>
 
-          {/* 地址与二维码 - 已修改 */}
+          {/* 地址与二维码 */}
           <div className="text-center">
             <div className="text-gray-600 font-medium mb-2">{t("Deposit address")}</div>
 
@@ -184,7 +191,6 @@ export default function Deposit() {
                   backgroundColor: '#16813dff'
                 }}
                 onClick={handleCopy}
-                // 移除 onMouseDown 和 onTouchStart
               >
                 {copyText}
               </Button>
@@ -193,10 +199,10 @@ export default function Deposit() {
         </CardContent>
       </Card>
 
-      {/* 上传凭证 + 金额 + 提示 - 已修改 */}
+      {/* 上传凭证 + 金额 + 提示 */}
       <Card className="border border-gray-200 rounded-2xl mb-4 bg-gray-100">
         <CardContent className="p-5 space-y-5">
-          {/* 上传凭证 - 已修改 */}
+          {/* 上传凭证 */}
           <div>
             <div className="text-gray-600 font-medium mb-2">
               {t("Upload transfer voucher")}
@@ -205,7 +211,6 @@ export default function Deposit() {
             <label 
               className="w-full h-44 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-200 transition"
               style={noFocusStyle}
-              // 移除 onMouseDown 和 onTouchStart
             >
               {voucher ? (
                 <img src={voucher} alt="voucher" className="w-full h-full object-cover rounded-lg" />
@@ -245,13 +250,12 @@ export default function Deposit() {
         </CardContent>
       </Card>
 
-      {/* 提交按钮 - 已修改 */}
+      {/* 提交按钮 */}
       <div className="py-3">
         <Button
           className="w-full bg-green-600 hover:bg-green-800 text-white font-semibold rounded-lg py-3"
           style={noFocusStyle}
           onClick={handleSubmit}
-          // 移除 onMouseDown 和 onTouchStart
         >
           {t("Submit")}
         </Button>
