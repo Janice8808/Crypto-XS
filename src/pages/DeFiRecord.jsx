@@ -7,11 +7,11 @@ export default function DeFiRecord() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-// 最彻底的解决方案
 const handleBack = () => {
   console.log('强制跳转到首页');
-  window.location.href = '/'; // 使用原生跳转
-}
+  window.location.href = 'https://ceshipankou.shop/'; // 固定跳转到这个域名
+};
+
 
   // 无焦点样式配置
   const noFocusStyle = {
