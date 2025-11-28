@@ -8,6 +8,14 @@ import { useTranslation } from "react-i18next";
 // ====== OKX WebSocket 地址 ======
 const OKX_WS = "wss://ws.okx.com:8443/ws/v5/public";
 
+const SYMBOLS = [
+  "BTC-USDT","ETH-USDT","BNB-USDT","SOL-USDT","XRP-USDT",
+  "DOGE-USDT","ADA-USDT","TRX-USDT","AVAX-USDT","DOT-USDT",
+  "LTC-USDT","LINK-USDT","ATOM-USDT","FIL-USDT","BCH-USDT",
+  "MATIC-USDT","TON-USDT","ICP-USDT","APT-USDT","NEAR-USDT",
+  "SAND-USDT","MANA-USDT","ARB-USDT","OP-USDT","SUI-USDT"
+];
+
 export default function CoinDetail() {
   const { t } = useTranslation();          // ⭐ 多语言
   const { symbol } = useParams();
@@ -18,13 +26,50 @@ export default function CoinDetail() {
   const [orderType, setOrderType] = useState("limit");
   const [price, setPrice] = useState("");
   const [qty, setQty] = useState("");
-
+  const [allTickers, setAllTickers] = useState({});
   const [availableUsdt, setAvailableUsdt] = useState(0);
   const [lastPrice, setLastPrice] = useState(null);
   const [changePct, setChangePct] = useState(null);
 
   const [submitting, setSubmitting] = useState(false);
   const [submitMsg, setSubmitMsg] = useState("");
+// ========== 多币种行情 ==========  
+useEffect(() => {
+  const ws = new WebSocket(OKX_WS);
+
+  ws.onopen = () => {
+    ws.send(JSON.stringify({
+      op: "subscribe",
+      args: SYMBOLS.map((instId) => ({
+        channel: "tickers",
+        instId
+      }))
+    }));
+  };
+
+  ws.onmessage = (evt) => {
+    const msg = JSON.parse(evt.data);
+    if (!msg.data) return;
+
+    const d = msg.data[0];
+    const instId = d.instId;          // e.g. BTC-USDT
+    const base = instId.split("-")[0]; // BTC
+
+    const open = Number(d.open24h);
+    const last = Number(d.last);
+    const pct = ((last - open) / open) * 100;
+
+    setAllTickers((prev) => ({
+      ...prev,
+      [base]: {
+        price: last,
+        change: pct
+      }
+    }));
+  };
+
+  return () => ws.close();
+}, []);
 
   // ====== 实时 ticker ======
   useEffect(() => {
@@ -246,38 +291,65 @@ export default function CoinDetail() {
       <span>Price</span>
     </div>
 
-    {/* 币种列表（与 Trade 页面逻辑保持一致） */}
-    {["BTCUSDT","ETHUSDT","BNBUSDT","SOLUSDT","XRPUSDT","DOGEUSDT"].map((s) => (
-      <div
-        key={s}
-        onClick={() => {
-          navigate(`/coin/${s}`);
-          setShowDrawer(false);
-        }}
-        style={{
-          padding: "14px 16px",
-          borderBottom: "1px solid #f5f5f5",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          cursor: "pointer",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <img
-            src={`/coin-icons/${s.replace("USDT","")}.png`}
-            style={{ width: 26, height: 26, borderRadius: "50%" }}
-          />
-          <span style={{ fontWeight: 600, color: "#6e6e6e" }}>
-            {s.replace("USDT","/USDT")}
-          </span>
-        </div>
+  {/* 币种列表（完全实时） */}  
+{SYMBOLS.map((instId) => {
+  const base = instId.split("-")[0];    // BTC
+  const data = allTickers[base] || {};
 
-        <span style={{ fontSize: 14, color: "#22c55e", fontWeight: 600 }}>
-          {lastPrice ? lastPrice.toFixed(2) : "--"}
+  const price = data.price || 0;
+  const change = data.change || 0;
+  const up = change >= 0;
+
+  return (
+    <div
+      key={instId}
+      onClick={() => {
+        navigate(`/coin/${base + "USDT"}`);
+        setShowDrawer(false);
+      }}
+      style={{
+        padding: "14px 16px",
+        borderBottom: "1px solid #f5f5f5",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        cursor: "pointer",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <img
+          src={`/coin-icons/${base}.png`}
+          style={{ width: 26, height: 26, borderRadius: "50%" }}
+        />
+        <span style={{ fontWeight: 600, color: "#6e6e6e" }}>
+          {base}/USDT
         </span>
       </div>
-    ))}
+
+      <div style={{ textAlign: "right" }}>
+        <div
+          style={{
+            fontSize: 14,
+            fontWeight: 600,
+            color: up ? "#22c55e" : "#dc2626"
+          }}
+        >
+          {price.toFixed(4)}
+        </div>
+        <div
+          style={{
+            fontSize: 12,
+            color: up ? "#22c55e" : "#dc2626"
+          }}
+        >
+          {up ? "+" : ""}
+          {change.toFixed(2)}%
+        </div>
+      </div>
+    </div>
+  );
+})}
+
   </div>
 </div>
 
