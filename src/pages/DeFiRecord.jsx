@@ -7,14 +7,11 @@ export default function DeFiRecord() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // 智能返回函数
-  const handleBack = () => {
-    if (window.history.length > 2) {
-      navigate(-1);
-    } else {
-      navigate('/defi'); // 根据你的实际路由调整
-    }
-  }
+// 智能返回函数 - 简化版
+const handleBack = () => {
+  // 总是返回到首页，因为只有主页一个入口
+  navigate('/');
+}
 
   // 无焦点样式配置
   const noFocusStyle = {

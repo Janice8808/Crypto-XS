@@ -89,14 +89,11 @@ export default function UserCenter() {
       ? `0x${clean.slice(0, 6)}…${clean.slice(-12)}`
       : address || "--";
 
-  // 智能返回函数
-  const handleBack = () => {
-    if (window.history.length > 2) {
-      navigate(-1)
-    } else {
-      navigate('/user');// 或者 navigate('/Home')，根据你的首页路径调整
-    }
-  }
+// 智能返回函数 - 简化版
+const handleBack = () => {
+  // 总是返回到首页，因为只有主页一个入口
+  navigate('/');
+}
 
   // 无焦点样式
   const noFocusStyle = {
