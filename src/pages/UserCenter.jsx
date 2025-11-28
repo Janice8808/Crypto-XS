@@ -3,7 +3,75 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 /* ================= Icons ================= */
-// ... 图标组件保持不变
+
+const BackIcon = () => (
+  <svg width="24" height="24" fill="none" stroke="#666" strokeWidth="1.6" viewBox="0 0 24 24">
+    <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const AvatarSvg = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48">
+    <circle cx="24" cy="16" r="10" fill="#F6A623" />
+    <ellipse cx="24" cy="38" rx="14" ry="10" fill="#F6A623" opacity="0.6" />
+  </svg>
+);
+
+const HeadsetIcon = () => (
+  <svg width="20" height="20" fill="none" stroke="#F4A623" strokeWidth="1.6" viewBox="0 0 24 24">
+    <path d="M4 12a8 8 0 0 1 16 0" />
+    <rect x="3" y="12" width="3" height="6" rx="1.5" />
+    <rect x="18" y="12" width="3" height="6" rx="1.5" />
+  </svg>
+);
+
+const AnnouncementIcon = () => (
+  <svg width="20" height="20" fill="none" stroke="#2AB673" strokeWidth="1.6" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 16v-1" />
+    <path d="M10.5 10a1.5 1.5 0 1 1 2.5 1.2c-.7.5-1 1-1 1.8" />
+  </svg>
+);
+
+/* ===== 其他菜单图标 ===== */
+
+const MailIcon = () => (
+  <svg width="22" height="22" fill="none" stroke="#666" strokeWidth="1.6" viewBox="0 0 24 24">
+    <rect x="3" y="5" width="18" height="14" rx="3" />
+    <path d="M3 5l9 7 9-7" />
+  </svg>
+);
+
+const BankIcon = () => (
+  <svg width="22" height="22" fill="none" stroke="#666" strokeWidth="1.6" viewBox="0 0 24 24">
+    <polygon points="12 3 3 9 21 9" />
+    <rect x="4" y="9" width="16" height="10" />
+  </svg>
+);
+
+const GlobeIcon = () => (
+  <svg width="22" height="22" fill="none" stroke="#666" strokeWidth="1.6" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9" />
+    <path d="M3 12h18" />
+    <path d="M12 3a15 15 0 0 1 0 18" />
+  </svg>
+);
+
+const LockIcon = () => (
+  <svg width="22" height="22" fill="none" stroke="#666" strokeWidth="1.6" viewBox="0 0 24 24">
+    <rect x="5" y="11" width="14" height="10" rx="2" />
+    <path d="M9 11V7a3 3 0 0 1 6 0v4" />
+  </svg>
+);
+
+const MsbIcon = () => (
+  <svg width="22" height="22" fill="none" stroke="#666" strokeWidth="1.6" viewBox="0 0 24 24">
+    <polygon points="12 2 20 7 20 17 12 22 4 17 4 7" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+);
+
+/* =================================================== */
 
 export default function UserCenter() {
   const navigate = useNavigate();
@@ -26,7 +94,7 @@ export default function UserCenter() {
     if (window.history.length > 2) {
       navigate(-1)
     } else {
-      navigate('/')
+      navigate('/') // 或者 navigate('/Home')，根据你的首页路径调整
     }
   }
 
@@ -40,7 +108,47 @@ export default function UserCenter() {
 
   /* ============== 检查 Token 有效性 ============== */
   useEffect(() => {
-    // ... useEffect 代码保持不变
+    const checkTokenValidity = async () => {
+      const token = localStorage.getItem("token");
+      
+      // ✅ 更严格的 token 检查
+      if (!token || token === "undefined" || token === "null" || token === "Bearer null") {
+        console.log("Token invalid, redirecting to Home");
+        // ✅ 添加短暂延迟，避免立即跳转
+        setTimeout(() => {
+          navigate("/Home", { replace: true });
+        }, 100);
+        return;
+      }
+
+      try {
+        // ✅ 验证 token 是否真的有效
+        const response = await fetch("https://pankouhoutai.shop/api/user/balance", {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Token invalid");
+        }
+
+        const data = await response.json();
+        if (data?.userId) {
+          setUid(data.userId);
+        }
+      } catch (error) {
+        console.log("Token validation failed, redirecting to Home");
+        // ✅ Token 验证失败时跳转
+        setTimeout(() => {
+          navigate("/Home", { replace: true });
+        }, 100);
+      } finally {
+        setIsCheckingToken(false);
+      }
+    };
+
+    checkTokenValidity();
   }, [navigate]);
 
   /* ============== 菜单列表 ============== */
@@ -72,26 +180,35 @@ export default function UserCenter() {
 
   return (
     <div className="min-h-screen bg-white pb-20">
-      {/* 添加全局样式 */}
+      {/* 添加全局样式来移除所有焦点效果 */}
       <style>
         {`
           .no-focus:focus {
             outline: none !important;
             box-shadow: none !important;
           }
-          .no-focus:active {
+          .no-focus:hover {
+            opacity: 0.9;
+          }
+          .back-button {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+          }
+          .back-button:active {
             opacity: 0.7;
           }
           .menu-item:active {
-            background-color: #f5f5f5;
+            background-color: #f3f4f6;
           }
         `}
       </style>
 
-      {/* ⭐ 左侧返回键 - 无焦点样式 */}
+      {/* ⭐ 左侧返回键 - 修复版 */}
       <button
         onClick={handleBack}
-        className="no-focus"
+        className="back-button no-focus"
         style={{
           background: "none",
           fontSize: 20,
@@ -99,7 +216,8 @@ export default function UserCenter() {
           width: "45px",
           textAlign: "left",
           paddingLeft: "12px",
-          ...noFocusStyle
+          border: "none",
+          cursor: "pointer"
         }}
       >
         ←
@@ -115,11 +233,11 @@ export default function UserCenter() {
         </div>
       </div>
 
-      {/* Online Service + Announcement - 无焦点样式 */}
+      {/* Online Service + Announcement */}
       <div className="flex gap-3 px-4 mt-2">
         <button
           onClick={() => navigate("/service")}
-          className="flex-1 flex items-center gap-2 bg-[#F5F6FA] rounded-xl py-3 px-4 text-gray-600 no-focus"
+          className="no-focus flex-1 flex items-center gap-2 bg-[#F5F6FA] rounded-xl py-3 px-4 text-gray-600"
           style={noFocusStyle}
         >
           <HeadsetIcon />
@@ -128,7 +246,7 @@ export default function UserCenter() {
 
         <button
           onClick={() => navigate("/announcement")}
-          className="flex-1 flex items-center gap-2 bg-[#F5F6FA] rounded-xl py-3 px-4 text-gray-600 no-focus"
+          className="no-focus flex-1 flex items-center gap-2 bg-[#F5F6FA] rounded-xl py-3 px-4 text-gray-600"
           style={noFocusStyle}
         >
           <AnnouncementIcon />
@@ -136,13 +254,13 @@ export default function UserCenter() {
         </button>
       </div>
 
-      {/* 下方菜单列表 - 无焦点样式 */}
+      {/* 下方菜单列表 */}
       <div className="mt-4">
         {menuItems.map((item, i) => (
           <div
             key={i}
             onClick={() => navigate(item.path)}
-            className="menu-item flex justify-between items-center px-5 py-4 border-b cursor-pointer no-focus"
+            className="menu-item no-focus flex justify-between items-center px-5 py-4 border-b cursor-pointer"
             style={noFocusStyle}
           >
             <div className="flex items-center gap-3 text-gray-700">
