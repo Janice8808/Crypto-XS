@@ -2,14 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
-// ❌ 不用 useSmartBack 了
-// import useSmartBack from "@/hooks/useSmartBack";
 
 export default function BankCard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // ✅ 写死返回到 /user
+  // 直接返回 /user（不要再混 smartBack）
   const goBackToUser = () => {
     navigate("/user");
   };
@@ -55,7 +53,7 @@ export default function BankCard() {
 
       if (res.ok) {
         alert(data.message || t("Bank card submitted successfully!"));
-        goBackToUser();          // ✅ 提交成功后直接去 /user
+        goBackToUser();      // 成功后返回
       } else {
         alert(data.error || t("Failed to submit"));
       }
@@ -73,7 +71,7 @@ export default function BankCard() {
       <div className="flex items-center p-4 border-b">
         <button
           className="back-btn text-gray-600 text-xl mr-3"
-          onClick={goBackToUser}   // ✅ 返回按钮也直接去 /user
+          onClick={goBackToUser}
           style={noFocusStyle}
         >
           ←
@@ -87,42 +85,33 @@ export default function BankCard() {
       {/* 内容 */}
       <div className="p-5">
         {/* Name */}
-        <label className="text-gray-700 font-medium mb-2 block">
-          {t("Name")}
-        </label>
+        <label className="text-gray-700 font-medium mb-2 block">{t("Name")}</label>
         <input
           type="text"
           name="name"
           value={form.name}
           onChange={handleChange}
-          placeholder={t("Name")}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-gray-50"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 bg-gray-50 text-gray-700 focus:ring-yellow-400 focus:ring-2"
         />
 
         {/* Card Number */}
-        <label className="text-gray-700 font-medium mb-2 block">
-          {t("Card number")}
-        </label>
+        <label className="text-gray-700 font-medium mb-2 block">{t("Card number")}</label>
         <input
           type="text"
           name="cardNumber"
           value={form.cardNumber}
           onChange={handleChange}
-          placeholder={t("Card number")}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-gray-50"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 bg-gray-50 text-gray-700 focus:ring-yellow-400 focus:ring-2"
         />
 
         {/* Bank Name */}
-        <label className="text-gray-700 font-medium mb-2 block">
-          {t("Bank name")}
-        </label>
+        <label className="text-gray-700 font-medium mb-2 block">{t("Bank name")}</label>
         <input
           type="text"
           name="bankName"
           value={form.bankName}
           onChange={handleChange}
-          placeholder={t("Bank name")}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-6 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-gray-50"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-6 bg-gray-50 text-gray-700 focus:ring-yellow-400 focus:ring-2"
         />
 
         {/* Submit */}
