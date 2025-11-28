@@ -1264,7 +1264,7 @@ const Trade = () => {
           <div>{t("24h Amount")}</div>
         </div>
 
-        <div style={{ textAlign: "right" }}>
+        <div style={{ textAlign: "right", minWidth: 80 }}>
           <div>{low}</div>
           <div>{high}</div>
           <div>{amount24h}</div>
