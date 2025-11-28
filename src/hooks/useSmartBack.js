@@ -14,7 +14,7 @@ export default function useSmartBack() {
     if (path.startsWith("/contract")) return "/contract";
     if (path.startsWith("/me")) return "/me";
     if (path.startsWith("/settings")) return "/settings";
-
+    if (path.startsWith("/user")) return "/user";
     // 全局兜底 fallback
     return "/";
   };
