@@ -7,9 +7,13 @@ export default function BankCard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // 直接返回 /user（不要再混 smartBack）
-  const goBackToUser = () => {
-    navigate("/user");
+  // ✅ 改进的返回逻辑：先尝试返回上一页，如果没有历史记录则去 /user
+  const handleGoBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1); // 返回上一页
+    } else {
+      navigate("/user"); // 没有历史记录时去用户页面
+    }
   };
 
   const [form, setForm] = useState({
@@ -53,7 +57,7 @@ export default function BankCard() {
 
       if (res.ok) {
         alert(data.message || t("Bank card submitted successfully!"));
-        goBackToUser();      // 成功后返回
+        navigate("/user"); // 提交成功后去 /user
       } else {
         alert(data.error || t("Failed to submit"));
       }
@@ -71,7 +75,7 @@ export default function BankCard() {
       <div className="flex items-center p-4 border-b">
         <button
           className="back-btn text-gray-600 text-xl mr-3"
-          onClick={goBackToUser}
+          onClick={handleGoBack}   // ✅ 使用改进的返回逻辑
           style={noFocusStyle}
         >
           ←
@@ -85,33 +89,42 @@ export default function BankCard() {
       {/* 内容 */}
       <div className="p-5">
         {/* Name */}
-        <label className="text-gray-700 font-medium mb-2 block">{t("Name")}</label>
+        <label className="text-gray-700 font-medium mb-2 block">
+          {t("Name")}
+        </label>
         <input
           type="text"
           name="name"
           value={form.name}
           onChange={handleChange}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 bg-gray-50 text-gray-700 focus:ring-yellow-400 focus:ring-2"
+          placeholder={t("Name")}
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-gray-50"
         />
 
         {/* Card Number */}
-        <label className="text-gray-700 font-medium mb-2 block">{t("Card number")}</label>
+        <label className="text-gray-700 font-medium mb-2 block">
+          {t("Card number")}
+        </label>
         <input
           type="text"
           name="cardNumber"
           value={form.cardNumber}
           onChange={handleChange}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 bg-gray-50 text-gray-700 focus:ring-yellow-400 focus:ring-2"
+          placeholder={t("Card number")}
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-gray-50"
         />
 
         {/* Bank Name */}
-        <label className="text-gray-700 font-medium mb-2 block">{t("Bank name")}</label>
+        <label className="text-gray-700 font-medium mb-2 block">
+          {t("Bank name")}
+        </label>
         <input
           type="text"
           name="bankName"
           value={form.bankName}
           onChange={handleChange}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-6 bg-gray-50 text-gray-700 focus:ring-yellow-400 focus:ring-2"
+          placeholder={t("Bank name")}
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-6 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-gray-50"
         />
 
         {/* Submit */}
