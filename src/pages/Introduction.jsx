@@ -3,8 +3,43 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 export default function Introduction() {
-  const nav = useNavigate();
+  const navigate = useNavigate();
   const { t } = useTranslation();
+
+  // 智能返回函数
+  const handleBack = () => {
+    console.log('=== Introduction页面返回调试 ===');
+    console.log('1. history.length:', window.history.length);
+    console.log('2. 当前路径:', window.location.pathname);
+    
+    // 检查是否是从有效页面跳转过来的
+    const referrer = document.referrer;
+    console.log('3. 来源页面:', referrer);
+    
+    // 智能判断逻辑
+    if (window.history.length > 2 && referrer && referrer.includes(window.location.origin)) {
+      console.log('4. 从应用内页面跳转过来，执行 navigate(-1)');
+      navigate(-1);
+    } else {
+      console.log('4. 直接打开或来源不明，执行 navigate("/")');
+      navigate("/", { replace: true });  // 跳转到首页
+    }
+  }
+
+  // 无焦点样式
+  const noFocusStyle = {
+    background: "none",
+    border: "none",
+    fontSize: 20,
+    color: "#666",
+    width: "45px",
+    textAlign: "left",
+    paddingLeft: "12px",
+    outline: 'none',
+    boxShadow: 'none',
+    WebkitTapHighlightColor: 'transparent',
+    cursor: 'pointer'
+  }
 
   return (
     <div className="w-full min-h-screen bg-white text-black">
@@ -13,16 +48,8 @@ export default function Introduction() {
       <div className="flex items-center px-4 py-3">
 
         <button
-          onClick={() => window.history.back()}
-          style={{
-            background: "none",
-            border: "none",
-            fontSize: 20,
-            color: "#666",
-            width: "45px",
-            textAlign: "left",
-            paddingLeft: "12px",
-          }}
+          onClick={handleBack}  // 使用智能返回
+          style={noFocusStyle}
         >
           ←
         </button>

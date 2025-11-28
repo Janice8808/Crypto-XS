@@ -7,48 +7,75 @@ export default function ChangePassword() {
 
   const [isSet, setIsSet] = useState(null); // null=加载中, true=已设置, false=未设置
 
-  // ⭐ 自动拉取用户信息判断提现密码是否已设置
-useEffect(() => {
-  async function fetchStatus() {
-    try {
-      const res = await fetch("https://pankouhoutai.shop/api/userinfo", {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-      });
-
-      const data = await res.json();
-
-      setIsSet(data.withdrawPasswordSet === true);
-
-    } catch (err) {
-      console.log("获取提现密码状态失败：", err);
-      setIsSet(false);
+  // 智能返回函数
+  const handleBack = () => {
+    console.log('=== ChangePassword页面返回调试 ===');
+    console.log('1. history.length:', window.history.length);
+    console.log('2. 当前路径:', window.location.pathname);
+    
+    const referrer = document.referrer;
+    console.log('3. 来源页面:', referrer);
+    
+    if (window.history.length > 2 && referrer.includes('/user')) {
+      console.log('4. 从UserCenter跳转过来，执行 navigate(-1)');
+      navigate(-1);
+    } else {
+      console.log('4. 直接打开或来源不明，执行 navigate("/user")');
+      navigate("/user", { replace: true });
     }
   }
 
-  fetchStatus();
-}, []);
+  // 无焦点样式
+  const noFocusStyle = {
+    outline: 'none',
+    boxShadow: 'none',
+    border: 'none',
+    WebkitTapHighlightColor: 'transparent'
+  }
+
+  // ⭐ 自动拉取用户信息判断提现密码是否已设置
+  useEffect(() => {
+    async function fetchStatus() {
+      try {
+        const res = await fetch("https://pankouhoutai.shop/api/userinfo", {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        });
+
+        const data = await res.json();
+
+        setIsSet(data.withdrawPasswordSet === true);
+
+      } catch (err) {
+        console.log("获取提现密码状态失败：", err);
+        setIsSet(false);
+      }
+    }
+
+    fetchStatus();
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">
 
       {/* 顶部导航 */}
       <div className="flex items-center h-14 px-3 border-b border-gray-200">
-          <button
-  onClick={() => window.history.back()}
-  style={{
-    background: "none",
-    border: "none",
-    fontSize: 20,
-    color: "#666",
-    width: "45px",
-    textAlign: "left",
-    paddingLeft: "12px",
-  }}
->
-  ←
-</button>
+        <button
+          onClick={handleBack}  // 使用智能返回
+          style={{
+            background: "none",
+            border: "none",
+            fontSize: 20,
+            color: "#666",
+            width: "45px",
+            textAlign: "left",
+            paddingLeft: "12px",
+            ...noFocusStyle  // 添加无焦点样式
+          }}
+        >
+          ←
+        </button>
         <div className="flex-1 text-center text-lg font-medium">
           Change Password
         </div>
@@ -59,14 +86,14 @@ useEffect(() => {
       <div className="px-3 mt-3">
         <div
           onClick={() => {
-  if (isSet) {
-    navigate("/user/withdrawal-password/edit");   // ⭐ 已设置 → 修改密码页
-  } else {
-    navigate("/user/withdrawal-password");        // ⭐ 未设置 → 你的 WithdrawalPassword.jsx
-  }
-}}
-
+            if (isSet) {
+              navigate("/user/withdrawal-password/edit");   // ⭐ 已设置 → 修改密码页
+            } else {
+              navigate("/user/withdrawal-password");        // ⭐ 未设置 → 你的 WithdrawalPassword.jsx
+            }
+          }}
           className="flex items-center justify-between bg-white rounded-xl px-4 h-16 shadow-sm border border-gray-100 active:opacity-60"
+          style={noFocusStyle}  // 添加无焦点样式
         >
           <span className="text-[16px] text-[#333]">Withdrawal Password</span>
 
