@@ -18,6 +18,7 @@ const STATIC_MARKET = [
   { symbol: "TRX", price: "--", change: 0 },
   { symbol: "AVAX", price: "--", change: 0 },
   { symbol: "DOT", price: "--", change: 0 },
+  { symbol: "ATOM", price: "--", change: 0 },
 ];
 
 const SYMBOLS = [

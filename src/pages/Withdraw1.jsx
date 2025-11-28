@@ -38,7 +38,10 @@ export default function Withdraw1() {
     { symbol: "SOL" },
     { symbol: "XRP" },
     { symbol: "ADA" },
-    { symbol: "DOGE" },
+    { symbol: "TRX" },
+    { symbol: "AVAX" },
+    { symbol: "DOT" },
+    { symbol: "LTC" },    
   ]);
 
   /* -------------------------------------
