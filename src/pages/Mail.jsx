@@ -10,12 +10,23 @@ export default function Mail() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 智能返回函数
+  // 智能返回函数 - 修复版
   const handleBack = () => {
-    if (window.history.length > 2) {
-      navigate(-1);  // 有历史记录，正常返回
+    console.log('=== Mail页面返回调试 ===');
+    console.log('1. history.length:', window.history.length);
+    console.log('2. 当前路径:', window.location.pathname);
+    
+    // 检查是否是从 UserCenter 跳转过来的
+    const referrer = document.referrer;
+    console.log('3. 来源页面:', referrer);
+    
+    // 更智能的判断逻辑
+    if (window.history.length > 2 && referrer.includes('/user')) {
+      console.log('4. 从UserCenter跳转过来，执行 navigate(-1)');
+      navigate(-1);
     } else {
-      navigate('/user');  // 直接打开，跳转到首页
+      console.log('4. 直接打开或来源不明，执行 navigate("/user")');
+      navigate("/user", { replace: true });  // 使用 replace 避免历史记录问题
     }
   }
 
@@ -62,11 +73,11 @@ export default function Mail() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* 顶部返回 + 标题 - 已修复 */}
+      {/* 顶部返回 + 标题 */}
       <div className="flex items-center p-4 border-b">
         <button
           className="back-btn text-gray-600 text-xl mr-3"
-          onClick={handleBack}  // 使用智能返回
+          onClick={handleBack}
           style={noFocusStyle}
         >
           ←
