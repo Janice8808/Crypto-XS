@@ -384,21 +384,24 @@ useEffect(() => {
         </div>
 
         {/* 占位图标 */}
-        <div
-          style={{
-            width: 24,
-            height: 24,
-            borderRadius: 12,
-            border: "1px solid #ddd",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 10,
-            color: "#999",
-          }}
-        >
-          📈
-        </div>
+<div
+  onClick={() => navigate("/trade")}
+  style={{
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    border: "1px solid #ddd",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: 10,
+    color: "#999",
+    cursor: "pointer"          // 🔥 加这个更像按钮
+  }}
+>
+  📈
+</div>
+
       </div>
 
       {/* ===== 主体区：左下单 + 右盘口 ===== */}
