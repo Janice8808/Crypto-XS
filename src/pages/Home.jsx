@@ -422,7 +422,7 @@ const shortAddress =
           </div>
 <div
   className="nav-btn w-2/3 relative cursor-pointer"
-  onClick={() => window.open("https://banxa.com/", "_blank")}
+  onClick={() => (window.location.href = "https://banxa.com/")}
   style={noFocusStyle}
 >
   <div 
