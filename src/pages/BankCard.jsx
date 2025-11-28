@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 
@@ -7,13 +7,27 @@ export default function BankCard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // ✅ 改进的返回逻辑：先尝试返回上一页，如果没有历史记录则去 /user
+  // ✅ 检测是否可以直接返回
+  const [canGoBack, setCanGoBack] = useState(false);
+
+  useEffect(() => {
+    // 检查是否有历史记录可以返回
+    setCanGoBack(window.history.length > 1);
+  }, []);
+
+  // ✅ 改进的返回逻辑
   const handleGoBack = () => {
-    if (window.history.length > 1) {
-      navigate(-1); // 返回上一页
+    if (canGoBack) {
+      navigate(-1);
     } else {
-      navigate("/user"); // 没有历史记录时去用户页面
+      // 如果没有历史记录，直接导航到用户页面
+      navigate("/user", { replace: true });
     }
+  };
+
+  // ✅ 备用方案：添加一个直接返回用户页面的函数
+  const goToUser = () => {
+    navigate("/user", { replace: true });
   };
 
   const [form, setForm] = useState({
@@ -28,6 +42,7 @@ export default function BankCard() {
     boxShadow: "none",
     border: "none",
     WebkitTapHighlightColor: "transparent",
+    WebkitAppearance: "none",
   };
 
   const handleChange = (e) => {
@@ -57,7 +72,7 @@ export default function BankCard() {
 
       if (res.ok) {
         alert(data.message || t("Bank card submitted successfully!"));
-        navigate("/user"); // 提交成功后去 /user
+        navigate("/user", { replace: true });
       } else {
         alert(data.error || t("Failed to submit"));
       }
@@ -75,8 +90,15 @@ export default function BankCard() {
       <div className="flex items-center p-4 border-b">
         <button
           className="back-btn text-gray-600 text-xl mr-3"
-          onClick={handleGoBack}   // ✅ 使用改进的返回逻辑
+          onClick={handleGoBack}
           style={noFocusStyle}
+          onTouchStart={(e) => {
+            // 移动端触摸反馈
+            e.currentTarget.style.opacity = "0.7";
+          }}
+          onTouchEnd={(e) => {
+            e.currentTarget.style.opacity = "1";
+          }}
         >
           ←
         </button>
@@ -84,6 +106,16 @@ export default function BankCard() {
         <h1 className="text-lg font-semibold text-gray-800">
           {t("Bank Card")}
         </h1>
+        
+        {/* ✅ 添加一个备用的返回按钮（在开发模式下可见） */}
+        {process.env.NODE_ENV === 'development' && !canGoBack && (
+          <button
+            onClick={goToUser}
+            className="ml-auto text-sm bg-blue-500 text-white px-2 py-1 rounded"
+          >
+            直接返回
+          </button>
+        )}
       </div>
 
       {/* 内容 */}
@@ -138,6 +170,14 @@ export default function BankCard() {
         >
           {loading ? t("Submitting...") : t("Submit")}
         </Button>
+
+        {/* ✅ 调试信息（仅在开发模式显示） */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mt-4 p-2 bg-gray-100 rounded text-xs">
+            <p>历史记录长度: {window.history.length}</p>
+            <p>可以返回: {canGoBack ? '是' : '否'}</p>
+          </div>
+        )}
       </div>
     </div>
   );
