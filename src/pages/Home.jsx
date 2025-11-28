@@ -420,28 +420,26 @@ const shortAddress =
               </span>
             </div>
           </div>
-
-          <div 
-            className="nav-btn w-2/3 relative cursor-pointer" // 添加 nav-btn class
-            onClick={() => navigate('/deposit1')}
-            style={noFocusStyle}
-            // 移除 onMouseDown 和 onTouchStart
-          >
-            <div 
-              className="w-full h-[70px] rounded-lg bg-contain bg-center bg-no-repeat bg-gray-100"
-              style={{backgroundImage: "url(/images/fastbuy.jpg)"}}
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center ml-4">
-                <span className="text-gray-600 text-sm font-bold">
-                  {t("Fast buying coin")}
-                </span>
-                <div className="text-gray-400 text-[10px] mt-1">
-                  {t("Zero fees. Get started now")}
-                </div>
-              </div>
-            </div>
-          </div>
+<div
+  className="nav-btn w-2/3 relative cursor-pointer"
+  onClick={() => window.open("https://banxa.com/", "_blank")}
+  style={noFocusStyle}
+>
+  <div 
+    className="w-full h-[70px] rounded-lg bg-contain bg-center bg-no-repeat bg-gray-100"
+    style={{ backgroundImage: "url(/images/fastbuy.jpg)" }}
+  />
+  <div className="absolute inset-0 flex items-center justify-center">
+    <div className="text-center ml-4">
+      <span className="text-gray-600 text-sm font-bold">
+        {t("Fast buying coin")}
+      </span>
+      <div className="text-gray-400 text-[10px] mt-1">
+        {t("Zero fees. Get started now")}
+      </div>
+    </div>
+  </div>
+</div>
         </div>
 
         {/* 热门 Top3 当前价格 */}
