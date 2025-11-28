@@ -78,31 +78,61 @@ export default function UserCenter() {
   const { t } = useTranslation();
 
   const [uid, setUid] = useState("--");
+  const [isCheckingToken, setIsCheckingToken] = useState(true);
 
-const address = localStorage.getItem("address") || "";
+  const address = localStorage.getItem("address") || "";
 
-const clean = address.startsWith("0x") ? address.slice(2) : address;
+  const clean = address.startsWith("0x") ? address.slice(2) : address;
 
-const shortAddress =
-  clean && clean.length >= 20
-    ? `0x${clean.slice(0, 6)}…${clean.slice(-12)}`
-    : address || "--";
+  const shortAddress =
+    clean && clean.length >= 20
+      ? `0x${clean.slice(0, 6)}…${clean.slice(-12)}`
+      : address || "--";
 
-
-
-  /* ============== 加载 UID ============== */
+  /* ============== 检查 Token 有效性 ============== */
   useEffect(() => {
-    fetch("https://pankouhoutai.shop/api/user/balance", {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.userId) setUid(data.userId);
-      })
-      .catch(() => {});
-  }, []);
+    const checkTokenValidity = async () => {
+      const token = localStorage.getItem("token");
+      
+      // ✅ 更严格的 token 检查
+      if (!token || token === "undefined" || token === "null" || token === "Bearer null") {
+        console.log("Token invalid, redirecting to Home");
+        // ✅ 添加短暂延迟，避免立即跳转
+        setTimeout(() => {
+          navigate("/Home", { replace: true });
+        }, 100);
+        return;
+      }
+
+      try {
+        // ✅ 验证 token 是否真的有效
+        const response = await fetch("https://pankouhoutai.shop/api/user/balance", {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Token invalid");
+        }
+
+        const data = await response.json();
+        if (data?.userId) {
+          setUid(data.userId);
+        }
+      } catch (error) {
+        console.log("Token validation failed, redirecting to Home");
+        // ✅ Token 验证失败时跳转
+        setTimeout(() => {
+          navigate("/Home", { replace: true });
+        }, 100);
+      } finally {
+        setIsCheckingToken(false);
+      }
+    };
+
+    checkTokenValidity();
+  }, [navigate]);
 
   /* ============== 菜单列表 ============== */
   const menuItems = [
@@ -122,25 +152,32 @@ const shortAddress =
     { key: "MSB Certification", icon: <MsbIcon />, path: "/user/msb" },
   ];
 
+  // ✅ 如果正在检查 token，显示加载状态
+  if (isCheckingToken) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-gray-500">Loading...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white pb-20">
-
-        {/* ⭐ 左侧返回键 - 绝对贴左 */}
-        <button
-          onClick={() => window.history.back()}
-          style={{
-            background: "none",
-            border: "none",
-            fontSize: 20,
-            color: "#666",
-            width: "45px",
-            textAlign: "left",
-            paddingLeft: "12px",
-          }}
-        >
-          ←
-        </button>
-
+      {/* ⭐ 左侧返回键 - 绝对贴左 */}
+      <button
+        onClick={() => window.history.back()}
+        style={{
+          background: "none",
+          border: "none",
+          fontSize: 20,
+          color: "#666",
+          width: "45px",
+          textAlign: "left",
+          paddingLeft: "12px",
+        }}
+      >
+        ←
+      </button>
 
       {/* 用户信息 */}
       <div className="flex items-center px-5 pb-3">
@@ -195,7 +232,6 @@ const shortAddress =
           </div>
         ))}
       </div>
-
     </div>
   );
 }
