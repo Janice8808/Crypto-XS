@@ -1096,8 +1096,8 @@ const resources = {
 "中文繁体": {
   translation: {
     ...commonKeys,
-"Low": "低",
-"High": "高",
+"Low": "最低",
+"High": "最高",
 "24h Amount": "24小時成交量",
 "Available Balance": "可用餘額",
 "Custom amount:": "自訂金額：",
@@ -1303,8 +1303,8 @@ const resources = {
   "中文简体": {
     translation: {
       ...commonKeys,
-"Low": "低",
-"High": "高",
+"Low": "最低",
+"High": "最高",
 "24h Amount": "24小时成交量",
 "Available Balance": "可用余额",
 "Custom amount:": "自定义金额：",
