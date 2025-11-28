@@ -10,19 +10,22 @@ export default function Mail() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 无焦点样式配置 - 只用于按钮
+  // 智能返回函数
+  const handleBack = () => {
+    if (window.history.length > 2) {
+      navigate(-1);  // 有历史记录，正常返回
+    } else {
+      navigate('/user');  // 直接打开，跳转到首页
+    }
+  }
+
+  // 无焦点样式配置
   const noFocusStyle = {
     outline: 'none',
     boxShadow: 'none',
     border: 'none',
     WebkitTapHighlightColor: 'transparent'
   }
-
-  // 可以移除 preventDefault 函数，因为全局事件委托会处理
-  // const preventDefault = (e) => {
-  //   e.preventDefault()
-  //   e.stopPropagation()
-  // }
 
   const handleSubmit = async () => {
     if (!email.trim()) {
@@ -44,7 +47,8 @@ export default function Mail() {
 
       if (res.ok) {
         alert(data.message || t("Submit order"));
-        navigate(-1);
+        // 提交成功后也使用智能返回
+        handleBack();
       } else {
         alert(data.error || t("Network error, please try again later"));
       }
@@ -58,13 +62,12 @@ export default function Mail() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* 顶部返回 + 标题 - 已修改 */}
+      {/* 顶部返回 + 标题 - 已修复 */}
       <div className="flex items-center p-4 border-b">
         <button
-          className="back-btn text-gray-600 text-xl mr-3" // 合并 className
-          onClick={() => navigate(-1)}
+          className="back-btn text-gray-600 text-xl mr-3"
+          onClick={handleBack}  // 使用智能返回
           style={noFocusStyle}
-          // 移除 onMouseDown 和 onTouchStart
         >
           ←
         </button>
@@ -91,11 +94,10 @@ export default function Mail() {
         <Button
           className={`confirm-btn w-full bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-lg py-3 ${
             loading ? "opacity-70 cursor-not-allowed" : ""
-          }`} // 合并 className
+          }`}
           onClick={handleSubmit}
           disabled={loading}
           style={noFocusStyle}
-          // 移除 onMouseDown 和 onTouchStart
         >
           {loading ? t("Submitting") : t("Submit")}
         </Button>
