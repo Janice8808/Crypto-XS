@@ -1,23 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function EditWithdrawalPassword() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
-  // 无焦点样式配置 - 只用于按钮
+  // 无焦点样式
   const noFocusStyle = {
-    outline: 'none',
-    boxShadow: 'none',
-    border: 'none',
-    WebkitTapHighlightColor: 'transparent'
-  }
-
-  // 可以移除 preventDefault 函数，因为全局事件委托会处理
-  // const preventDefault = (e) => {
-  //   e.preventDefault()
-  //   e.stopPropagation()
-  // }
+    outline: "none",
+    boxShadow: "none",
+    border: "none",
+    WebkitTapHighlightColor: "transparent",
+  };
 
   const [oldPwd, setOldPwd] = useState("");
   const [pwd, setPwd] = useState("");
@@ -27,11 +23,11 @@ export default function EditWithdrawalPassword() {
 
   const save = async () => {
     if (!oldPwd || !pwd || !confirm) {
-      alert("Please fill in all fields");
+      alert(t("Please fill in all fields"));
       return;
     }
     if (pwd !== confirm) {
-      alert("Passwords do not match");
+      alert(t("Passwords do not match"));
       return;
     }
 
@@ -55,7 +51,7 @@ export default function EditWithdrawalPassword() {
       if (res.ok && data.success) {
         setPopup(true);
 
-        // ⭐ 通知 ChangePassword 刷新「Already set」
+        // 通知前页刷新状态
         window.dispatchEvent(new CustomEvent("refreshData"));
 
         setTimeout(() => {
@@ -63,11 +59,11 @@ export default function EditWithdrawalPassword() {
           navigate(-1);
         }, 1200);
       } else {
-        alert(data.message || data.error || "Failed");
+        alert(data.message || data.error || t("Failed"));
       }
     } catch (err) {
       console.error(err);
-      alert("Network error");
+      alert(t("Network error"));
     } finally {
       setLoading(false);
     }
@@ -76,18 +72,17 @@ export default function EditWithdrawalPassword() {
   return (
     <div className="min-h-screen bg-white relative">
 
-      {/* 顶部导航 - 已修改 */}
+      {/* 顶部导航 */}
       <div className="flex items-center h-14 px-3 border-b border-gray-200">
-        <button 
-          className="back-btn p-1" // 合并 className
-          onClick={() => navigate(-1)} 
+        <button
+          className="p-1"
+          onClick={() => navigate(-1)}
           style={noFocusStyle}
-          // 移除 onMouseDown 和 onTouchStart
         >
           <ChevronLeft size={22} />
         </button>
         <div className="flex-1 text-center text-lg font-medium">
-          Edit Withdrawal Password
+          {t("Edit Withdrawal Password")}
         </div>
         <div className="w-6" />
       </div>
@@ -97,7 +92,7 @@ export default function EditWithdrawalPassword() {
 
         <input
           type="password"
-          placeholder="Old password"
+          placeholder={t("Old password")}
           className="w-full border border-gray-300 rounded-xl p-3 text-base bg-gray-50"
           value={oldPwd}
           onChange={(e) => setOldPwd(e.target.value)}
@@ -105,7 +100,7 @@ export default function EditWithdrawalPassword() {
 
         <input
           type="password"
-          placeholder="New password"
+          placeholder={t("New password")}
           className="w-full border border-gray-300 rounded-xl p-3 text-base bg-gray-50"
           value={pwd}
           onChange={(e) => setPwd(e.target.value)}
@@ -113,21 +108,19 @@ export default function EditWithdrawalPassword() {
 
         <input
           type="password"
-          placeholder="Confirm new password"
+          placeholder={t("Confirm new password")}
           className="w-full border border-gray-300 rounded-xl p-3 text-base bg-gray-50"
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
         />
 
-        {/* 保存按钮 - 已修改 */}
         <button
-          className="confirm-btn w-full bg-[#31C48D] text-white rounded-xl py-3 text-base active:opacity-70 disabled:opacity-40" // 合并 className
+          className="w-full bg-[#31C48D] text-white rounded-xl py-3 text-base active:opacity-70 disabled:opacity-40"
           disabled={loading}
           onClick={save}
           style={noFocusStyle}
-          // 移除 onMouseDown 和 onTouchStart
         >
-          {loading ? "Saving..." : "Save"}
+          {loading ? t("Saving...") : t("Save")}
         </button>
       </div>
 
@@ -136,11 +129,12 @@ export default function EditWithdrawalPassword() {
         <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
           <div className="bg-white rounded-2xl px-10 py-6 shadow-lg text-center">
             <div className="text-lg font-semibold text-[#31C48D]">
-              Saved Successfully
+              {t("Saved Successfully")}
             </div>
           </div>
         </div>
       )}
+
     </div>
   );
 }
