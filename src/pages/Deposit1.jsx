@@ -70,7 +70,11 @@ export default function Deposit1() {
             >
               <div className="flex items-center justify-center bg-gray-100 rounded-xl p-3 shadow-sm hover:bg-gray-200 cursor-pointer transition active:bg-gray-100">
                 <img src={coin.icon} alt={coin.name} className="w-7 h-7 mr-2" />
-                <span className="font-medium text-gray-800 text-sm">{coin.name}</span>
+                <span className="font-medium text-gray-800 text-sm">
+  {coin.name === "ETH" && <span className="invisible">X</span>}
+  {coin.name}
+</span>
+
               </div>
             </div>
           ))}
