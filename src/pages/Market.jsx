@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { coinIcons } from "../assets/coinIcons";
 import { useOkxTickers } from "@/hooks/useOkxTickers";
+import { useTranslation } from "react-i18next";
 
 /* ---------------------------------------------
    ⭐ 1. 静态首屏数据（页面秒开）
-   （不用等 WebSocket，也不会白屏）
 --------------------------------------------- */
 const STATIC_MARKET = [
   { symbol: "BTC", price: "--", change: 0 },
@@ -30,13 +30,15 @@ const SYMBOLS = [
 ];
 
 export default function Market() {
+  const { t } = useTranslation();
+
   /* ---------------------------------------------
-      ⭐ 2. state：初始静态列表
+      ⭐ 初始静态列表
   --------------------------------------------- */
   const [marketList, setMarketList] = useState(STATIC_MARKET);
 
   /* ---------------------------------------------
-      ⭐ 3. WebSocket 实时行情补充
+      ⭐ WebSocket 实时行情补充
   --------------------------------------------- */
   const tickers = useOkxTickers(SYMBOLS);
 
@@ -54,19 +56,16 @@ export default function Market() {
     }
   }, [tickers]);
 
-  /* ---------------------------------------------
-      渲染
-  --------------------------------------------- */
   return (
     <div className="w-full min-h-screen text-black px-3 py-3 bg-white">
 
-      <h1 className="text-xl font-bold mb-3">Market</h1>
+      <h1 className="text-xl font-bold mb-3">{t("Market")}</h1>
 
       {/* 表头 */}
       <div className="flex items-center px-1 py-2 font-semibold text-gray-500 text-xs border-b">
-        <span className="w-1/3">Symbol</span>
-        <span className="w-1/3 text-right">Price</span>
-        <span className="w-1/3 text-right">24h</span>
+        <span className="w-1/3">{t("Symbol")}</span>
+        <span className="w-1/3 text-right">{t("Price")}</span>
+        <span className="w-1/3 text-right">{t("24h")}</span>
       </div>
 
       {marketList.map((coin) => {
@@ -85,7 +84,7 @@ export default function Market() {
                 alt={coin.symbol}
                 className="w-5 h-5 rounded-full mr-2"
               />
-              {coin.symbol}/USDT
+              {coin.symbol}/{t("USDT")}
             </span>
 
             {/* Price */}
@@ -100,9 +99,12 @@ export default function Market() {
                 style={{
                   width: "60px",
                   height: "26px",
-                  backgroundColor: coin.price === "--"
-                    ? "#9ca3af" // 静态灰色
-                    : isUp ? "#22c55e" : "#ef4444",
+                  backgroundColor:
+                    coin.price === "--"
+                      ? "#22c55e"
+                      : isUp
+                      ? "#22c55e"
+                      : "#ef4444",
                   fontWeight: 600,
                 }}
               >
