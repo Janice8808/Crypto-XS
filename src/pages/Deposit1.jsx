@@ -4,7 +4,7 @@ import useSmartBack from "@/hooks/useSmartBack";  // ⭐ 引入智能返回
 
 export default function Deposit1() {
   const { t } = useTranslation();
-  const smartBack = useSmartBack();               // ⭐ 使用智能返回
+  const smartBack = useSmartBack("/wallet");             // ⭐ 使用智能返回
   const navigate = useNavigate();
 
   const noFocusStyle = {
@@ -46,13 +46,12 @@ export default function Deposit1() {
         />
         
         {/* ⭐ 返回改成智能返回 */}
-        <button
-          className="close-btn"
-          onClick={smartBack}
-          style={noFocusStyle}
-        >
-          {t("Cancel")}
-        </button>
+<button
+  onClick={smartBack}
+  style={noFocusStyle}
+>
+  {t("Cancel")}
+</button>
       </div>
 
       {/* Recharge 区域 */}
