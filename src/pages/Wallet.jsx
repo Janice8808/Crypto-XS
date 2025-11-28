@@ -9,33 +9,6 @@ import { useTranslation } from "react-i18next";
 import { apiFetch } from "@/api/http";
 import { useEffect, useMemo, useState } from "react";
 
-/* --------------------------------------------
-    Skeleton 骨架屏
--------------------------------------------- */
-function SkeletonList() {
-  return (
-    <div className="space-y-2">
-      {[...Array(6)].map((_, i) => (
-        <div
-          key={i}
-          className="flex items-center justify-between bg-white rounded-xl p-3 shadow-sm animate-pulse"
-        >
-          <div className="flex items-center space-x-3">
-            <div className="w-6 h-6 rounded-full bg-gray-200" />
-            <div className="h-4 w-16 bg-gray-200 rounded"></div>
-          </div>
-
-          <div className="ml-auto text-right">
-            <div className="h-4 w-20 bg-gray-200 rounded" />
-          </div>
-
-          <div className="w-4 h-4 bg-gray-200 rounded"></div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 export default function Wallet() {
   const navigate = useNavigate();
   const { allCoins } = useCoins();
@@ -45,8 +18,36 @@ export default function Wallet() {
   const [userInfo, setUserInfo] = useState(null);
 
   /* --------------------------------------------
-    加载用户信息（UID & Address）
--------------------------------------------- */
+      ① 静态首屏币种（不等接口，页面秒显示）
+  -------------------------------------------- */
+  const [coinsForView, setCoinsForView] = useState([
+    { symbol: "USDT" },
+    { symbol: "BTC" },
+    { symbol: "ETH" },
+    { symbol: "BNB" },
+    { symbol: "SOL" },
+    { symbol: "XRP" },
+    { symbol: "ADA" },
+    { symbol: "DOGE" },
+    { symbol: "TRX" },
+    { symbol: "DOT" }
+  ]);
+
+  /* --------------------------------------------
+      ② allCoins 加载后再替换真实币种（不会影响首屏）
+  -------------------------------------------- */
+  useEffect(() => {
+    if (Array.isArray(allCoins) && allCoins.length > 0) {
+      setCoinsForView([
+        { symbol: "USDT" },
+        ...allCoins.slice(0, 24) // 前 24 个币即可
+      ]);
+    }
+  }, [allCoins]);
+
+  /* --------------------------------------------
+      加载用户信息（UID + 钱包地址）
+  -------------------------------------------- */
   useEffect(() => {
     async function loadInfo() {
       try {
@@ -64,8 +65,8 @@ export default function Wallet() {
   }, []);
 
   /* --------------------------------------------
-    Address + UID
--------------------------------------------- */
+      Address + UID
+  -------------------------------------------- */
   const address = userInfo?.wallet || localStorage.getItem("address") || "";
   const userId = userInfo?.userId || localStorage.getItem("userId") || "";
 
@@ -75,70 +76,45 @@ export default function Wallet() {
       ? `0x${clean.slice(0, 6)}…${clean.slice(-4)}`
       : address || "--";
 
+  /* --------------------------------------------
+      useMemo: 构建价格表
+  -------------------------------------------- */
   const coinList = Array.isArray(allCoins) ? allCoins : [];
 
-  /* --------------------------------------------
-    useMemo: 构建价格 Map（避免每次渲染重算）
--------------------------------------------- */
   const priceMap = useMemo(() => {
-    const map = {};
+    const map = { USDT: 1 };
+
     coinList.forEach((c) => {
       const sym = (c.symbol || "").toUpperCase();
-      const price = Number(c.price ?? c.current_price ?? 0) || 0;
+      const price = Number(c.price ?? c.current_price ?? 0);
       if (sym) map[sym] = price;
     });
 
-    map["USDT"] = 1; // 恒定成
     return map;
   }, [coinList]);
 
   /* --------------------------------------------
-    useMemo: 计算总资产
--------------------------------------------- */
+      useMemo: 计算总资产（不阻塞渲染）
+  -------------------------------------------- */
   const totalAsset = useMemo(() => {
     if (!balances) return 0;
 
     let total = 0;
     Object.entries(balances).forEach(([sym, amt]) => {
       const cleanSym = sym.trim().toUpperCase();
-      let price = priceMap[cleanSym];
-
-      if (!price) {
-        const found = Object.keys(priceMap).find(
-          (k) => k.startsWith(cleanSym) && k.endsWith("USDT")
-        );
-        if (found) price = priceMap[found];
-      }
-
-      total += Number(amt || 0) * Number(price || 0);
+      const price = priceMap[cleanSym] || 0;
+      total += Number(amt || 0) * price;
     });
 
     return total;
   }, [balances, priceMap]);
 
-  /* --------------------------------------------
-    要显示的币（USDT + Top 24）
--------------------------------------------- */
-  const coinsForView = useMemo(() => {
-    return [
-      { symbol: "USDT", logo: "/images/USDT.png" },
-      ...coinList.slice(0, 24),
-    ];
-  }, [coinList]);
-
-  /* --------------------------------------------
-    判断是否完成加载
--------------------------------------------- */
-  const loading =
-    !userInfo || !allCoins || !balances || coinList.length === 0;
-
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      
+
       {/* 顶部卡片 */}
       <Card className="m-4 rounded-2xl shadow-sm">
         <CardContent className="p-4 space-y-3">
-
           <div className="text-sm text-gray-600">
             <div className="font-semibold text-[#26a17b]">
               {shortAddress}
@@ -193,51 +169,40 @@ export default function Wallet() {
           {t("Asset list")}
         </h2>
 
-        {/* 骨架屏 */}
-        {loading ? (
-          <SkeletonList />
-        ) : (
-          <div className="space-y-2">
-            {coinsForView.map((coin) => {
-              const sym = (coin.symbol || "").toUpperCase();
-              let balance = balances && balances[sym];
+        <div className="space-y-2">
+          {coinsForView.map((coin) => {
+            const sym = (coin.symbol || "").toUpperCase();
 
-              if (!balance && sym.endsWith("USDT")) {
-                const base = sym.replace("USDT", "");
-                balance = balances && balances[base];
-              }
+            let balance = balances?.[sym] || 0;
 
-              balance = Number(balance || 0);
+            return (
+              <Link
+                key={sym}
+                to={`/asset/${sym}`}
+                className="flex items-center justify-between bg-white rounded-xl p-3 shadow-sm hover:bg-gray-100 transition"
+              >
+                <div className="flex items-center space-x-3">
+                  <img
+                    src={coinIcons[sym] || "/images/default.png"}
+                    alt={sym}
+                    className="w-6 h-6 rounded-full"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "/images/default-coin.png";
+                    }}
+                  />
+                  <span className="font-medium text-black">{sym}</span>
+                </div>
 
-              return (
-                <Link
-                  key={sym}
-                  to={`/asset/${sym}`}
-                  className="flex items-center justify-between bg-white rounded-xl p-3 shadow-sm hover:bg-gray-100 transition"
-                >
-                  <div className="flex items-center space-x-3">
-                    <img
-                      src={coinIcons[sym] || "/images/default.png"}
-                      alt={sym}
-                      className="w-6 h-6 rounded-full"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = "/images/default-coin.png";
-                      }}
-                    />
-                    <span className="font-medium text-black">{sym}</span>
-                  </div>
+                <div className="ml-auto text-right font-mono text-gray-700 text-sm w-28">
+                  {Number(balance).toFixed(6)}
+                </div>
 
-                  <div className="ml-auto text-right font-mono text-gray-700 text-sm w-28">
-                    {balance.toFixed(6)}
-                  </div>
-
-                  <ArrowRight className="w-4 h-4 text-gray-400" />
-                </Link>
-              );
-            })}
-          </div>
-        )}
+                <ArrowRight className="w-4 h-4 text-gray-400" />
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
