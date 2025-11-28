@@ -1,7 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { coinIcons } from "../assets/coinIcons";
 import { useOkxTickers } from "@/hooks/useOkxTickers";
+
+/* ---------------------------------------------
+   ⭐ 1. 静态首屏数据（页面秒开）
+   （不用等 WebSocket，也不会白屏）
+--------------------------------------------- */
+const STATIC_MARKET = [
+  { symbol: "BTC", price: "--", change: 0 },
+  { symbol: "ETH", price: "--", change: 0 },
+  { symbol: "BNB", price: "--", change: 0 },
+  { symbol: "SOL", price: "--", change: 0 },
+  { symbol: "XRP", price: "--", change: 0 },
+  { symbol: "DOGE", price: "--", change: 0 },
+  { symbol: "ADA", price: "--", change: 0 },
+  { symbol: "TRX", price: "--", change: 0 },
+  { symbol: "AVAX", price: "--", change: 0 },
+  { symbol: "DOT", price: "--", change: 0 },
+];
 
 const SYMBOLS = [
   "BTC-USDT","ETH-USDT","BNB-USDT","SOL-USDT","XRP-USDT",
@@ -12,9 +29,33 @@ const SYMBOLS = [
 ];
 
 export default function Market() {
-  const tickers = useOkxTickers(SYMBOLS);
-  const list = Object.values(tickers); 
+  /* ---------------------------------------------
+      ⭐ 2. state：初始静态列表
+  --------------------------------------------- */
+  const [marketList, setMarketList] = useState(STATIC_MARKET);
 
+  /* ---------------------------------------------
+      ⭐ 3. WebSocket 实时行情补充
+  --------------------------------------------- */
+  const tickers = useOkxTickers(SYMBOLS);
+
+  useEffect(() => {
+    const real = Object.values(tickers);
+
+    if (real.length > 0) {
+      const formatted = real.map((c) => ({
+        symbol: c.symbol,
+        price: c.price,
+        change: c.change,
+      }));
+
+      setMarketList(formatted);
+    }
+  }, [tickers]);
+
+  /* ---------------------------------------------
+      渲染
+  --------------------------------------------- */
   return (
     <div className="w-full min-h-screen text-black px-3 py-3 bg-white">
 
@@ -27,50 +68,51 @@ export default function Market() {
         <span className="w-1/3 text-right">24h</span>
       </div>
 
-{list.map((coin) => {
-  const isUp = coin.change >= 0;
+      {marketList.map((coin) => {
+        const isUp = coin.change >= 0;
 
-  return (
-    <Link
-      key={coin.symbol}
-      to={`/trade?symbol=${coin.symbol}USDT`}
-      className="flex items-center px-1 py-3 hover:bg-gray-100 border-b transition"
-      // ⭐ py-3 → 每行高度更大，呼吸感加大
-    >
-      {/* 左侧：图标 + 名称 */}
-      <span className="w-1/3 flex items-center text-gray-700 text-sm">
-        <img
-          src={coinIcons[coin.symbol] || "/images/default.png"}
-          alt={coin.symbol}
-          className="w-5 h-5 rounded-full mr-2"
-        />
-        {coin.symbol}/USDT
-      </span>
+        return (
+          <Link
+            key={coin.symbol}
+            to={`/trade?symbol=${coin.symbol}USDT`}
+            className="flex items-center px-1 py-3 hover:bg-gray-100 border-b transition"
+          >
+            {/* Symbol */}
+            <span className="w-1/3 flex items-center text-gray-700 text-sm">
+              <img
+                src={coinIcons[coin.symbol] || "/images/default.png"}
+                alt={coin.symbol}
+                className="w-5 h-5 rounded-full mr-2"
+              />
+              {coin.symbol}/USDT
+            </span>
 
-      {/* 最新价 */}
-      <span className="w-1/3 text-right text-sm text-gray-700">
-        ${coin.price}
-      </span>
+            {/* Price */}
+            <span className="w-1/3 text-right text-sm text-gray-700">
+              {coin.price === "--" ? "--" : `$${coin.price}`}
+            </span>
 
-      {/* 涨跌幅 */}
-      <span className="w-1/3 flex justify-end">
-        <span
-          className="text-white rounded flex items-center justify-center text-xs"
-          style={{
-            width: "60px",
-            height: "26px",   // ⭐ 从 22px → 26px，框变更高、更好看
-            backgroundColor: isUp ? "#22c55e" : "#ef4444",
-            fontWeight: 600,
-            marginTop: "-1px", // ⭐ 稍微上提一点视觉更居中
-          }}
-        >
-          {isUp ? "+" : ""}
-          {coin.change}%
-        </span>
-      </span>
-    </Link>
-  );
-})}
+            {/* 24h Change */}
+            <span className="w-1/3 flex justify-end">
+              <span
+                className="text-white rounded flex items-center justify-center text-xs"
+                style={{
+                  width: "60px",
+                  height: "26px",
+                  backgroundColor: coin.price === "--"
+                    ? "#9ca3af" // 静态灰色
+                    : isUp ? "#22c55e" : "#ef4444",
+                  fontWeight: 600,
+                }}
+              >
+                {coin.price === "--"
+                  ? "--"
+                  : `${isUp ? "+" : ""}${coin.change}%`}
+              </span>
+            </span>
+          </Link>
+        );
+      })}
 
     </div>
   );
