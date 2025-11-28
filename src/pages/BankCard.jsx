@@ -7,7 +7,7 @@ import useSmartBack from "@/hooks/useSmartBack";   // ⬅️ 引入智能返回
 export default function BankCard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const smartBack = useSmartBack();   // ⬅️ 使用智能返回
+const smartBack = useSmartBack("/user"); // ⬅️ 使用智能返回
 
   const [form, setForm] = useState({
     name: "",
