@@ -13,7 +13,7 @@ export default function CoinDetail() {
   const { symbol } = useParams();
   const navigate = useNavigate();
   const upperSymbol = (symbol || "BTCUSDT").toUpperCase();
-
+  const [showDrawer, setShowDrawer] = useState(false);
   const [side, setSide] = useState("buy");
   const [orderType, setOrderType] = useState("limit");
   const [price, setPrice] = useState("");
@@ -177,17 +177,121 @@ export default function CoinDetail() {
   return (
     <div style={containerStyle}>
       
+      {/* ==================== 左侧抽屉 ==================== */}
+{showDrawer && (
+  <div
+    onClick={() => setShowDrawer(false)}
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      background: "rgba(0,0,0,0.3)",
+      zIndex: 9998,
+    }}
+  />
+)}
+
+<div
+  style={{
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: showDrawer ? "75%" : "0",
+    height: "100%",
+    backgroundColor: "#fff",
+    zIndex: 9999,
+    boxShadow: showDrawer ? "2px 0 10px rgba(0,0,0,0.2)" : "none",
+    transition: "width 0.28s ease",
+    overflow: "hidden",
+  }}
+>
+  {/* 内容可滚动 */}
+  <div style={{ height: "100%", overflowY: "auto", overflowX: "hidden" }}>
+
+    {/* 标题 */}
+    <div
+      style={{
+        padding: "16px",
+        fontWeight: 600,
+        fontSize: "16px",
+        borderBottom: "1px solid #eee",
+        background: "#fff",
+        position: "sticky",
+        top: 0,
+        zIndex: 1,
+      }}
+    >
+      Markets
+    </div>
+
+    {/* 表头 */}
+    <div
+      style={{
+        padding: "10px 16px",
+        display: "flex",
+        justifyContent: "space-between",
+        fontSize: 13,
+        color: "#7d7d7d",
+        borderBottom: "1px solid #eee",
+        background: "#fff",
+        position: "sticky",
+        top: 50,
+        zIndex: 1,
+        fontWeight: 600,
+      }}
+    >
+      <span>Symbol</span>
+      <span>Price</span>
+    </div>
+
+    {/* 币种列表（与 Trade 页面逻辑保持一致） */}
+    {["BTCUSDT","ETHUSDT","BNBUSDT","SOLUSDT","XRPUSDT","DOGEUSDT"].map((s) => (
+      <div
+        key={s}
+        onClick={() => {
+          navigate(`/coin/${s}`);
+          setShowDrawer(false);
+        }}
+        style={{
+          padding: "14px 16px",
+          borderBottom: "1px solid #f5f5f5",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          cursor: "pointer",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <img
+            src={`/coin-icons/${s.replace("USDT","")}.png`}
+            style={{ width: 26, height: 26, borderRadius: "50%" }}
+          />
+          <span style={{ fontWeight: 600, color: "#6e6e6e" }}>
+            {s.replace("USDT","/USDT")}
+          </span>
+        </div>
+
+        <span style={{ fontSize: 14, color: "#22c55e", fontWeight: 600 }}>
+          {lastPrice ? lastPrice.toFixed(2) : "--"}
+        </span>
+      </div>
+    ))}
+  </div>
+</div>
+
       {/* ===== 顶部导航 ===== */}
       <div style={topBarStyle}>
-        <div
-          onClick={() => navigate("/markets")}
-          style={{ padding: 8, marginRight: 8, cursor: "pointer" }}
-        >
-          <div style={{ width: 18, height: 2, backgroundColor: "#333", marginBottom: 3 }} />
-          <div style={{ width: 18, height: 2, backgroundColor: "#333", marginBottom: 3 }} />
-          <div style={{ width: 12, height: 2, backgroundColor: "#333", marginBottom: 3 }} />
-          <div style={{ width: 12, height: 2, backgroundColor: "#333" }} />
-        </div>
+<div
+  onClick={() => setShowDrawer(true)}
+  style={{ padding: 8, marginRight: 8, cursor: "pointer" }}
+>
+  <div style={{ width: 18, height: 2, backgroundColor: "#333", marginBottom: 3 }} />
+  <div style={{ width: 18, height: 2, backgroundColor: "#333", marginBottom: 3 }} />
+  <div style={{ width: 12, height: 2, backgroundColor: "#333", marginBottom: 3 }} />
+  <div style={{ width: 12, height: 2, backgroundColor: "#333" }} />
+</div>
 
         {/* 币对标题 */}
         <div style={{ flex: 1, textAlign: "left" }}>
