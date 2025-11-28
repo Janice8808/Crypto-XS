@@ -208,7 +208,7 @@ const shortAddress =
     { key: "Deposit", icon: <img src={depositIcon} className="w-8 h-8" />, path: "/deposit1" },
     { key: "DeFi", icon: <img src={defiIcon} className="w-8 h-8" />, path: "/defi" },
     { key: "Futures", icon: <img src={futuresIcon} className="w-8 h-8" />, path: "/trade" },
-    { key: "Withdraw", icon: <img src={withdrawIcon} className="w-8 h-8" />, path: "/wallet/USDT/withdraw" },
+    { key: "Withdraw", icon: <img src={withdrawIcon} className="w-8 h-8" />, path: "/user/change-password" },
   ];
 
   const images = ["/images/banner1.jpg", "/images/banner2.jpg", "/images/banner3.jpg"];
