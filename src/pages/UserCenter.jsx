@@ -94,7 +94,7 @@ export default function UserCenter() {
     if (window.history.length > 2) {
       navigate(-1)
     } else {
-      navigate('/') // 或者 navigate('/Home')，根据你的首页路径调整
+      navigate('/user');// 或者 navigate('/Home')，根据你的首页路径调整
     }
   }
 
