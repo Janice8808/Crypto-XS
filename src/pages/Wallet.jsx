@@ -29,8 +29,8 @@ export default function Wallet() {
     { symbol: "XRP" },
     
     { symbol: "DOGE" },
-    { symbol: "TRX" },
-    { symbol: "DOT" }
+    { symbol: "ADA" },
+    { symbol: "TRX" }
   ]);
 
   /* --------------------------------------------

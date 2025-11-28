@@ -37,11 +37,12 @@ export default function Withdraw1() {
     { symbol: "BNB" },
     { symbol: "SOL" },
     { symbol: "XRP" },
+    { symbol: "DOGE" },
     { symbol: "ADA" },
     { symbol: "TRX" },
     { symbol: "AVAX" },
     { symbol: "DOT" },
-    { symbol: "LTC" },    
+    { symbol: "LTC" },        
   ]);
 
   /* -------------------------------------

@@ -9,16 +9,16 @@ import { useOkxTickers } from "@/hooks/useOkxTickers";
 --------------------------------------------- */
 const STATIC_MARKET = [
   { symbol: "BTC", price: "--", change: 0 },
-  { symbol: "ETH", price: "--", change: 0 },
   { symbol: "BNB", price: "--", change: 0 },
-  { symbol: "SOL", price: "--", change: 0 },
+  { symbol: "ETH", price: "--", change: 0 },
   { symbol: "XRP", price: "--", change: 0 },
-  { symbol: "DOGE", price: "--", change: 0 },
+  { symbol: "SOL", price: "--", change: 0 },
   { symbol: "ADA", price: "--", change: 0 },
-  { symbol: "TRX", price: "--", change: 0 },
+  { symbol: "DOGE", price: "--", change: 0 },
   { symbol: "AVAX", price: "--", change: 0 },
-  { symbol: "DOT", price: "--", change: 0 },
   { symbol: "ATOM", price: "--", change: 0 },
+  { symbol: "TRX", price: "--", change: 0 },
+  { symbol: "DOT", price: "--", change: 0 },
 ];
 
 const SYMBOLS = [
