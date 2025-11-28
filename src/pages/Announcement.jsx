@@ -1,5 +1,6 @@
 // src/pages/Announcement.jsx
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 /* 邮件图标 */
@@ -11,9 +12,10 @@ const MailIcon = () => (
 );
 
 export default function Announcement() {
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // ⭐ 固定跳转到 https://ceshipankou.shop/user
+  // 固定返回到线上 /user
   const handleBack = () => {
     window.location.href = "https://ceshipankou.shop/user";
   };
@@ -43,13 +45,14 @@ export default function Announcement() {
         </h1>
       </div>
 
-      {/* 内容区域 */}
-      <div className="p-4">
-        <div className="flex items-center mt-2 active:opacity-70">
-          <MailIcon />
-          <div className="ml-2 text-[15px] text-[#00A884]">
-            Invite friends to register and share the
-          </div>
+      {/* ⭐ 公告内容 —— 点击跳 InviteIntro */}
+      <div 
+        className="p-4 flex items-center mt-2 active:opacity-70 cursor-pointer"
+        onClick={() => navigate("/invite-intro")}
+      >
+        <MailIcon />
+        <div className="ml-2 text-[15px] text-[#00A884]">
+          Invite friends to register and share the
         </div>
       </div>
 
