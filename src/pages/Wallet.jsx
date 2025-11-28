@@ -27,7 +27,7 @@ export default function Wallet() {
     { symbol: "BNB" },
     { symbol: "SOL" },
     { symbol: "XRP" },
-    { symbol: "ADA" },
+    
     { symbol: "DOGE" },
     { symbol: "TRX" },
     { symbol: "DOT" }
