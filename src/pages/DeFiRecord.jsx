@@ -4,22 +4,27 @@ import { fetchWithdrawList } from "@/api/user";
 import { useTranslation } from "react-i18next";
 
 export default function DeFiRecord() {
-  const nav = useNavigate();
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // 无焦点样式配置 - 只用于按钮
+  // 智能返回函数
+  const handleBack = () => {
+    if (window.history.length > 2) {
+      navigate(-1);
+    } else {
+      navigate('/defi'); // 根据你的实际路由调整
+    }
+  }
+
+  // 无焦点样式配置
   const noFocusStyle = {
     outline: 'none',
     boxShadow: 'none',
     border: 'none',
-    WebkitTapHighlightColor: 'transparent'
+    WebkitTapHighlightColor: 'transparent',
+    background: 'none',
+    cursor: 'pointer'
   }
-
-  // 可以移除 preventDefault 函数，因为全局事件委托会处理
-  // const preventDefault = (e) => {
-  //   e.preventDefault()
-  //   e.stopPropagation()
-  // }
 
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,22 +51,38 @@ export default function DeFiRecord() {
 
   return (
     <div className="w-full min-h-screen bg-white text-black">
+      {/* 添加全局样式来移除所有焦点效果 */}
+      <style>
+        {`
+          .no-focus:focus {
+            outline: none !important;
+            boxShadow: none !important;
+          }
+          .back-button {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+          }
+          .back-button:active {
+            opacity: 0.7;
+          }
+        `}
+      </style>
 
-      {/* 顶部导航 - 已修改 */}
+      {/* 顶部导航 */}
       <div className="flex items-center px-4 py-3 bg-white shadow-sm">
         <button
-          className="back-btn" // 添加 back-btn class
-          onClick={() => window.history.back()}
+          className="back-button no-focus"
+          onClick={handleBack}
           style={{
             ...noFocusStyle,
-            background: "none",
             fontSize: 20,
             color: "#666",
             width: "45px",
             textAlign: "left",
             paddingLeft: "12px",
           }}
-          // 移除 onMouseDown 和 onTouchStart，因为全局事件委托会处理
         >
           ←
         </button>
