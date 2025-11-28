@@ -74,6 +74,15 @@ const resources = {
 "Français": { 
   translation: {
     ...commonKeys,
+"Low": "Bas",
+"High": "Haut",
+"24h Amount": "Montant 24h",
+"Available Balance": "Solde disponible",
+"Custom amount:": "Montant personnalisé :",
+"Please enter amount": "Veuillez saisir le montant",
+"Direction": "Direction",
+"Expected": "Prévu",
+
 "Minimum recharge amount": "Montant minimum de recharge",
 "copy": "Copier",
 "Deposit address": "Adresse de dépôt",
@@ -270,6 +279,15 @@ const resources = {
 "Deutsch": {
   translation: {
     ...commonKeys,
+"Low": "Niedrig",
+"High": "Hoch",
+"24h Amount": "24h Betrag",
+"Available Balance": "Verfügbares Guthaben",
+"Custom amount:": "Benutzerdefinierter Betrag:",
+"Please enter amount": "Bitte Betrag eingeben",
+"Direction": "Richtung",
+"Expected": "Erwartet",
+
 "Minimum recharge amount": "Mindestaufladebetrag",
 "copy": "Kopieren",
 "Deposit address": "Einzahlungsadresse",
@@ -457,6 +475,15 @@ const resources = {
 "Italiano": {
   translation: {
     ...commonKeys,
+"Low": "Basso",
+"High": "Alto",
+"24h Amount": "Importo 24h",
+"Available Balance": "Saldo disponibile",
+"Custom amount:": "Importo personalizzato:",
+"Please enter amount": "Inserisci l'importo",
+"Direction": "Direzione",
+"Expected": "Previsto",
+
 "Minimum recharge amount": "Importo minimo di ricarica",
 "copy": "Copia",
 "Deposit address": "Indirizzo di deposito",
@@ -651,6 +678,15 @@ const resources = {
   "한국어": {
     translation: {
       ...commonKeys,
+"Low": "낮음",
+"High": "높음",
+"24h Amount": "24시간 거래량",
+"Available Balance": "사용 가능 잔액",
+"Custom amount:": "사용자 정의 금액:",
+"Please enter amount": "금액을 입력하세요",
+"Direction": "방향",
+"Expected": "예상",
+
 "Minimum recharge amount": "최소 충전 금액",
 "copy": "복사",
 "Deposit address": "입금 주소",
@@ -851,6 +887,15 @@ const resources = {
   "日本語": {
     translation: {
       ...commonKeys,
+"Low": "低",
+"High": "高",
+"24h Amount": "24時間取引量",
+"Available Balance": "利用可能残高",
+"Custom amount:": "カスタム金額：",
+"Please enter amount": "金額を入力してください",
+"Direction": "方向",
+"Expected": "予想",
+
 "Minimum recharge amount": "最低チャージ額",
 "copy": "コピー",
 "Deposit address": "入金アドレス",
@@ -1051,6 +1096,15 @@ const resources = {
 "中文繁体": {
   translation: {
     ...commonKeys,
+"Low": "低",
+"High": "高",
+"24h Amount": "24小時成交量",
+"Available Balance": "可用餘額",
+"Custom amount:": "自訂金額：",
+"Please enter amount": "請輸入金額",
+"Direction": "方向",
+"Expected": "預期",
+
 "Minimum recharge amount": "最低充值金額",
 "copy": "複製",
 "Deposit address": "充值地址",
@@ -1249,6 +1303,15 @@ const resources = {
   "中文简体": {
     translation: {
       ...commonKeys,
+"Low": "低",
+"High": "高",
+"24h Amount": "24小时成交量",
+"Available Balance": "可用余额",
+"Custom amount:": "自定义金额：",
+"Please enter amount": "请输入金额",
+"Direction": "方向",
+"Expected": "预期",
+
 "Minimum recharge amount": "最低充值金额",
 "copy": "复制",
 "Deposit address": "充值地址",
@@ -1456,6 +1519,15 @@ const resources = {
 "ภาษาไทย": {
   translation: {
     ...commonKeys,
+"Low": "ต่ำ",
+"High": "สูง",
+"24h Amount": "ปริมาณ 24 ชม.",
+"Available Balance": "ยอดคงเหลือที่ใช้ได้",
+"Custom amount:": "จำนวนที่กำหนดเอง:",
+"Please enter amount": "กรุณากรอกจำนวนเงิน",
+"Direction": "ทิศทาง",
+"Expected": "คาดการณ์",
+
 "Minimum recharge amount": "จำนวนเงินขั้นต่ำในการเติม",
 "copy": "คัดลอก",
 "Deposit address": "ที่อยู่สำหรับฝาก",
@@ -1653,6 +1725,15 @@ const resources = {
   "Tiếng Việt": {
     translation: {
       ...commonKeys,
+"Low": "Thấp",
+"High": "Cao",
+"24h Amount": "Khối lượng 24h",
+"Available Balance": "Số dư khả dụng",
+"Custom amount:": "Số tiền tùy chỉnh:",
+"Please enter amount": "Vui lòng nhập số tiền",
+"Direction": "Hướng",
+"Expected": "Dự kiến",
+
 "Minimum recharge amount": "Số tiền nạp tối thiểu",
 "copy": "Sao chép",
 "Deposit address": "Địa chỉ nạp",
@@ -1849,6 +1930,15 @@ const resources = {
 "español": {
   translation: {
     ...commonKeys,
+"Low": "Bajo",
+"High": "Alto",
+"24h Amount": "Monto 24h",
+"Available Balance": "Saldo disponible",
+"Custom amount:": "Monto personalizado:",
+"Please enter amount": "Ingrese el monto",
+"Direction": "Dirección",
+"Expected": "Esperado",
+
 "Minimum recharge amount": "Monto mínimo de recarga",
 "copy": "Copiar",
 "Deposit address": "Dirección de depósito",
@@ -2012,6 +2102,15 @@ const resources = {
 "Türkçe": {
   translation: {
     ...commonKeys,
+"Low": "Düşük",
+"High": "Yüksek",
+"24h Amount": "24s Miktar",
+"Available Balance": "Kullanılabilir Bakiye",
+"Custom amount:": "Özel tutar:",
+"Please enter amount": "Lütfen tutarı girin",
+"Direction": "Yön",
+"Expected": "Beklenen",
+
 "Minimum recharge amount": "Minimum yükleme tutarı",
 "copy": "Kopyala",
 "Deposit address": "Yatırma adresi",

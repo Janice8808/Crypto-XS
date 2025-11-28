@@ -948,17 +948,20 @@ if (countdown) {
         })}
       </div>
 
-      {/* 添加金额范围提示 */}
-      {selectedPeriod && (
-        <div style={{ 
-          fontSize: 14, 
-          color: "#858484ff",
-          textAlign: "left",
-          padding: "8px 0",
-        }}>
-          <strong>Custom amount:</strong> {formatRangeText()}
-        </div>
-      )}
+{/* 添加金额范围提示 */}
+{selectedPeriod && (
+  <div
+    style={{
+      fontSize: 14,
+      color: "#858484ff",
+      textAlign: "left",
+      padding: "8px 0",
+    }}
+  >
+    <strong>{t("Custom amount:")}</strong> {formatRangeText()}
+  </div>
+)}
+
 
       {/* 金额输入框 */}
       <div style={{ position: "relative" }}>
