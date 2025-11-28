@@ -42,23 +42,33 @@ export function useOkxTickers(symbols = [], onUpdate = null) {
 
       const symbol = inst.split("-")[0].toUpperCase(); // ⭐ 修复关键！
 
-      // ============= Tick 数据 =============
-      if (msg.arg.channel === "tickers") {
-        const d = msg.data[0];
-        const last = Number(d.last || 0);
-        const open = Number(d.open24h || 0);
-        const change = open ? ((last - open) / open) * 100 : 0;
+// ============= Tick 数据（包含 24h high/low/volume）=============
+if (msg.arg.channel === "tickers") {
+  const d = msg.data[0];
 
-        setTickers((prev) => ({
-          ...prev,
-          [symbol]: {
-            ...(prev[symbol] || {}),
-            symbol,        // ⭐ 写入 symbol
-            price: last,
-            change: Number(change.toFixed(2)),
-          },
-        }));
-      }
+  const last = Number(d.last || 0);
+  const open = Number(d.open24h || 0);
+  const change = open ? ((last - open) / open) * 100 : 0;
+
+  // ⭐ 新增：直接从 tickers 频道取 24h 信息（最准确）
+  const high = Number(d.high24h || 0);
+  const low = Number(d.low24h || 0);
+  const amount24h = Number(d.vol24h || 0);
+
+  setTickers((prev) => ({
+    ...prev,
+    [symbol]: {
+      ...(prev[symbol] || {}),
+      symbol,
+      price: last,
+      change: Number(change.toFixed(2)),
+      high,
+      low,
+      amount24h,
+    },
+  }));
+}
+
 
       // ============= K 线数据 =============
       if (msg.arg.channel === "candle24h") {
