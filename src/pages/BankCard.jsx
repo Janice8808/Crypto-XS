@@ -2,18 +2,27 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
-// ❌ 移除 useSmartBack 导入
-// import useSmartBack from "@/hooks/useSmartBack";
 
 export default function BankCard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // ✅ 直接使用 window.history.back()
+  // 智能返回函数 - 使用和 Mail 组件相同的逻辑
   const handleGoBack = () => {
-    if (window.history.length > 1) {
-      window.history.back();
+    console.log('=== BankCard页面返回调试 ===');
+    console.log('1. history.length:', window.history.length);
+    console.log('2. 当前路径:', window.location.pathname);
+    
+    // 检查是否是从 UserCenter 跳转过来的
+    const referrer = document.referrer;
+    console.log('3. 来源页面:', referrer);
+    
+    // 使用和 Mail 组件相同的判断逻辑
+    if (window.history.length > 2 && referrer.includes('/user')) {
+      console.log('4. 从UserCenter跳转过来，执行 navigate(-1)');
+      navigate(-1);
     } else {
+      console.log('4. 直接打开或来源不明，执行 navigate("/user")');
       navigate("/user", { replace: true });
     }
   };
@@ -59,7 +68,8 @@ export default function BankCard() {
 
       if (res.ok) {
         alert(data.message || t("Bank card submitted successfully!"));
-        navigate("/user");
+        // 提交成功后也使用智能返回
+        handleGoBack();
       } else {
         alert(data.error || t("Failed to submit"));
       }
@@ -77,14 +87,8 @@ export default function BankCard() {
       <div className="flex items-center p-4 border-b">
         <button
           className="back-btn text-gray-600 text-xl mr-3"
-          onClick={handleGoBack}  // ✅ 使用简单的返回逻辑
+          onClick={handleGoBack}
           style={noFocusStyle}
-          onTouchStart={(e) => {
-            e.currentTarget.style.opacity = "0.7";
-          }}
-          onTouchEnd={(e) => {
-            e.currentTarget.style.opacity = "1";
-          }}
         >
           ←
         </button>
