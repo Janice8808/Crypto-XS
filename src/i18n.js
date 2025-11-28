@@ -74,6 +74,18 @@ const resources = {
 "Français": { 
   translation: {
     ...commonKeys,
+"Minimum recharge amount": "Montant minimum de recharge",
+"copy": "Copier",
+"Deposit address": "Adresse de dépôt",
+"Announcement management": "Gestion des annonces",
+"Invite friends to register and share the": "Invitez des amis à s'inscrire et partagez",
+"Introduction": "Introduction",
+"The world's first social trading platform": "La première plateforme de trading social au monde",
+"Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com a été fondée en 2016 et est enregistrée à Singapour, avec son siège opérationnel à Dubaï. La plateforme dispose de centres d'opérations dans de nombreux pays et régions, dont les États-Unis et l'Europe, développant sa présence commerciale dans le monde entier.",
+"Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "Aujourd'hui, Crypto.com dessert plus de 50 millions d'utilisateurs enregistrés dans le monde, plus de 3 millions d'utilisateurs actifs mensuels et plus de 80 millions d'interactions dans son écosystème.",
+"As a comprehensive digital asset trading platform, Crypto.com supports over 800 high-quality cryptocurrencies and more than 1,000 trading pairs. The platform offers a rich selection of trading services, including spot trading, leveraged trading, OTC trading, contract trading, and credit-card-based cryptocurrency purchases.": "En tant que plateforme complète de trading d'actifs numériques, Crypto.com prend en charge plus de 800 cryptomonnaies de haute qualité et plus de 1 000 paires de trading. Elle propose un large éventail de services tels que le spot, le levier, l’OTC, les contrats et l'achat par carte bancaire.",
+"By combining advanced technology with rigorous security standards, Crypto.com is committed to providing users with the safest, most efficient, and most professional digital asset investment experience available.": "En combinant une technologie avancée et des normes de sécurité strictes, Crypto.com s'engage à offrir aux utilisateurs une expérience d'investissement en actifs numériques sûre, efficace et professionnelle.",
+
 "Type": "Type",
 "Regular": "Régulier",
 "Days": "Jours",
@@ -242,6 +254,18 @@ const resources = {
 "Deutsch": {
   translation: {
     ...commonKeys,
+"Minimum recharge amount": "Mindestaufladebetrag",
+"copy": "Kopieren",
+"Deposit address": "Einzahlungsadresse",
+"Announcement management": "Ankündigungsverwaltung",
+"Invite friends to register and share the": "Freunde einladen, sich zu registrieren und zu teilen",
+"Introduction": "Einführung",
+"The world's first social trading platform": "Die weltweit erste Social-Trading-Plattform",
+"Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com wurde 2016 gegründet und ist in Singapur registriert, mit Hauptsitz in Dubai. Die Plattform hat Betriebszentren in vielen Ländern und Regionen, darunter in den USA und Europa, aufgebaut und ihre weltweite Geschäftspräsenz erweitert.",
+"Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "Heute bedient Crypto.com weltweit über 50 Millionen registrierte Nutzer, mehr als 3 Millionen monatlich aktive Nutzer und über 80 Millionen Interaktionen im gesamten Ökosystem.",
+"As a comprehensive digital asset trading platform, Crypto.com supports over 800 high-quality cryptocurrencies and more than 1,000 trading pairs. The platform offers a rich selection of trading services, including spot trading, leveraged trading, OTC trading, contract trading, and credit-card-based cryptocurrency purchases.": "Als umfassende Handelsplattform für digitale Vermögenswerte unterstützt Crypto.com über 800 hochwertige Kryptowährungen und mehr als 1.000 Handelspaare. Die Plattform bietet eine große Auswahl an Dienstleistungen wie Spot-Handel, Margin-Handel, OTC, Terminkontrakte und Kreditkartenkäufe.",
+"By combining advanced technology with rigorous security standards, Crypto.com is committed to providing users with the safest, most efficient, and most professional digital asset investment experience available.": "Durch die Kombination fortschrittlicher Technologie mit strengen Sicherheitsstandards bietet Crypto.com den sichersten, effizientesten und professionellsten Handel mit digitalen Vermögenswerten.",
+
  "Type": "Typ",
 "Regular": "Regulär",
 "Days": "Tage",
@@ -401,6 +425,18 @@ const resources = {
 "Italiano": {
   translation: {
     ...commonKeys,
+"Minimum recharge amount": "Importo minimo di ricarica",
+"copy": "Copia",
+"Deposit address": "Indirizzo di deposito",
+"Announcement management": "Gestione degli annunci",
+"Invite friends to register and share the": "Invita gli amici a registrarsi e condividere",
+"Introduction": "Introduzione",
+"The world's first social trading platform": "La prima piattaforma di social trading al mondo",
+"Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com è stata fondata nel 2016 ed è registrata a Singapore, con sede operativa a Dubai. La piattaforma ha centri operativi in molti paesi e regioni, tra cui Stati Uniti ed Europa, ampliando la sua presenza globale.",
+"Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "Oggi Crypto.com serve oltre 50 milioni di utenti registrati in tutto il mondo, con più di 3 milioni di utenti attivi mensili e oltre 80 milioni di interazioni nel suo ecosistema.",
+"As a comprehensive digital asset trading platform, Crypto.com supports over 800 high-quality cryptocurrencies and more than 1,000 trading pairs. The platform offers a rich selection of trading services, including spot trading, leveraged trading, OTC trading, contract trading, and credit-card-based cryptocurrency purchases.": "Come piattaforma completa di trading di asset digitali, Crypto.com supporta oltre 800 criptovalute di alta qualità e più di 1.000 coppie di trading. Offre servizi spot, leva, OTC, futures e acquisti tramite carta di credito.",
+"By combining advanced technology with rigorous security standards, Crypto.com is committed to providing users with the safest, most efficient, and most professional digital asset investment experience available.": "Combinando tecnologia avanzata e severi standard di sicurezza, Crypto.com si impegna a offrire agli utenti l’esperienza di investimento più sicura, efficiente e professionale.",
+
 "Type": "Tipo",
 "Regular": "Regolare",
 "Days": "Giorni",
@@ -567,6 +603,18 @@ const resources = {
   "한국어": {
     translation: {
       ...commonKeys,
+"Minimum recharge amount": "최소 충전 금액",
+"copy": "복사",
+"Deposit address": "입금 주소",
+"Announcement management": "공지 관리",
+"Invite friends to register and share the": "친구를 초대하여 등록 및 공유하기",
+"Introduction": "소개",
+"The world's first social trading platform": "세계 최초의 소셜 트레이딩 플랫폼",
+"Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com은 2016년에 설립되어 싱가포르에 등록되었으며, 운영 본부는 두바이에 있습니다. 플랫폼은 미국과 유럽을 포함한 여러 국가 및 지역에 운영 센터를 설립하여 전 세계적으로 사업을 확장했습니다.",
+"Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "현재 Crypto.com은 전 세계 5천만 명 이상의 등록 사용자를 보유하고 있으며, 월 활성 사용자는 300만 명 이상, 생태계 내 사용자 상호작용은 8천만 회 이상입니다.",
+"As a comprehensive digital asset trading platform, Crypto.com supports over 800 high-quality cryptocurrencies and more than 1,000 trading pairs. The platform offers a rich selection of trading services, including spot trading, leveraged trading, OTC trading, contract trading, and credit-card-based cryptocurrency purchases.": "종합 디지털 자산 거래 플랫폼으로서 Crypto.com은 800개 이상의 고품질 암호화폐 및 1,000개 이상의 거래 쌍을 지원합니다. 또한 현물, 레버리지, OTC, 계약 거래 및 신용카드 암호화폐 구매와 같은 다양한 서비스를 제공합니다.",
+"By combining advanced technology with rigorous security standards, Crypto.com is committed to providing users with the safest, most efficient, and most professional digital asset investment experience available.": "Crypto.com은 첨단 기술과 엄격한 보안 기준을 결합하여 사용자에게 가장 안전하고 효율적이며 전문적인 디지털 자산 투자 경험을 제공합니다.",
+
 "Type": "유형",
 "Regular": "정규",
 "Days": "일수",
@@ -739,6 +787,18 @@ const resources = {
   "日本語": {
     translation: {
       ...commonKeys,
+"Minimum recharge amount": "最低チャージ額",
+"copy": "コピー",
+"Deposit address": "入金アドレス",
+"Announcement management": "お知らせ管理",
+"Invite friends to register and share the": "友達を招待して登録・共有する",
+"Introduction": "紹介",
+"The world's first social trading platform": "世界初のソーシャルトレーディングプラットフォーム",
+"Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com は 2016 年に設立され、シンガポールに登録され、運営本部はドバイにあります。米国や欧州を含む各国・地域に運用センターを構え、世界的に事業を拡大しています。",
+"Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "現在、Crypto.com は世界で 5,000 万人以上の登録ユーザー、300 万人以上の月間アクティブユーザー、8,000 万以上のエコシステム内インタラクションを有しています。",
+"As a comprehensive digital asset trading platform, Crypto.com supports over 800 high-quality cryptocurrencies and more than 1,000 trading pairs. The platform offers extensive services including spot trading, leveraged trading, OTC 取引、契約取引、クレジットカードによる仮想通貨購入などを提供しています。": "総合デジタル資産取引プラットフォームとして、Crypto.com は 800 種以上の高品質な暗号資産と 1,000 以上の取引ペアをサポートし、スポット取引、レバレッジ取引、OTC 取引、契約取引、クレジットカードでの購入などの豊富なサービスを提供しています。",
+"By combining advanced technology with rigorous security standards, Crypto.com is committed to providing users with the safest, most efficient, and most professional digital asset investment experience available.": "先進技術と厳格なセキュリティ基準を組み合わせ、Crypto.com は最も安全で効率的かつ専門的なデジタル資産投資体験をユーザーに提供することを約束します。",
+
   "Type": "タイプ",
 "Regular": "レギュラー",
 "Days": "日数",
@@ -911,6 +971,18 @@ const resources = {
 "中文繁体": {
   translation: {
     ...commonKeys,
+"Minimum recharge amount": "最低充值金額",
+"copy": "複製",
+"Deposit address": "充值地址",
+"Announcement management": "公告管理",
+"Invite friends to register and share the": "邀請好友註冊並分享",
+"Introduction": "平台介紹",
+"The world's first social trading platform": "全球第一個社交交易平台",
+"Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com 成立於 2016 年，註冊於新加坡，營運總部位於杜拜。平台在美國、歐洲等多個國家和地區設有運營中心，業務遍及全球。",
+"Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "如今，Crypto.com 全球註冊用戶超過 5000 萬，月活躍用戶超過 300 萬，生態系統互動次數超過 8000 萬。",
+"As a comprehensive digital asset trading platform, Crypto.com supports over 800 high-quality cryptocurrencies and more than 1,000 trading pairs. The platform offers a rich selection of trading services, including spot trading, leveraged trading, OTC trading, contract trading, and credit-card-based cryptocurrency purchases.": "作為一個綜合型數位資產交易平台，Crypto.com 支援 800 多種優質加密貨幣及超過 1000 個交易對，提供現貨、槓桿、OTC、合約、信用卡買幣等多種交易服務。",
+"By combining advanced technology with rigorous security standards, Crypto.com is committed to providing users with the safest, most efficient, and most professional digital asset investment experience available.": "Crypto.com 結合先進技術與嚴格的安全標準，致力於為用戶提供最安全、高效、專業的數位資產投資體驗。",
+
 "Type": "類型",
 "Regular": "常規",
 "Days": "天數",
@@ -1081,6 +1153,18 @@ const resources = {
   "中文简体": {
     translation: {
       ...commonKeys,
+"Minimum recharge amount": "最低充值金额",
+"copy": "复制",
+"Deposit address": "充值地址",
+"Announcement management": "公告管理",
+"Invite friends to register and share the": "邀请好友注册并分享",
+"Introduction": "平台介绍",
+"The world's first social trading platform": "全球首个社交交易平台",
+"Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com 成立于 2016 年，注册于新加坡，运营总部位于迪拜。平台在包括美国和欧洲在内的多个国家和地区设有运营中心，业务覆盖全球。",
+"Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "如今，Crypto.com 全球注册用户超过 5000 万，月活跃用户超过 300 万，生态系统互动超过 8000 万。",
+"As a comprehensive digital asset trading platform, Crypto.com supports over 800 high-quality cryptocurrencies and more than 1,000 trading pairs. The platform offers a rich selection of trading services, including spot trading, leveraged trading, OTC trading, contract trading, and credit-card-based cryptocurrency purchases.": "作为一个综合数字资产交易平台，Crypto.com 支持超过 800 种优质加密货币和 1000 多个交易对，提供现货、杠杆、OTC、合约、信用卡买币等服务。",
+"By combining advanced technology with rigorous security standards, Crypto.com is committed to providing users with the safest, most efficient, and most professional digital asset investment experience available.": "Crypto.com 结合先进技术与严格安全标准，致力于为用户提供最安全、高效、专业的数字资产投资体验。",
+
 "Bank Card": "银行卡",
 "Type": "类型",
 "Regular": "常规",
@@ -1260,6 +1344,18 @@ const resources = {
 "ภาษาไทย": {
   translation: {
     ...commonKeys,
+"Minimum recharge amount": "จำนวนเงินขั้นต่ำในการเติม",
+"copy": "คัดลอก",
+"Deposit address": "ที่อยู่สำหรับฝาก",
+"Announcement management": "การจัดการประกาศ",
+"Invite friends to register and share the": "เชิญเพื่อนมาสมัครและแชร์",
+"Introduction": "แนะนำ",
+"The world's first social trading platform": "แพลตฟอร์มโซเชียลเทรดดิ้งแห่งแรกของโลก",
+"Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com ก่อตั้งขึ้นในปี 2016 และจดทะเบียนในสิงคโปร์ โดยมีสำนักงานใหญ่ด้านปฏิบัติการตั้งอยู่ที่ดูไบ แพลตฟอร์มมีศูนย์ปฏิบัติการในหลายประเทศรวมถึงสหรัฐอเมริกาและยุโรป และขยายธุรกิจทั่วโลก",
+"Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "ปัจจุบัน Crypto.com ให้บริการผู้ใช้ที่ลงทะเบียนมากกว่า 50 ล้านคนทั่วโลก มีผู้ใช้งานรายเดือนกว่า 3 ล้านคน และมีการโต้ตอบภายในระบบนิเวศมากกว่า 80 ล้านครั้ง",
+"As a comprehensive digital asset trading platform, Crypto.com supports over 800 high-quality cryptocurrencies and more than 1,000 trading pairs. The platform offers spot trading, leveraged trading, OTC, สัญญาซื้อขายล่วงหน้า และการซื้อสกุลเงินดิจิทัลด้วยบัตรเครดิต": "ในฐานะแพลตฟอร์มซื้อขายสินทรัพย์ดิจิทัลแบบครบวงจร Crypto.com รองรับสกุลเงินดิจิทัลคุณภาพสูงกว่า 800 รายการและคู่เทรดมากกว่า 1,000 คู่ พร้อมให้บริการซื้อขายแบบ Spot, Leverage, OTC, สัญญาซื้อขายล่วงหน้า และซื้อด้วยบัตรเครดิต",
+"By combining advanced technology with rigorous security standards, Crypto.com is committed to providing users with the safest, most efficient, and most professional digital asset investment experience available.": "ด้วยเทคโนโลยีขั้นสูงและมาตรฐานความปลอดภัยที่เข้มงวด Crypto.com มุ่งมั่นมอบประสบการณ์การลงทุนสินทรัพย์ดิจิทัลที่ปลอดภัย มีประสิทธิภาพ และเป็นมืออาชีพที่สุดแก่ผู้ใช้",
+
 "Type": "ประเภท",
 "Regular": "ปกติ",
 "Days": "จำนวนวัน",
@@ -1429,6 +1525,18 @@ const resources = {
   "Tiếng Việt": {
     translation: {
       ...commonKeys,
+"Minimum recharge amount": "Số tiền nạp tối thiểu",
+"copy": "Sao chép",
+"Deposit address": "Địa chỉ nạp",
+"Announcement management": "Quản lý thông báo",
+"Invite friends to register and share the": "Mời bạn bè đăng ký và chia sẻ",
+"Introduction": "Giới thiệu",
+"The world's first social trading platform": "Nền tảng giao dịch xã hội đầu tiên trên thế giới",
+"Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com được thành lập năm 2016 và đăng ký tại Singapore, có trụ sở điều hành tại Dubai. Nền tảng có các trung tâm hoạt động tại nhiều quốc gia, bao gồm Mỹ và Châu Âu, mở rộng sự hiện diện toàn cầu.",
+"Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "Hiện nay, Crypto.com phục vụ hơn 50 triệu người dùng đăng ký trên toàn thế giới, hơn 3 triệu người dùng hoạt động hàng tháng và hơn 80 triệu tương tác trong hệ sinh thái.",
+"As a comprehensive digital asset trading platform, Crypto.com supports over 800 high-quality cryptocurrencies and more than 1,000 trading pairs. The platform cung cấp giao dịch spot, đòn bẩy, OTC, hợp đồng và mua tiền điện tử bằng thẻ tín dụng.": "Là một nền tảng giao dịch tài sản số toàn diện, Crypto.com hỗ trợ hơn 800 loại tiền điện tử chất lượng cao và hơn 1.000 cặp giao dịch, cung cấp spot, leverage, OTC, hợp đồng và mua crypto bằng thẻ tín dụng.",
+"By combining advanced technology with rigorous security standards, Crypto.com is committed to providing users with the safest, most efficient, and most professional digital asset investment experience available.": "Crypto.com kết hợp công nghệ tiên tiến cùng tiêu chuẩn bảo mật nghiêm ngặt nhằm mang đến cho người dùng trải nghiệm đầu tư tài sản số an toàn, hiệu quả và chuyên nghiệp nhất.",
+
 "Type": "Loại",
 "Regular": "Thông thường",
 "Days": "Số ngày",
@@ -1597,6 +1705,18 @@ const resources = {
 "español": {
   translation: {
     ...commonKeys,
+"Minimum recharge amount": "Monto mínimo de recarga",
+"copy": "Copiar",
+"Deposit address": "Dirección de depósito",
+"Announcement management": "Gestión de anuncios",
+"Invite friends to register and share the": "Invita a tus amigos a registrarse y compartir",
+"Introduction": "Introducción",
+"The world's first social trading platform": "La primera plataforma de trading social del mundo",
+"Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com fue fundada en 2016 y está registrada en Singapur, con su sede operativa en Dubái. La plataforma cuenta con centros operativos en numerosos países y regiones, incluidos Estados Unidos y Europa, expandiendo su presencia mundial.",
+"Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "Hoy, Crypto.com atiende a más de 50 millones de usuarios registrados en todo el mundo, más de 3 millones de usuarios activos mensuales y más de 80 millones de interacciones en su ecosistema.",
+"As a comprehensive digital asset trading platform, Crypto.com supports over 800 high-quality cryptocurrencies and more than 1,000 trading pairs. The platform offers servicios como trading spot, apalancado, OTC, contratos y compras con tarjeta.": "Como plataforma integral de trading de activos digitales, Crypto.com admite más de 800 criptomonedas de alta calidad y más de 1,000 pares de trading. También ofrece trading spot, apalancado, OTC, contratos y compras con tarjeta.",
+"By combining advanced technology with rigorous security standards, Crypto.com is committed to providing users with the safest, most efficient, and most professional digital asset investment experience available.": "Mediante la combinación de tecnología avanzada y estándares de seguridad rigurosos, Crypto.com se compromete a ofrecer a los usuarios la experiencia de inversión en activos digitales más segura, eficiente y profesional.",
+
 "Type": "Tipo",
 "Regular": "Regular",
 "Days": "Días",
@@ -1732,6 +1852,18 @@ const resources = {
 "Türkçe": {
   translation: {
     ...commonKeys,
+"Minimum recharge amount": "Minimum yükleme tutarı",
+"copy": "Kopyala",
+"Deposit address": "Yatırma adresi",
+"Announcement management": "Duyuru yönetimi",
+"Invite friends to register and share the": "Arkadaşları kaydolmaya ve paylaşmaya davet edin",
+"Introduction": "Tanıtım",
+"The world's first social trading platform": "Dünyanın ilk sosyal ticaret platformu",
+"Crypto.com was founded in 2016 and is registered in Singapore, with its operational headquarters located in Dubai. The platform has established operation centers across multiple countries and regions, including the United States and Europe, expanding its business presence worldwide.": "Crypto.com, 2016 yılında kurulmuş olup Singapur’da kayıtlıdır ve operasyon merkezi Dubai’dedir. Platform, ABD ve Avrupa dahil birçok ülkede operasyon merkezleri kurarak küresel faaliyetlerini genişletmiştir.",
+"Today, Crypto.com serves more than 50 million registered users globally, with over 3 million monthly active users and more than 80 million user interactions across its ecosystem.": "Bugün Crypto.com, dünya çapında 50 milyondan fazla kayıtlı kullanıcıya, 3 milyondan fazla aylık aktif kullanıcıya ve ekosistem genelinde 80 milyondan fazla kullanıcı etkileşimine hizmet vermektedir.",
+"As a comprehensive digital asset trading platform, Crypto.com supports over 800 high-quality cryptocurrencies and more than 1,000 trading pairs. The platform offers spot, kaldıraçlı işlemler, OTC, sözleşme işlemleri ve kredi kartı ile kripto satın alma hizmetleri sunmaktadır.": "Kapsamlı bir dijital varlık alım-satım platformu olarak Crypto.com, 800'den fazla yüksek kaliteli kripto para birimini ve 1.000’den fazla işlem çiftini desteklemektedir. Spot, kaldıraçlı işlemler, OTC, sözleşme işlemleri ve kredi kartıyla kripto satın alma hizmetleri sunar.",
+"By combining advanced technology with rigorous security standards, Crypto.com is committed to providing users with the safest, most efficient, and most professional digital asset investment experience available.": "Crypto.com, gelişmiş teknolojiyi sıkı güvenlik standartlarıyla birleştirerek kullanıcılara mümkün olan en güvenli, en verimli ve en profesyonel dijital varlık yatırım deneyimini sunmayı taahhüt eder.",
+
 "Type": "Tür",
 "Regular": "Düzenli",
 "Days": "Gün",

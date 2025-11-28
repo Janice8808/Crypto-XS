@@ -52,7 +52,7 @@ export default function Announcement() {
       >
         <MailIcon />
         <div className="ml-2 text-[15px] text-[#00A884]">
-          Invite friends to register and share the
+          {t("Invite friends to register and share the")}
         </div>
       </div>
 
