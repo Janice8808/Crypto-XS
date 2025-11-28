@@ -7,10 +7,10 @@ export default function DeFiRecord() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-// 智能返回函数 - 简化版
+// 最彻底的解决方案
 const handleBack = () => {
-  // 总是返回到首页，因为只有主页一个入口
-  navigate('/');
+  console.log('强制跳转到首页');
+  window.location.href = '/'; // 使用原生跳转
 }
 
   // 无焦点样式配置
