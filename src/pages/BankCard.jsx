@@ -2,12 +2,17 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
-import useSmartBack from "@/hooks/useSmartBack";   // ⬅️ 引入智能返回
+// ❌ 不用 useSmartBack 了
+// import useSmartBack from "@/hooks/useSmartBack";
 
 export default function BankCard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-const smartBack = useSmartBack("/user"); // ⬅️ 使用智能返回
+
+  // ✅ 写死返回到 /user
+  const goBackToUser = () => {
+    navigate("/user");
+  };
 
   const [form, setForm] = useState({
     name: "",
@@ -17,10 +22,10 @@ const smartBack = useSmartBack("/user"); // ⬅️ 使用智能返回
   const [loading, setLoading] = useState(false);
 
   const noFocusStyle = {
-    outline: 'none',
-    boxShadow: 'none',
-    border: 'none',
-    WebkitTapHighlightColor: 'transparent'
+    outline: "none",
+    boxShadow: "none",
+    border: "none",
+    WebkitTapHighlightColor: "transparent",
   };
 
   const handleChange = (e) => {
@@ -36,9 +41,10 @@ const smartBack = useSmartBack("/user"); // ⬅️ 使用智能返回
 
     try {
       setLoading(true);
+
       const res = await fetch("https://pankouhoutai.shop/api/bankcard", {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
@@ -49,7 +55,7 @@ const smartBack = useSmartBack("/user"); // ⬅️ 使用智能返回
 
       if (res.ok) {
         alert(data.message || t("Bank card submitted successfully!"));
-        smartBack();    // ⬅️ 成功提交后也用智能返回
+        goBackToUser();          // ✅ 提交成功后直接去 /user
       } else {
         alert(data.error || t("Failed to submit"));
       }
@@ -65,9 +71,9 @@ const smartBack = useSmartBack("/user"); // ⬅️ 使用智能返回
     <div className="min-h-screen bg-white">
       {/* 顶部 */}
       <div className="flex items-center p-4 border-b">
-        <button 
+        <button
           className="back-btn text-gray-600 text-xl mr-3"
-          onClick={smartBack}      // ⬅️ 替换 navigate(-1)
+          onClick={goBackToUser}   // ✅ 返回按钮也直接去 /user
           style={noFocusStyle}
         >
           ←
@@ -80,9 +86,10 @@ const smartBack = useSmartBack("/user"); // ⬅️ 使用智能返回
 
       {/* 内容 */}
       <div className="p-5">
-
         {/* Name */}
-        <label className="text-gray-700 font-medium mb-2 block">{t("Name")}</label>
+        <label className="text-gray-700 font-medium mb-2 block">
+          {t("Name")}
+        </label>
         <input
           type="text"
           name="name"
@@ -93,7 +100,9 @@ const smartBack = useSmartBack("/user"); // ⬅️ 使用智能返回
         />
 
         {/* Card Number */}
-        <label className="text-gray-700 font-medium mb-2 block">{t("Card number")}</label>
+        <label className="text-gray-700 font-medium mb-2 block">
+          {t("Card number")}
+        </label>
         <input
           type="text"
           name="cardNumber"
@@ -104,7 +113,9 @@ const smartBack = useSmartBack("/user"); // ⬅️ 使用智能返回
         />
 
         {/* Bank Name */}
-        <label className="text-gray-700 font-medium mb-2 block">{t("Bank name")}</label>
+        <label className="text-gray-700 font-medium mb-2 block">
+          {t("Bank name")}
+        </label>
         <input
           type="text"
           name="bankName"
