@@ -86,7 +86,7 @@ export default function UserCenter() {
 
   const shortAddress =
     clean && clean.length >= 20
-      ? `0x${clean.slice(0, 6)}…${clean.slice(-12)}`
+      ? `0x${clean.slice(0, 6)}…${clean.slice(-4)}`
       : address || "--";
 
 // 智能返回函数 - 简化版
