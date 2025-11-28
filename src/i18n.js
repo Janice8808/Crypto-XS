@@ -1071,7 +1071,7 @@ const resources = {
     
     "Announcement center": "公告中心",
     "Recharge": "充值",
-    "Buy Cryptocurrency": "購買加密貨幣",
+    "Buy Cryptocurrency": "買幣",
     "Search currency": "搜尋幣種",
     "Cancel": "取消",
 
