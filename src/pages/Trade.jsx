@@ -1267,11 +1267,12 @@ const Trade = () => {
           <div>{t("24h Amount")}</div>
         </div>
 
-        <div style={{ textAlign: "right", minWidth: 80 }}>
-          <div>{low}</div>
-          <div>{high}</div>
-          <div>{amount24h}</div>
-        </div>
+<div style={{ textAlign: "right", minWidth: 80, fontVariantNumeric: "tabular-nums" }}>
+  <div>{Number(low).toFixed(1)}</div>
+  <div>{Number(high).toFixed(1)}</div>
+  <div>{Number(amount24h).toFixed(1)}</div>
+</div>
+
       </div>
 
       <div style={{ flex: 1 }}>
