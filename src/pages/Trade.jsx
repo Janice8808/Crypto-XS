@@ -74,12 +74,21 @@ tvWidgetRef.current = new window.TradingView.widget({
 });
 
 
-      tvWidgetRef.current.onChartReady(() => {
-        const chart = tvWidgetRef.current.chart();
-        chart.onRealtimeTick((d) => {
-          if (d?.close && onPrice) onPrice(+d.close);
-        });
-      });
+tvWidgetRef.current.onChartReady(() => {
+
+  // ⭐ 删除默认的 Volume 指标
+  const chart = tvWidgetRef.current.chart();
+  chart.getAllStudies().forEach(study => {
+    if (study.name === "Volume") {
+      chart.removeEntity(study.id);
+    }
+  });
+
+  chart.onRealtimeTick((d) => {
+    if (d?.close && onPrice) onPrice(+d.close);
+  });
+});
+
     };
 
     init();
