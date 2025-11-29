@@ -15,6 +15,10 @@ import emailIcon from '../assets/icons/email.png';
 import globeIcon from '../assets/icons/globe.png';
 import yonghuIcon from '../assets/icons/yonghu.png';
 
+
+const [touchStartX, setTouchStartX] = useState(0);
+const [touchEndX, setTouchEndX] = useState(0);
+
 // ============ 地址遮挡函数（前8 + 后12） ============
 const maskAddress = (addr) => {
   if (!addr) return "--";
@@ -364,18 +368,46 @@ const shortAddress =
 
       {/* 其余代码保持不变 */}
       {/* Banner */}
-      <div className="w-full relative bg-gray-800 overflow-hidden">
-        {images.map((src, idx) => (
-          <img
-            key={idx}
-            src={src}
-            className={`w-full h-auto transition-opacity duration-700 ${
-              idx === currentBanner ? "opacity-100" : "opacity-0"
-            }`}
-            style={{ display: idx === currentBanner ? "block" : "none" }}
-          />
-        ))}
-      </div>
+<div
+  className="w-full relative bg-gray-800 overflow-hidden"
+  style={{ touchAction: "pan-y" }}
+  onTouchStart={(e) => {
+    setTouchStartX(e.touches[0].clientX);
+    setTouchEndX(e.touches[0].clientX);
+  }}
+  onTouchMove={(e) => {
+    setTouchEndX(e.touches[0].clientX);
+  }}
+  onTouchEnd={() => {
+    const diff = touchEndX - touchStartX;
+
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        // 👉 向右滑 → 上一张
+        setCurrentBanner((prev) =>
+          prev === 0 ? images.length - 1 : prev - 1
+        );
+      } else {
+        // 👈 向左滑 → 下一张
+        setCurrentBanner((prev) =>
+          (prev + 1) % images.length
+        );
+      }
+    }
+  }}
+>
+  {images.map((src, idx) => (
+    <img
+      key={idx}
+      src={src}
+      className={`w-full h-auto transition-opacity duration-700 ${
+        idx === currentBanner ? "opacity-100" : "opacity-0"
+      }`}
+      style={{ display: idx === currentBanner ? "block" : "none" }}
+    />
+  ))}
+</div>
+
 
       {/* 滚动公告 */}
       <div
