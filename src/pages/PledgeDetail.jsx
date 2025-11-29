@@ -114,24 +114,35 @@ export default function PledgeDetail() {
       </div>
 
       {/* Days */}
-      <div className="px-4 mt-5 text-gray-500 text-sm">{t("Days")}</div>
+<div className="grid grid-cols-3 gap-3 px-4 mt-2">
+  {info.days.map((day) => {
+    const active = selectedDay === day;
 
-      <div className="grid grid-cols-3 gap-3 px-4 mt-2">
-        {info.days.map((day) => (
-          <button
-            key={day}
-            className={`day-btn py-2 rounded-md border text-sm font-medium ${
-              selectedDay === day
-                ? "border-[#FFB800] text-[#FFB800]"
-                : "border-gray-300 text-gray-700"
-            }`}
-            onClick={() => setSelectedDay(day)}
-            style={noFocusStyle}
-          >
-            {day}
-          </button>
-        ))}
-      </div>
+    return (
+      <button
+        key={day}
+        onClick={() => setSelectedDay(day)}
+        className={`
+          py-2
+          rounded-md
+          text-sm
+          font-medium
+          border
+          transition
+          duration-150
+          ${active
+            ? "border-[#F4A11A] text-[#F4A11A] bg-white font-semibold"
+            : "border-[#E5E5E5] text-[#1A1A1A] bg-white"
+          }
+        `}
+        style={noFocusStyle}
+      >
+        {day}
+      </button>
+    );
+  })}
+</div>
+
 
       {/* Purchase Quantity */}
       <div className="px-4 mt-6 text-gray-500 text-sm">
