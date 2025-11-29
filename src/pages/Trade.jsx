@@ -57,17 +57,22 @@ const TradingViewWidget = ({ symbol, onPrice }) => {
       await loadTV();
       if (!mounted || !containerRef.current) return;
 
-      tvWidgetRef.current = new window.TradingView.widget({
-        container_id: widgetId.current,
-        symbol: `BINANCE:${symbol}`,
-        interval: "1",
-        timezone: "Etc/UTC",
-        style: "1",
-        locale: "en",
-        theme: "light",
-        hide_toolbar: false,
-        autosize: true,
-      });
+tvWidgetRef.current = new window.TradingView.widget({
+  container_id: widgetId.current,
+  symbol: `BINANCE:${symbol}`,
+  interval: "1",
+  timezone: "Etc/UTC",
+  style: "1",
+  locale: "en",
+  theme: "light",
+  autosize: true,
+
+  // ⭐ 完全隐藏顶部的币种标题这一栏
+  hide_top_toolbar: true,
+  hide_symbol_logo: true,
+  withdateranges: false,
+});
+
 
       tvWidgetRef.current.onChartReady(() => {
         const chart = tvWidgetRef.current.chart();
