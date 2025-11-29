@@ -16,8 +16,7 @@ import globeIcon from '../assets/icons/globe.png';
 import yonghuIcon from '../assets/icons/yonghu.png';
 
 
-const [touchStartX, setTouchStartX] = useState(0);
-const [touchEndX, setTouchEndX] = useState(0);
+
 
 // ============ 地址遮挡函数（前8 + 后12） ============
 const maskAddress = (addr) => {
@@ -57,7 +56,8 @@ const formatPrice = (price) => {
 const Home = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-
+const [touchStartX, setTouchStartX] = useState(0);
+const [touchEndX, setTouchEndX] = useState(0);
   // 无焦点样式配置
   const noFocusStyle = {
     outline: 'none',
