@@ -29,75 +29,49 @@ const noFocusStyle = {
 // }
 /* ===================== TradingView 图表 ===================== */
 const TradingViewWidget = ({ symbol, onPrice }) => {
-  const containerRef = useRef(null);
-  const tvWidgetRef = useRef(null);
-  const widgetId = useRef(`tv_${symbol}_${Date.now()}`);
+  const widgetRef = useRef(null);
+  const id = useRef("tv_" + symbol.replace("-", "_"));
 
   useEffect(() => {
-    let mounted = true;
+    // tv.js 没加载好 → 直接不初始化，避免错误
+    if (!window.TradingView || !window.TradingView.widget) {
+      console.warn("TradingView 尚未加载");
+      return;
+    }
 
-    const loadTV = () =>
-      new Promise((resolve) => {
-        if (window.TradingView?.widget) return resolve();
+    // 创建 TradingView widget
+    widgetRef.current = new window.TradingView.widget({
+      container_id: id.current,
+      symbol: `BINANCE:${symbol}`,
+      interval: "1",
+      autosize: true,
+      theme: "light",
+      style: "1",
+      timezone: "Etc/UTC",
+      locale: "en",
+      hide_top_toolbar: false,
+    });
 
-        if (document.getElementById("tv_script")) {
-          const wait = () =>
-            window.TradingView?.widget ? resolve() : setTimeout(wait, 50);
-          return wait();
-        }
-
-        const script = document.createElement("script");
-        script.id = "tv_script";
-        script.src = "https://s3.tradingview.com/tv.js";
-        script.onload = resolve;
-        document.body.appendChild(script);
-      });
-
-    const init = async () => {
-      await loadTV();
-      if (!mounted || !containerRef.current) return;
-
-      tvWidgetRef.current = new window.TradingView.widget({
-        container_id: widgetId.current,
-        symbol: `BINANCE:${symbol}`,
-        interval: "1",
-        timezone: "Etc/UTC",
-        style: "1",
-        locale: "en",
-        theme: "light",
-        hide_toolbar: false,
-        autosize: true,
-      });
-
-      tvWidgetRef.current.onChartReady(() => {
-        const chart = tvWidgetRef.current.chart();
+    // 当图表准备好时
+    window.TradingView.onready(() => {
+      try {
+        const chart = widgetRef.current.chart();
         chart.onRealtimeTick((d) => {
-          if (d?.close && onPrice) onPrice(+d.close);
+          if (d?.close && onPrice) onPrice(Number(d.close));
         });
-      });
-    };
-
-    init();
+      } catch (err) {
+        console.error("图表事件绑定失败：", err);
+      }
+    });
 
     return () => {
-      mounted = false;
-      if (tvWidgetRef.current?.remove) {
-        try {
-          tvWidgetRef.current.remove();
-        } catch {}
-      }
-      tvWidgetRef.current = null;
+      try {
+        widgetRef.current?.remove();
+      } catch (e) {}
     };
   }, [symbol]);
 
-  return (
-    <div ref={containerRef} style={{ width: "100%", height: "100%" }}>
-      <div
-        id={widgetId.current}
-        style={{ width: "100%", height: "100%" }}
-      ></div>
-    </div>
-  );
+  return <div id={id.current} style={{ height: "100%", width: "100%" }} />;
 };
 
 /* ===================== 左侧滑出菜单 ===================== */
